@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Publier une offre — Nokime Jobs</title>
-<meta name="description" content="Publiez une offre de stage, d’alternance ou de saison sur Nokime Jobs : un formulaire, une relecture sous 48 h, en ligne pour un mois ou une saison.">
+<meta name="description" content="Publiez une offre de stage, d’alternance ou de saison sur Nokime Jobs : un formulaire, une relecture sous 48 h, en ligne pour un mois ou une saison.">
 <meta name="theme-color" content="#FFFFFF">
 <meta property="og:title" content="Publier une offre — Nokime Jobs">
 <meta property="og:description" content="Publier une offre de stage, d’alternance ou de saison.">
@@ -18,8 +18,8 @@
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240' fill='none' stroke='%23141414' stroke-linecap='square' stroke-linejoin='round'%3E%3Ccircle cx='120' cy='120' r='88' stroke-width='18'/%3E%3Cpath d='M69 171V69l102 102V69' stroke-width='24'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../css/fonts.css?v=2">
-<link rel="stylesheet" href="../css/site.css?v=2">
+<link rel="stylesheet" href="../css/fonts.css?v=3">
+<link rel="stylesheet" href="../css/site.css?v=3">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titlePost" data-desc="descPost">
@@ -50,7 +50,7 @@
       <p class="eyebrow"><a class="link" href="../" data-t="jobsEyebrowLink">Nokime Jobs</a></p>
       <h1 class="display" data-t="postTitle">Publier une offre.</h1>
       <p class="lead" data-t="postLead">Un formulaire, une relecture sous quarante-huit heures, et l’offre est en ligne pour un mois ou une saison.</p>
-      <details class="more"><summary data-t="postPriceQ">Combien ça coûte ?</summary><p data-t="postPriceA">Payant pour l’établissement, gratuit pour les candidats. Le tarif, au mois ou à la saison, vous est indiqué avec la validation ; rien n’est réglé avant la validation.</p></details>
+      <details class="more"><summary data-t="postPriceQ">Combien ça coûte ?</summary><p data-t="postPriceA">Payant pour l’établissement, gratuit pour les candidats. Le tarif, au mois ou à la saison, vous est indiqué avec la validation ; rien n’est réglé avant la validation.</p></details>
     </div>
   </section>
 
@@ -65,8 +65,8 @@
             <label class="chip"><input type="radio" name="kind" value="saison"><span data-t="kind_saison">Saison</span></label>
           </div>
         </div>
-        <div class="f-sec">
-          <p class="f-label" data-t="fSecOffer">L’offre</p>
+        <div class="f-sec" role="group" aria-labelledby="offerLabel">
+          <p class="f-label" id="offerLabel" data-t="fSecOffer">L’offre</p>
           <div class="f-grid">
             <label><span data-t="fRestaurant">Restaurant</span><input name="restaurant" required autocomplete="organization"></label>
             <label><span data-t="fCity">Ville</span><input name="city" required autocomplete="address-level2"></label>
@@ -75,23 +75,23 @@
             <label><span data-t="fStart">Début</span><input name="start" type="date" required></label>
             <label><span data-t="fEnd">Fin</span><input name="end" type="date" required></label>
             <label><span data-t="fHours">Heures par semaine</span><input name="hours" type="number" min="1" max="48" inputmode="numeric"></label>
-            <label><span data-t="fPay">Rémunération</span><input name="pay" placeholder="Gratification légale · 1 900 € brut · logé, nourri"></label>
+            <label><span data-t="fPay">Rémunération</span><input name="pay" placeholder="Gratification légale · 1 900 € brut · logé, nourri"></label>
             <label class="f-check"><input type="checkbox" name="housing"><span data-t="fHousing">Logement fourni</span></label>
           </div>
         </div>
-        <div class="f-sec">
-          <p class="f-label" data-t="fSecContact">Le contact</p>
+        <div class="f-sec" role="group" aria-labelledby="contactLabel">
+          <p class="f-label" id="contactLabel" data-t="fSecContact">Le contact</p>
           <div>
             <div class="f-grid">
               <label><span data-t="fContact">Nom du contact</span><input name="contactName" required autocomplete="name"></label>
               <label><span data-t="fEmail">Courriel de contact</span><input name="email" type="email" required autocomplete="email"></label>
               <label><span data-t="fPhone">Téléphone</span><input name="phone" type="tel" autocomplete="tel"></label>
             </div>
-            <p class="small f-note"><span data-t="fContactNote">Le courriel et le téléphone sont publiés avec l’offre ; le nom du contact ne l’est pas.</span> <a class="link" href="../mentions-legales/" data-t="fContactLink">Données personnelles</a></p>
+            <p class="small f-note"><span data-t="fContactNote">Le courriel et le téléphone sont publiés avec l’offre ; le nom du contact ne l’est pas.</span> <a class="link" href="../mentions-legales/" data-t="fContactLink">Données personnelles</a></p>
           </div>
         </div>
-        <div class="f-sec">
-          <p class="f-label" data-t="fSecText">Le texte</p>
+        <div class="f-sec" role="group" aria-labelledby="textLabel">
+          <p class="f-label" id="textLabel" data-t="fSecText">Le texte</p>
           <div>
             <label class="f-text"><span data-t="pfDesc">Description, en quelques lignes</span><textarea name="text" maxlength="300" rows="5"></textarea><span class="f-count" id="textCount"></span></label>
             <label class="f-check" style="margin-top:20px"><input type="checkbox" name="lawful" required><span data-t="fLawful">L’offre est exacte, rédigée en français, et ne contient aucune mention discriminatoire.</span></label>
@@ -145,8 +145,8 @@
   </div>
 </footer>
 
-<script src="../js/i18n.js?v=2"></script>
-<script src="../js/site.js?v=2"></script>
-<script src="../js/jobs.js?v=2"></script>
+<script src="../js/i18n.js?v=3"></script>
+<script src="../js/site.js?v=3"></script>
+<script src="../js/jobs.js?v=3"></script>
 </body>
 </html>

@@ -19,4 +19,18 @@ unused = sorted(k for k in en if k not in used and k not in ("demoTitle","demoHi
 print(f"{len(pages)} pages, {len(used)} keys used, {len(en)} keys in en")
 for k, v in sorted(missing.items()): print("MISSING in en:", k, "←", ", ".join(sorted(v)))
 if unused: print("en keys no page uses:", ", ".join(unused))
-sys.exit(1 if missing else 0)
+# French typography: a narrow no-break space before ; : ? ! and no-break spaces inside « » and before €.
+# The English legal block, scripts and styles are skipped. A plain ASCII space there is a defect (exit 1).
+def french_text(s):
+    s = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", " ", s, flags=re.S)
+    s = re.sub(r'<div data-lang="en">.*?\n      </div>\n', " ", s, flags=re.S)
+    s = re.sub(r'<span data-lang="en">.*?</span>', " ", s, flags=re.S)
+    return re.sub(r"<[^>]+>", " ", s)
+typo = {}
+for p in pages:
+    txt = french_text(p.read_text(encoding="utf-8"))
+    hits = re.findall(r"\S [;:?!](?!\S)|« |\d €| »", txt)
+    if hits: typo[p.relative_to(root).as_posix()] = hits
+for k, v in sorted(typo.items()): print("TYPOGRAPHY (ASCII space):", k, "←", ", ".join(repr(h) for h in v[:6]))
+
+sys.exit(1 if missing or typo else 0)

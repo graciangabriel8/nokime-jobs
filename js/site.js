@@ -1,6 +1,6 @@
 /* Nokime — site script. No build step, no dependencies.
    Language: French is read out of the page itself at load; English comes from i18n.js.
-   Dark only: there is no theme code. */
+   Light only: there is no theme code. */
 (function () {
   "use strict";
 

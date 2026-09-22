@@ -8,7 +8,7 @@ removed. The sitemap lists the site's pages and the live offers.
 
     python3 tools/build.py
 """
-import json, re, pathlib, datetime, shutil, html
+import json, re, pathlib, datetime, shutil, html, urllib.parse
 root = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://graciangabriel8.github.io/nokime-jobs/"
 today = datetime.date.today().isoformat()
@@ -49,7 +49,7 @@ for o in live:
     h = re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % e(desc), h)
     h = h.replace(BASE + '">', BASE + "o/" + o["id"] + '/">').replace('<meta name="twitter:card"', '<script type="application/ld+json">%s</script>\n<meta name="twitter:card"' % json.dumps(ld, ensure_ascii=False))
     h = re.sub(r'<body[^>]*>', '<body>', h)
-    mail = "mailto:%s?subject=%s" % (o["contact"]["email"], "Candidature — %s — %s" % (o["role"], o["restaurant"]))
+    mail = "mailto:%s?subject=%s&body=%s" % (o["contact"]["email"], urllib.parse.quote("Candidature — %s — %s" % (o["role"], o["restaurant"])), urllib.parse.quote("Bonjour,\n\nJe vous écris pour le poste de %s à partir du %s.\n\n" % (o["role"], fr_date(o["start"]))))
     main = '''<main>
   <section class="page-hero">
     <div class="wrap">

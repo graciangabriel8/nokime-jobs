@@ -42,7 +42,7 @@ card = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 <rect x="72" y="560" width="1056" height="1" fill="{INK}"/>
 </g>
 </svg>'''
-icon = f'''<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+icon = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 180 180">
 <rect width="180" height="180" fill="{PAPER}"/>
 <g transform="translate(20,20) scale(0.5833)" fill="none" stroke-linecap="square" stroke-linejoin="round"><circle cx="120" cy="120" r="91" stroke="{INK}" stroke-width="18"/><path d="M69 171V69l102 102V69" stroke="{BLEU}" stroke-width="24"/></g>
 </svg>'''

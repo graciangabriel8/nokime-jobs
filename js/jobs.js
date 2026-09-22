@@ -38,8 +38,10 @@
   function monthStrip(o) {
     var s = parseInt(String(o.start || "").slice(5, 7), 10), e = parseInt(String(o.end || "").slice(5, 7), 10);
     if (!s || !e) return "";
+    var ys = parseInt(String(o.start).slice(0, 4), 10), ye = parseInt(String(o.end).slice(0, 4), 10);
     var on = {}, m = s, i = 0;
-    while (i < 12) { on[m] = 1; if (m === e) break; m = m % 12 + 1; i++; }
+    if ((ye * 12 + e) - (ys * 12 + s) >= 11) { for (m = 1; m <= 12; m++) on[m] = 1; }
+    else { while (i < 12) { on[m] = 1; if (m === e) break; m = m % 12 + 1; i++; } }
     var L = "JFMAMJJASOND", out = "";
     for (var k = 1; k <= 12; k++) out += "<i" + (on[k] ? ' class="on"' : "") + ">" + L.charAt(k - 1) + "</i>";
     return '<p class="job-months" aria-hidden="true">' + out + "</p>";
@@ -109,8 +111,8 @@
         ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", f("pay")], ["Logement", f("housing")],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
-      var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
-      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
+      var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
+      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
       var ok = $("#postSent"); if (ok) ok.hidden = false;
     });
     var kindInputs = $$("[name=kind]", form), pay = form.elements.pay;
