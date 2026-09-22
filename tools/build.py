@@ -20,7 +20,7 @@ live = [o for o in offers if not o.get("demo") and (not o.get("expires") or o["e
 
 home = (root / "index.html").read_text(encoding="utf-8")
 head = home[:home.index("<header")]; header = home[home.index("<header"):home.index("<main>")]
-footer = home[home.index("<footer"):home.index('<script src="js/art.js')]; scripts = home[home.index('<script src="js/art.js'):home.index('<script src="js/offers.js')]
+footer = home[home.index("<footer"):home.index('<script src="js/i18n.js')]; scripts = home[home.index('<script src="js/i18n.js'):home.index('<script src="js/offers.js')]
 KIND = {"stage": "Stage", "alternance": "Alternance", "saison": "Saison"}
 EMP = {"stage": "INTERN", "alternance": "FULL_TIME", "saison": "TEMPORARY"}
 REGIONS = {"Auvergne-Rhône-Alpes": "01 03 07 15 26 38 42 43 63 69 73 74", "Bourgogne-Franche-Comté": "21 25 39 58 70 71 89 90", "Bretagne": "22 29 35 56", "Centre-Val de Loire": "18 28 36 37 41 45", "Corse": "2A 2B 20", "Grand Est": "08 10 51 52 54 55 57 67 68 88", "Hauts-de-France": "02 59 60 62 80", "Île-de-France": "75 77 78 91 92 93 94 95", "Normandie": "14 27 50 61 76", "Nouvelle-Aquitaine": "16 17 19 23 24 33 40 47 64 79 86 87", "Occitanie": "09 11 12 30 31 32 34 46 48 65 66 81 82", "Pays de la Loire": "44 49 53 72 85", "Provence-Alpes-Côte d’Azur": "04 05 06 13 83 84"}
@@ -36,7 +36,7 @@ for o in live:
     e = html.escape
     title = "%s — %s, %s · Nokime Jobs" % (o["role"], o["restaurant"], o["city"])
     desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), o.get("pay", ""), ", logé" if o.get("housing") else "")
-    facts = " · ".join(x for x in ["du %s au %s" % (fr_date(o["start"]), fr_date(o["end"])), ("%s h par semaine" % o["hours"]) if o.get("hours") else "", o.get("pay", ""), "Logé" if o.get("housing") else ""] if x)
+    facts = "".join('<div class="fact"><dt>%s</dt><dd>%s</dd></div>' % (k, html.escape(v)) for k, v in [("Dates", "du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))), ("Heures", ("%s h par semaine" % o["hours"]) if o.get("hours") else ""), ("Rémunération", o.get("pay", "")), ("Logement", "Logé" if o.get("housing") else "")] if v)
     ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": (o.get("text") or desc), "datePosted": o.get("published", today),
           "validThrough": (o.get("expires") or o["end"]) + "T23:59:59", "employmentType": EMP[o["kind"]],
           "hiringOrganization": {"@type": "Organization", "name": o["restaurant"]},
@@ -56,7 +56,7 @@ for o in live:
       <p class="eyebrow">%s · %s</p>
       <h1 class="display">%s</h1>
       <p class="lead">%s%s</p>
-      <p class="job-facts">%s</p>
+      <dl class="job-facts">%s</dl>
       %s
       <div class="cta-row">
         <a class="btn primary" href="%s"><span>Écrire au restaurant</span><span class="arrow" aria-hidden="true">→</span></a>
@@ -68,8 +68,8 @@ for o in live:
 </main>
 
 ''' % (e(KIND[o["kind"]]), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), e(o["role"]), e(o["restaurant"]),
-       ' <span class="distinction" title="Distinction Nokime">✦</span>' if o.get("distinction") else "", e(facts),
-       ('<p class="lead" style="font-size:17px">%s</p>' % e(o["text"])) if o.get("text") else "", e(mail),
+       '<span class="distinction" title="Distinction Nokime">✦</span>' if o.get("distinction") else '<span class="distinction empty" aria-hidden="true"></span>', facts,
+       ('<p class="more" style="max-width:62ch;margin-top:22px">%s</p>' % e(o["text"])) if o.get("text") else "", e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(o["contact"]["phone"].replace(" ", "")), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     page = rel(h + header + main + footer + scripts)
     (odir / o["id"]).mkdir(parents=True, exist_ok=True)

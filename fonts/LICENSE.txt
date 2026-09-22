@@ -1,7 +1,7 @@
-The font files in this directory are latin subsets fetched from Google Fonts, redistributed under the SIL Open Font License 1.1 below. Both fonts' own copyright notices:
+The font files in this directory are latin and latin-ext subsets fetched from Google Fonts, redistributed under the SIL Open Font License 1.1 below. Both fonts' own copyright notices:
 
-Copyright 2020 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces), with Reserved Font Name "Fraunces".
-Copyright © 2017 IBM Corp. (https://github.com/IBM/plex), with Reserved Font Name "Plex".
+Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage)
+Copyright 2020 The DM Mono Project Authors (https://github.com/googlefonts/dm-mono)
 
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
 -----------------------------------------------------------

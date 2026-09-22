@@ -34,6 +34,24 @@
     var d = new Date(iso + "T12:00:00");
     return d.toLocaleDateString(lang() === "fr" ? "fr-FR" : "en-GB", { day: "numeric", month: "short", year: d.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined });
   }
+  /* the months an offer covers, J to D, start to end (an offer longer than a year lights them all) */
+  function monthStrip(o) {
+    var s = parseInt(String(o.start || "").slice(5, 7), 10), e = parseInt(String(o.end || "").slice(5, 7), 10);
+    if (!s || !e) return "";
+    var on = {}, m = s, i = 0;
+    while (i < 12) { on[m] = 1; if (m === e) break; m = m % 12 + 1; i++; }
+    var L = "JFMAMJJASOND", out = "";
+    for (var k = 1; k <= 12; k++) out += "<i" + (on[k] ? ' class="on"' : "") + ">" + L.charAt(k - 1) + "</i>";
+    return '<p class="job-months" aria-hidden="true">' + out + "</p>";
+  }
+  /* the facts a candidate decides on, each under its printed label */
+  function fact(cls, label, value) { return '<div class="fact ' + cls + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd></div>"; }
+  function facts(o) {
+    return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
+      (o.hours ? fact("hours", t("colHours"), esc(t("jobsHours", { h: o.hours }))) : "") +
+      (o.pay ? fact("pay", t("colPay"), esc(o.pay)) : "") +
+      (o.housing ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : "") + "</dl>";
+  }
   function applyMail(o) {
     var subj = t("applySubject", { role: o.role, restaurant: o.restaurant });
     var body = t("applyBody", { role: o.role, restaurant: o.restaurant, start: fmtDate(o.start) });
@@ -51,14 +69,18 @@
       list.innerHTML = '<div class="jobs-empty"><p>' + esc(OFFERS.length ? t("jobsNoneFiltered") : t("jobsEmpty")) + '</p><a class="btn primary" href="' + esc(list.getAttribute("data-post-href") || "../publier/") + '"><span>' + esc(t("jobsPost")) + '</span><span class="arrow" aria-hidden="true">→</span></a></div>';
       return;
     }
-    list.innerHTML = rows.map(function (o) {
+    var base = list.getAttribute("data-offer-base");
+    list.innerHTML = rows.map(function (o, i) {
       return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '">' +
-        '<div class="job-side"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
-          '<p class="job-where">' + esc(o.city) + '<span class="muted"> · ' + esc(regionOf(o)) + "</span></p></div>" +
-        '<div class="job-main"><h3>' + (o.demo || !list.getAttribute("data-offer-base") ? esc(o.role) : '<a class="job-link" href="' + esc(list.getAttribute("data-offer-base") + o.id + "/") + '">' + esc(o.role) + "</a>") + '</h3><p class="job-rest">' + esc(o.restaurant) + (o.distinction ? ' <span class="distinction" title="' + esc(t("distinctionTitle")) + '">✦</span>' : "") + "</p>" +
-          '<p class="job-facts">' + esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) })) + (o.hours ? " · " + esc(t("jobsHours", { h: o.hours })) : "") + (o.pay ? " · " + esc(o.pay) : "") + (o.housing ? " · " + esc(t("jobsHoused")) : "") + (o.published ? " · " + esc(t("jobsPublished", { d: fmtDate(o.published) })) : "") + "</p>" +
+        '<div class="job-side"><span class="job-n" aria-hidden="true">' + (i < 9 ? "0" : "") + (i + 1) + '</span><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
+          '<p class="job-where">' + esc(o.city) + '<span class="muted"> · ' + esc(regionOf(o)) + "</span></p>" +
+          (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
+        '<div class="job-main"><h3>' + (o.demo || !base ? esc(o.role) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(o.role) + "</a>") + "</h3>" +
+          '<p class="job-rest">' + esc(o.restaurant) + (o.distinction ? '<span class="distinction" title="' + esc(t("distinctionTitle")) + '">✦</span>' : '<span class="distinction empty" aria-hidden="true"></span>') + "</p>" +
+          facts(o) +
           (o.text ? '<details class="more"><summary>' + esc(t("more")) + "</summary><p>" + esc(o.text) + "</p></details>" : "") + "</div>" +
-        '<div class="job-act"><a class="btn primary" href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + "</span></a>" +
+        monthStrip(o) +
+        '<div class="job-act"><a class="btn primary" href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
           ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></article>";
     }).join("");
   }
@@ -87,8 +109,8 @@
         ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", f("pay")], ["Logement", f("housing")],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
-      var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
-      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
+      var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
+      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
       var ok = $("#postSent"); if (ok) ok.hidden = false;
     });
     var kindInputs = $$("[name=kind]", form), pay = form.elements.pay;
