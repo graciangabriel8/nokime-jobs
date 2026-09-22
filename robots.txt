@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://graciangabriel8.github.io/nokime-jobs/sitemap.xml
