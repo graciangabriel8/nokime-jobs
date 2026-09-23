@@ -51,6 +51,10 @@ An offer is a white card: a 1px `--line` border, radius 12px, no shadow. On a ph
 
 A blue rosette, awarded beside a restaurant's name, never ranked; a dotted ring while empty. In its own section the rosette is a modest mark (56px, 40px on a phone) set beside the title and aligned with its first line.
 
+## The questionnaire
+
+The same parts, nothing new to learn. Under the page title, two short sections on white paper, two columns from 960px, each a title, one sentence and its details folded behind "En savoir plus". The form is the posting form's white panel on the steel band, its sections split by hairlines; single choices are the same round chips, allowed to wrap onto two lines on a phone, pressed in ink; the months and years are selects with the inputs' border. The blue is only the send button and the focus rings. On the home page it is a secondary button under the distinction's "En savoir plus", on the écoles page a link under the step about the questionnaire, and a link in every footer.
+
 ## Motion
 
 Nothing moves on load, and nothing moves on the cards. Under `prefers-reduced-motion: no-preference`, colours ease on hover (0.15s) and in-page links scroll smoothly. That is all.

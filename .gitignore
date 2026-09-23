@@ -1,1 +1,4 @@
 .DS_Store
+# the questionnaire's answers and verification log live outside any repository
+reponses.json
+journal-verification*.csv

@@ -1,5 +1,5 @@
-/* Nokime Jobs — list, filters, applying, and the posting form. No backend: applying is a mail
-   to the restaurant, posting is a mail to Nokime. Language follows site.js (localStorage). */
+/* Nokime Jobs — list, filters, applying, the posting form and the questionnaire. No backend: applying is a mail
+   to the restaurant, posting and the questionnaire are mails to Nokime. Language follows site.js (localStorage). */
 (function () {
   "use strict";
   var I18N = window.NOKIME_I18N || { fr: {}, en: {} };
@@ -126,6 +126,39 @@
     if (pay && payHidden && payHidden.checked) { payKept = pay.value; pay.value = ""; pay.disabled = true; }   /* a box the browser restored ticked */
     var txt = form.elements.text, cnt = $("#textCount");
     if (txt && cnt) { var upd = function () { cnt.textContent = txt.value.length + " / 300"; }; txt.addEventListener("input", upd); upd(); }
+  }
+
+  /* ---------- the questionnaire: a mail to Nokime, every answer in the body, in French whatever the reader's language.
+     The French labels are the page's own (site.js reads them into I18N.fr before translating). ---------- */
+  var qform = $("#qForm");
+  if (qform) {
+    var FR = I18N.fr;
+    var frOf = function (el) { var k = el && el.getAttribute("data-t"); return k && FR[k] != null ? FR[k] : (el ? el.textContent.trim() : ""); };
+    var val = function (n) { var el = qform.elements[n]; return el ? String(el.value || "").trim() : ""; };
+    var labelOf = function (n) { var el = qform.elements[n]; return frOf(el && el.closest("label") && el.closest("label").querySelector("[data-t]")); };
+    var ym = function (p) { return val(p + "Year") && val(p + "Month") ? val(p + "Year") + "-" + val(p + "Month") : ""; };
+    var monthOf = function (p) { var s = qform.elements[p + "Month"]; return s && s.selectedIndex > 0 ? frOf(s.options[s.selectedIndex]) + " " + val(p + "Year") : ""; };
+    var endYear = qform.elements.endYear;
+    qform.addEventListener("change", function () { if (endYear) endYear.setCustomValidity(""); });
+    qform.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (endYear) endYear.setCustomValidity(ym("start") && ym("end") && ym("end") < ym("start") ? t("qEndBeforeStart") : "");
+      if (!qform.checkValidity()) { qform.reportValidity(); return; }
+      var type = qform.querySelector("[name=type]:checked");
+      var lines = [[labelOf("etablissement"), val("etablissement")], [labelOf("ville"), val("ville")], [labelOf("dept"), val("dept")],
+        [frOf($("[data-t=qType]", qform)), frOf(type.nextElementSibling)], [frOf($("[data-t=fStart]", qform)), monthOf("start")], [frOf($("[data-t=fEnd]", qform)), monthOf("end")],
+        [FR.qMailSchool, val("ecole")], ["", ""]];
+      var codes = ["type=" + type.value, "debut=" + ym("start"), "fin=" + ym("end")];
+      $$("[data-q]", qform).forEach(function (fs) {
+        var on = $$("input:checked", fs);
+        lines.push([frOf($("legend [data-t]", fs)), on.map(function (i) { return frOf(i.nextElementSibling); }).join(", ") || "\u2014"]);
+        codes.push(fs.getAttribute("data-q") + "=" + on.map(function (i) { return i.value; }).join(","));
+      });
+      var body = lines.map(function (l) { return l[0] ? l[0] + "\u202f: " + l[1] : ""; }).join("\n") + "\n\n" +
+        $$(".f-confirm [data-t]", qform).map(frOf).join("\n") + "\n\n" + FR.qMailCodes + "\u202f: " + codes.join(" \u00b7 ") + "\n\n" + FR.qMailProof;
+      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent(FR.qMailSubject.replace("{etab}", val("etablissement"))) + "&body=" + encodeURIComponent(body);
+      var ok = $("#qSent"); if (ok) ok.hidden = false;
+    });
   }
 
   function renderAll() { renderFilters(); renderList(); }

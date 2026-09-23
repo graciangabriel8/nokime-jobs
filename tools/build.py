@@ -6,9 +6,13 @@ engine can read, with schema.org JobPosting data so job search features can list
 Demo offers never get a page. Expired offers get none either, and their old page is
 removed. The sitemap lists the site's pages and the live offers.
 
+It also writes the questionnaire from tools/questionnaire_questions.py: the period selects and
+the question fieldsets of questionnaire/index.html, and the English question strings in
+js/i18n.js, each between its start/end markers. Nothing about any answer is read or written here.
+
     python3 tools/build.py
 """
-import json, re, pathlib, datetime, shutil, html, urllib.parse
+import json, re, sys, pathlib, datetime, shutil, html, urllib.parse
 root = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://graciangabriel8.github.io/nokime-jobs/"
 today = datetime.date.today().isoformat()
@@ -42,7 +46,7 @@ def pay_fact(o):   # the pay is always a fact: the restaurant's words, or "Non c
     if pay_of(o): return '<div class="fact"><dt>Rémunération</dt><dd>%s</dd></div>' % html.escape(pay_of(o))
     note = (fr_str("payNote_stage") if allowance_due(o) else "") if o["kind"] == "stage" else fr_str("payNote_" + o["kind"])
     return '<div class="fact%s"><dt>Rémunération</dt><dd>%s</dd>%s</div>' % (" noted" if note else "", html.escape(fr_str("payUndisclosed")), '<dd class="fact-note">%s</dd>' % html.escape(note) if note else "")
-def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"')
+def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"')
 
 odir = root / "o"
 for old in odir.glob("*/"):
@@ -97,6 +101,53 @@ for o in live:
     (odir / o["id"]).mkdir(parents=True, exist_ok=True)
     (odir / o["id"] / "index.html").write_text(page, encoding="utf-8")
 
-urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "contact/"] + [BASE + "o/%s/" % o["id"] for o in live]
+# ---------------------------------------------------------------- the questionnaire
+sys.path.insert(0, str(root / "tools"))
+from questionnaire_questions import QUESTIONS, MOIS, key as qkey
+YEARS = 5   # the year selects offer next year and the five before it: answers are kept three years after the placement ends
+
+NNBSP, NBSP = "\u202f", "\u00a0"
+def typo(t):
+    """French typography on plain text: a narrow no-break space before ; : ? ! and in 15 000 € or 3 %, no-break spaces inside « »."""
+    t = re.sub(r"(?<=\S) ([;:?!])(?=\s|$)", NNBSP + r"\1", t)
+    t = t.replace("« ", "«" + NBSP).replace(" »", NBSP + "»")
+    t = re.sub(r"(\d) (\d{3})(?=\D|$)", r"\1" + NNBSP + r"\2", t)
+    return re.sub(r"(\d) ([€%])", r"\1" + NNBSP + r"\2", t)
+def between(text, name, block):
+    """Replace what lies between <!-- name:start ... --> and <!-- name:end --> (or the same as /* */ comments)."""
+    pat = re.compile(r"((?:<!--|/\*) %s:start[^\n]*\n)(.*?)(^[ \t]*(?:<!--|/\*) %s:end)" % (name, name), re.S | re.M)
+    new, n = pat.subn(lambda m: m.group(1) + block + m.group(3), text)
+    if n != 1: sys.exit("questionnaire: marker %s not found exactly once; nothing more was written" % name)
+    return new
+e = lambda s: html.escape(typo(s), quote=False)
+year = datetime.date.today().year
+def month_select(name):
+    return ('<select name="%sMonth" required aria-label="Mois" data-t-attr="aria-label:qMonth"><option value="" data-t="qMonth">Mois</option>' % name +
+            "".join('<option value="%02d" data-t="rMois%d">%s</option>' % (i + 1, i + 1, e(m[0])) for i, m in enumerate(MOIS)) + "</select>")
+def year_select(name):
+    return ('<select name="%sYear" required aria-label="Année" data-t-attr="aria-label:qYear"><option value="" data-t="qYear">Année</option>' % name +
+            "".join("<option>%d</option>" % y for y in range(year + 1, year - YEARS, -1)) + "</select>")
+periode = ('            <div class="f-period">\n'
+           '              <fieldset><legend data-t="fStart">Début</legend>%s%s</fieldset>\n'
+           '              <fieldset><legend data-t="fEnd">Fin</legend>%s%s</fieldset>\n'
+           '            </div>\n') % (month_select("start"), year_select("start"), month_select("end"), year_select("end"))
+qs = ['            <div class="f-qs">\n']
+for q in QUESTIONS:
+    typ = "radio" if q["kind"] == "radio" else "checkbox"
+    extra = ' <span class="muted" data-t="qSeveral">(plusieurs réponses possibles)</span>' if q["kind"] == "check" else ""
+    qs.append('              <fieldset class="f-q" data-q="%s"><legend><span data-t="%s">%s</span>%s</legend>\n                <div class="chips wrap-ok">' % (q["id"], qkey(q["id"]), e(q["fr"]), extra) +
+              "".join('<label class="chip"><input type="%s" name="q_%s" value="%s"%s><span data-t="%s">%s</span></label>' % (typ, q["id"], o[0], " required" if typ == "radio" else "", qkey(q["id"], o[0]), e(o[1])) for o in q["options"]) +
+              "</div></fieldset>\n")
+qs.append("            </div>\n")
+page = root / "questionnaire" / "index.html"
+i18n = root / "js" / "i18n.js"
+en_lines = ["    %s: %s, " % (qkey(q["id"]), json.dumps(q["en"], ensure_ascii=False)) + " ".join("%s: %s," % (qkey(q["id"], o[0]), json.dumps(o[2], ensure_ascii=False)) for o in q["options"]) for q in QUESTIONS]
+en_lines.append("    " + " ".join("rMois%d: %s," % (i + 1, json.dumps(m[1])) for i, m in enumerate(MOIS)))
+p_new = between(between(page.read_text(encoding="utf-8"), "periode", periode), "questions", "".join(qs))
+i_new = between(i18n.read_text(encoding="utf-8"), "questions", "\n".join(en_lines) + "\n")
+page.write_text(p_new, encoding="utf-8"); i18n.write_text(i_new, encoding="utf-8")
+print("questionnaire: %d questions written" % len(QUESTIONS))
+
+urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/"] + [BASE + "o/%s/" % o["id"] for o in live]
 (root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join("  <url><loc>%s</loc></url>\n" % u for u in urls) + "</urlset>\n", encoding="utf-8")
 print("offers: %d live, %d pages written, sitemap %d urls" % (len(live), len(live), len(urls)))

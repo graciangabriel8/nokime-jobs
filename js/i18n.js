@@ -21,6 +21,9 @@ window.NOKIME_I18N = {
     payNote_alternance: "Salaire au moins égal au minimum légal du contrat.",
     payNote_saison: "Salaire au moins égal au minimum légal ou conventionnel.",
     distinctionTitle: "Distinction Nokime : une cuisine où les stagiaires reviennent",
+    qEndBeforeStart: "La fin est avant le début.",
+    qMailSubject: "Nokime Jobs — questionnaire : {etab}", qMailCodes: "Pour Nokime (codes)", qMailSchool: "École ou CFA",
+    qMailProof: "À joindre avant d’envoyer : la première page de ma convention, mon contrat, ou un bulletin de paie où tout est noirci sauf mon nom, l’établissement et les dates.",
   },
   en: {
     jobsTitle1: "Internships and seasons in kitchens ", jobsTitle2: "worth working in.",
@@ -108,6 +111,31 @@ window.NOKIME_I18N = {
     titleContact: "Contact — Nokime Jobs", descContact: "Write to Nokime Jobs: an offer to post, a question, a school that wants to know more.",
     ctTitle: "Write to us.", ctLead: "An offer to post, a question about an offer, a school that wants to know more: one address.", ctCta: "Write",
     ctQ: "A position is filled?", ctA: "Write us the restaurant’s and the position’s name: the offer is taken down the same day.",
-    titleLegal: "Legal notice — Nokime Jobs", descLegal: "Publisher, hosting, personal data and prices of Nokime Jobs."
+    titleLegal: "Legal notice — Nokime Jobs", descLegal: "Publisher, hosting, personal data and prices of Nokime Jobs.",
+    /* the questionnaire */
+    qEndBeforeStart: "The end is before the start.", qSecPlace: "The establishment", qEtab: "Establishment", qSecPeriod: "The period", qType: "I was there for", qMonth: "Month", qYear: "Year",
+    qSecAnswers: "Your answers", qSeveral: "(several answers possible)",
+    qHint: "About your own experience, at this establishment. For an offence, such as harassment or violence, this form is not the right place: talk to your school, the labour inspectorate or the police.",
+    qSecSend: "Sending", qC1: "I worked at this establishment on these dates.", footQuestionnaire: "The questionnaire", qCta: "Answer the questionnaire",
+    titleQuestionnaire: "The questionnaire — Nokime Jobs",
+    descQuestionnaire: "A short questionnaire for those who did an internship, an apprenticeship or a season in a kitchen. It prepares the distinction; your answers are never published.",
+    qTitle: "The questionnaire.", qLead: "For those who did an internship, an apprenticeship or a season in a kitchen: a short questionnaire, to fill in at the end, about your own experience.",
+    qForT: "What it is for", qForP: "Preparing the distinction. Your answers are never published, neither on their own nor added up for a restaurant.",
+    qForM: "The distinction is awarded to a kitchen from several concordant answers; kitchens are never ranked against each other. Nothing is published about the others.", qHowT: "How",
+    qHowP: "You answer the questions, with no free text. Your mail program opens with your answers: attach a proof that you worked there.",
+    qHowM: "The proof: the first page of the internship agreement, the contract, or a payslip with everything blacked out except your name, the establishment and the dates. We look at it by hand, then delete it, with the email that carried it, within thirty days.",
+    qSchool: "School or apprentice centre (optional)", qC2: "I agree that my answers are used to prepare the distinction, without being published.",
+    qData: "What we keep: your answers, the establishment and the period, and separately, your name and email address, only so we can delete your answers if you ask. None of it is published. Your proof is deleted within thirty days, with the email that carried it. Your answers, your name and your email address are deleted three years after the end of your internship, apprenticeship or season. You can withdraw everything before that, whenever you want: write to us, it is done without discussion.",
+    qSend: "Send my answers", qSendNote: "The button opens your mail client with your answers ready to go. Attach your proof to it.", qSent: "Your mail app opens with your answers: send the email with the proof attached.",
+    /* questions:start — written by tools/build.py from tools/questionnaire_questions.py */
+    rq_heures: "The hours worked, compared with the agreement or the contract", rq_heures_prevu: "As planned", rq_heures_plus: "A little more (up to 5 h a week)", rq_heures_beaucoup_plus: "Much more (over 5 h a week)", rq_heures_moins: "Less",
+    rq_pauses: "The breaks", rq_pauses_oui: "Yes", rq_pauses_souvent: "Most of the time", rq_pauses_non: "No",
+    rq_repos: "The planned days off", rq_repos_oui: "Yes", rq_repos_souvent: "Most of the time", rq_repos_non: "No",
+    rq_paiement: "The allowance or the salary, paid on time", rq_paiement_oui: "Yes", rq_paiement_non: "No", rq_paiement_pas_du: "Not due",
+    rq_appris: "What I learned", rq_appris_bases: "The basics and the mise en place", rq_appris_cuissons: "Cooking", rq_appris_patisserie: "Pastry", rq_appris_dressage: "Plating", rq_appris_passe: "Working the pass", rq_appris_hygiene: "Hygiene", rq_appris_commandes: "Orders and stock",
+    rq_traite: "I felt well treated", rq_traite_oui: "Yes", rq_traite_plutot_oui: "Mostly yes", rq_traite_plutot_non: "Mostly no", rq_traite_non: "No",
+    rq_revenir: "I would go back", rq_revenir_oui: "Yes", rq_revenir_non: "No",
+    rMois1: "January", rMois2: "February", rMois3: "March", rMois4: "April", rMois5: "May", rMois6: "June", rMois7: "July", rMois8: "August", rMois9: "September", rMois10: "October", rMois11: "November", rMois12: "December",
+    /* questions:end */
   }
 };
