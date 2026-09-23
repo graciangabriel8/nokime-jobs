@@ -1,28 +1,22 @@
-/* Nokime Jobs — le passe bleu. The board is the pass of a kitchen: every offer is a paper ticket held
-   on a steel rail by a ball. Around the board, the page is the poster's white paper: black ink, one blue,
-   hairlines, a lot of air. Two faces: Bricolage Grotesque speaks (the headline at 800), DM Mono prints
-   (whatever a ticket printer would print: kinds, dates, figures, the months).
-   Radius by role: paper has none, controls are round like the balls of the rail. Nothing moves on load.
+/* Nokime Jobs — le passe bleu. The board is the steel band of a kitchen pass, and on it every offer is a plain
+   white card, read like a list in one pass. Around the board, the page is the poster's white paper: black ink,
+   one blue, hairlines, a lot of air. Two faces: Bricolage Grotesque speaks (the headline at 800, and every word
+   of an offer), DM Mono labels (the eyebrows, the count, the form's section labels).
+   Radius by role: cards are softened at 12px, controls are round like the balls of the rail. Nothing moves on load.
    Light only. Every colour goes through a token on :root; ratios are computed (WCAG 2). */
 
 :root{
-  --paper:#FFFFFF;      /* ground of the page, the tickets */
-  --ink:#17191E;        /* text, the rail's outline, lit months (17.6:1 on paper, 14.6:1 on steel) */
-  --ink-2:#5A606B;      /* secondary text (6.3:1 on paper, 5.2:1 on steel, 5.7:1 on wash) */
-  --ink-3:#6E7480;      /* control borders, placeholders, the empty distinction ring (4.7:1 on paper, 3.9:1 on steel; never text on steel) */
-  --line:#D9DDE2;       /* hairlines between sections and blocks */
-  --perf:#A3A9B1;       /* perforations, inside a ticket only (decorative) */
+  --paper:#FFFFFF;      /* ground of the page, the cards */
+  --ink:#17191E;        /* text, the rail's outline (17.6:1 on paper, 14.6:1 on steel) */
+  --ink-2:#5A606B;      /* secondary text, the fact labels (6.3:1 on paper, 5.2:1 on steel) */
+  --ink-3:#6E7480;      /* control borders, the kind's pill, placeholders, the empty distinction ring (4.7:1 on paper, 3.9:1 on steel; never text on steel) */
+  --line:#D9DDE2;       /* hairlines between sections and blocks, the border of a card */
   --steel:#E7EAED;      /* the pass: ground of the board and of the posting form */
-  --wash:#F2F4F6;       /* the unlit months of a ticket */
   --bleu:#2038D5;       /* the one colour (8.1:1 on paper, 6.7:1 on steel): promise, primary action, pressed filter, current page, distinction, focus */
   --on-bleu:#FFFFFF;    /* text on the blue (8.1:1) */
-  --rail-hi:#FFFFFF;    /* the rail, top light */
-  --rail-mid:#D2D7DC;   /* the rail, body */
-  --rail-lo:#9EA5AE;    /* the rail, underside */
-  --shadow:23,25,30;    /* rgb of the ink, for the paper's shadow */
+  --shadow:23,25,30;    /* rgb of the ink, for the phone menu's shadow */
   --sans:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   --mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;
-  --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:light;
 }
 
@@ -48,7 +42,7 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;overflow-wrap:break-word
 .kicker{font-size:clamp(28px,3.2vw,42px);line-height:1.02;letter-spacing:-.02em;font-weight:700;font-stretch:88%;margin:0}
 h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .lead{font-size:clamp(19px,1.9vw,22px);line-height:1.42;font-weight:450;letter-spacing:-.008em;max-width:36ch;margin:0}
-.eyebrow,.tag,.f-label{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin:0}
+.eyebrow,.f-label{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin:0}
 .eyebrow{color:var(--ink-2)}
 
 /* ---------- buttons, links ---------- */
@@ -110,7 +104,7 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 /* ---------- the head of every other page ---------- */
 .page-hero{padding:72px 0 80px}
 .page-hero .eyebrow{margin-bottom:24px}
-.page-hero .display + .lead,.page-hero .lead + .job-facts{margin-top:28px}
+.page-hero .display + .lead{margin-top:28px}
 .page-hero .cta-row{margin-top:32px}
 .page-hero .more{margin-top:18px}
 
@@ -122,8 +116,8 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .split > .kicker,.section > .split > .kicker{margin:0}
 .split-head .lead{margin-top:18px;max-width:26ch}
 
-/* ---------- the pass: steel, a rail per row, a ball per ticket ---------- */
-.pass{background:var(--steel);padding:64px 0 96px;overflow:hidden;overflow:clip;isolation:isolate}
+/* ---------- the pass: the steel band that holds the board and the posting form ---------- */
+.pass{background:var(--steel);padding:64px 0 96px}
 .pass-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 .jobs-count{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--ink-2)}
 .jobs-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:24px}
@@ -141,56 +135,57 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
   background-repeat:no-repeat;background-position:right 15px center;background-size:12px}
 .jobs-select:hover{border-color:var(--ink)}
 
-.jobs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:48px 28px;margin-top:44px;align-items:start}
-.job,.jobs-empty,.form-hang,.offer-hang{position:relative;padding-top:11px}
-/* the rail: each ticket draws it across the whole band, so every row hangs from one continuous bar */
-.job::before,.jobs-empty::before,.form-hang::before,.offer-hang::before{content:"";position:absolute;top:0;left:-100vw;right:-100vw;height:20px;z-index:3;
-  background:linear-gradient(180deg,var(--rail-hi) 0,var(--rail-hi) 18%,var(--rail-mid) 52%,var(--rail-lo) 86%,var(--rail-mid) 100%);
-  box-shadow:0 0 0 1px rgba(var(--shadow),.28),0 8px 10px -6px rgba(var(--shadow),.32)}
-/* the steel ball that holds the ticket in the rail's groove */
-.job::after,.jobs-empty::after,.form-hang::after,.offer-hang::after{content:"";position:absolute;top:6px;left:50%;width:12px;height:12px;margin-left:-6px;z-index:4;border-radius:50%;
-  background:radial-gradient(circle at 35% 32%,#FFFFFF 0,#E3E6EA 32%,#9EA5AE 78%,#7D848E 100%);box-shadow:0 0 0 1px rgba(var(--shadow),.45),0 2px 2px rgba(var(--shadow),.25)}
-.hang{position:relative;z-index:2;filter:drop-shadow(0 1px 1px rgba(var(--shadow),.16)) drop-shadow(0 12px 14px rgba(var(--shadow),.10))}
-/* the paper: no radius, the bottom torn off the roll */
-.slip{position:relative;background:var(--paper);padding:26px 22px 34px;
-  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;
-          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%}
-
-/* what the printer prints on a ticket: all of it in ink */
-.job-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:14px;margin-bottom:16px;
-  background:linear-gradient(90deg,var(--perf) 55%,transparent 0) bottom left/7px 1.5px repeat-x}
-.job .tag{color:var(--ink);font-weight:500}
-.job-pub{margin:0;font-family:var(--mono);font-size:11.5px;line-height:1.4;color:var(--ink-2);text-align:right}
-.job h3{font-size:24px;line-height:1.08;letter-spacing:-.02em;margin:0 0 8px}
+/* the board: one white card per offer, one per row, stacked like a list you scan in one pass */
+.jobs-list{display:flex;flex-direction:column;gap:16px;margin-top:40px}
+/* a card: white, a 1px border, radius 12, no shadow, nothing that moves (an offer, the empty state, the form, an offer's page) */
+.job,.jobs-empty,.form-card,.offer-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;min-width:0}
+/* on a phone and a tablet an offer reads top to bottom: the top line, the role, the restaurant, the facts, the text, the action */
+.job{display:flex;flex-direction:column;gap:20px;padding:26px 28px}
+.job-head{min-width:0}
+/* the top line: the kind in a pill and the date, the place under them where the line is short */
+.job-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px}
+.tag{display:inline-flex;align-items:center;min-height:28px;padding:3px 12px;border:1px solid var(--ink-3);border-radius:999px;
+  font-size:13px;font-weight:600;line-height:1.2;color:var(--ink);white-space:nowrap}
+.job-where{order:3;flex:1 1 100%;margin:0;font-size:15px;line-height:1.35;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+.job-pub{margin:0 0 0 auto;font-size:14px;line-height:1.35;color:var(--ink-2);white-space:nowrap}
+.job h3{font-size:25px;line-height:1.1;letter-spacing:-.02em;margin:0}
 .job-link{text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:4px}
 .job-link:hover{text-decoration-color:var(--ink)}
-.job-rest{font-size:16px;font-weight:500;line-height:1.35;margin:0}
-.job-where{margin:4px 0 0;font-size:14.5px;line-height:1.4}
-/* the facts a candidate decides on, printed as the lines of a ticket: label left, figure right */
-.job-facts{margin:18px 0 0;padding-top:12px;background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
-.fact{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:5px 0;margin:0}
-.fact dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);flex:none}
-.fact dd{margin:0;font-family:var(--mono);font-size:13px;font-weight:500;line-height:1.45;text-align:right;min-width:0;overflow-wrap:break-word}
-/* the months the offer covers, January to December */
-.job-months{display:flex;gap:2px;margin:14px 0 0;font-family:var(--mono);font-size:10px;font-weight:500}
-.job-months i{flex:1 1 0;font-style:normal;height:22px;display:grid;place-items:center;color:var(--ink-2);background:var(--wash)}
-.job-months i.on{color:var(--paper);background:var(--ink)}
-.job .more{margin-top:14px}
-.job .more summary{font-size:14px}
-.job .more p{font-size:15px}
-.job-act{display:flex;flex-direction:column;gap:10px;margin-top:22px}
-.job-act .btn{width:100%}
-.job-act .link{align-self:center;font-family:var(--mono);font-size:13px}
+.job-rest{margin:6px 0 0;font-size:17px;font-weight:500;line-height:1.4;overflow-wrap:anywhere}
+/* the facts a candidate decides on: a small label above each value; two columns, four once the box is 520px wide */
+.job-facts{display:flex;flex-wrap:wrap;gap:16px 20px;margin:0;min-width:0}
+.fact{flex:0 0 clamp(calc(25% - 15px),calc((520px - 100%) * 999),calc(50% - 10px));min-width:0;margin:0}
+.fact dt{margin:0 0 3px;font-size:12px;font-weight:600;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.fact dd{margin:0;font-size:16px;font-weight:500;line-height:1.4;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.job > .job-facts{padding-top:18px;border-top:1px solid var(--line)}
+.job > .more{margin:0}
+.job .more summary{font-size:15px}
+.job .more p{font-size:16px}
+.job-act{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px}
+.job-act .link{font-size:15px;font-variant-numeric:tabular-nums}
 /* the distinction's place beside every restaurant: a dotted ring while empty, the blue rosette once earned */
 .distinction{display:inline-block;width:18px;height:18px;margin-left:8px;vertical-align:-3px}
 .distinction svg{width:18px;height:18px}
 .distinction.empty{border:1.5px dotted var(--ink-3);border-radius:50%;width:16px;height:16px;vertical-align:-2px}
 .sl-o{fill:var(--bleu)}
 .sl-i{fill:none;stroke:var(--paper);stroke-width:1.3}
+@media (min-width:721px) and (max-width:959px){
+  .job-where{order:0;flex:0 1 auto}
+}
+/* from 960px an offer is one row in three columns: who and where, the facts, the action */
+@media (min-width:960px){
+  .job{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;grid-template-areas:"head facts act" "more more .";gap:0 40px;align-items:start;padding:28px 32px}
+  .job-head{grid-area:head}
+  .job-pub{margin-left:0}   /* the head column is narrow: when the date wraps under the kind it starts at the left, not alone on the right */
+  .job > .job-facts{grid-area:facts;padding-top:0;border-top:0}
+  .job > .more{grid-area:more;margin-top:18px}
+  .job-act{grid-area:act;align-self:center;flex-direction:column;align-items:stretch;gap:10px}
+  .job-act .link{align-self:center}
+}
 
-.jobs-empty{grid-column:1/-1;justify-self:start;width:min(100%,540px)}
-.jobs-empty .slip{padding:30px 26px 38px}
-.jobs-empty p{margin:0 0 24px;font-size:19px;line-height:1.45;font-weight:500;letter-spacing:-.008em}
+/* no offer, or none under these filters: a plain card with the message and the way to post one */
+.jobs-empty{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;padding:28px}
+.jobs-empty p{margin:0;max-width:52ch;font-size:19px;line-height:1.45;font-weight:500;letter-spacing:-.008em}
 
 /* ---------- a real sequence: a line and three balls, read left to right ---------- */
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 44px;position:relative}
@@ -235,14 +230,13 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .facts li:last-child{border-bottom:1px solid var(--line)}
 .facts li::before{content:"";position:absolute;left:2px;top:23px;width:7px;height:7px;border-radius:50%;background:var(--ink)}
 
-/* ---------- the posting form: the order pad, hung on the pass ---------- */
+/* ---------- the posting form: one white panel on the steel band, its sections split by hairlines ---------- */
 .pass-form{padding:56px 0 96px}
-.form-hang{max-width:960px}
-.form-hang .slip{padding:40px 44px 52px}
+.form-card{max-width:960px;padding:40px 44px 44px}
 .jobs-form{margin:0}
-.f-sec{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,4fr);gap:14px 40px;padding:26px 0 30px;
-  background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
-.f-sec:first-child{background:none;padding-top:0}
+.f-sec{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,4fr);gap:14px 40px;padding:26px 0 30px;border-top:1px solid var(--line)}
+.f-sec:first-child{border-top:0;padding-top:0}
+.f-sec:last-child{padding-bottom:0}
 .f-sec > .f-label{margin-top:10px;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips .chip{position:relative;display:inline-flex;cursor:pointer}
@@ -284,16 +278,12 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .prose p{font-size:17px;line-height:1.6}
 .page-hero + .section.tight{padding-top:0}
 
-/* ---------- an offer's own page (tools/build.py) ---------- */
+/* ---------- an offer's own page (tools/build.py): the same card, the facts as on the board ---------- */
 .offer-page{padding-bottom:56px}
 .offer-page .lead{max-width:none}
-.offer-hang{max-width:640px}
-.offer-hang .slip{padding:30px 30px 40px}
-.offer-hang .job-facts{margin-top:0;padding-top:0;background:none}
-.offer-hang .fact dt{font-size:11.5px}
-.offer-hang .fact dd{font-size:14.5px}
-.offer-text{margin:20px 0 0;padding-top:18px;color:var(--ink-2);font-size:16px;background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
-.offer-hang .cta-row{margin-top:26px}
+.offer-card{max-width:760px;padding:30px 32px 32px}
+.offer-text{margin:24px 0 0;padding-top:20px;border-top:1px solid var(--line);color:var(--ink-2);font-size:16px}
+.offer-card .cta-row{margin-top:26px}
 
 /* ---------- the colophon ---------- */
 .site-foot{padding:48px 0 28px;border-top:1px solid var(--line)}
@@ -308,14 +298,10 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
 .foot-bottom a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--line)}
 .foot-bottom a:hover{color:var(--ink);text-decoration-color:var(--ink)}
 
-/* ---------- motion: nothing on load; a ticket under the pointer lifts 2px ---------- */
+/* ---------- motion: nothing on load, nothing on the cards; colours ease on hover ---------- */
 @media (prefers-reduced-motion:no-preference){
   html{scroll-behavior:smooth}
   .btn,.tbtn,.chip span,.jobs-filters .chip,.nav a,.link,.job-link,.more summary::before,.address .mail,.jobs-form input,.jobs-form textarea,.foot-grid a,.foot-bottom a{transition:background-color .15s,color .15s,border-color .15s,text-decoration-color .15s}
-}
-@media (prefers-reduced-motion:no-preference) and (hover:hover){
-  .job .hang{transition:transform .2s var(--ease),filter .2s var(--ease)}
-  .job:hover .hang{transform:translateY(-2px);filter:drop-shadow(0 1px 1px rgba(var(--shadow),.18)) drop-shadow(0 16px 18px rgba(var(--shadow),.14))}
 }
 
 /* ---------- responsive ---------- */
@@ -370,11 +356,15 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .jobs-filters .chip{padding:0 14px}
   #jobsHousing{margin-left:0}
   .jobs-select{margin-left:0;width:100%}
-  .jobs-list{grid-template-columns:1fr;gap:40px;margin-top:32px}
-  .slip{padding:24px 18px 32px}
-  .form-hang .slip{padding:28px 18px 40px}
-  .offer-hang .slip{padding:26px 18px 36px}
-  .offer-hang .cta-row{flex-direction:column;align-items:stretch}
+  .jobs-list{gap:12px;margin-top:28px}
+  .job{padding:22px 20px}
+  .job h3{font-size:23px}
+  .job-act .btn{width:100%}
+  .jobs-empty{padding:22px 20px}
+  .jobs-empty .btn{width:100%}
+  .form-card{padding:26px 18px 30px}
+  .offer-card{padding:24px 20px 26px}
+  .offer-card .cta-row{flex-direction:column;align-items:stretch}
   .f-grid{grid-template-columns:1fr}
   .f-send{flex-direction:column;align-items:stretch}
   .foot-grid{grid-template-columns:1fr;gap:22px}
