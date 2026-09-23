@@ -1,284 +1,381 @@
-/* Nokime Jobs — the poster. One face carries the whole site: Bricolage Grotesque, variable
-   (weight 200–800, width 75–100 %); DM Mono for the figures of the index. Black ink on white
-   paper and one blue, nothing else. No radius, no shadow, no gradient: rules do the work.
-   Two rule weights only: the 6px poster rule and the 1px hairline. Light only — a poster has one paper.
-   Every colour goes through a token on :root. */
+/* Nokime Jobs — le passe bleu. The board is the pass of a kitchen: every offer is a paper ticket held
+   on a steel rail by a ball. Around the board, the page is the poster's white paper: black ink, one blue,
+   hairlines, a lot of air. Two faces: Bricolage Grotesque speaks (the headline at 800), DM Mono prints
+   (whatever a ticket printer would print: kinds, dates, figures, the months).
+   Radius by role: paper has none, controls are round like the balls of the rail. Nothing moves on load.
+   Light only. Every colour goes through a token on :root; ratios are computed (WCAG 2). */
 
 :root{
-  --paper:#FFFFFF;      /* ground */
-  --ink:#141414;        /* text, rules, the mark */
-  --ink-2:#6B6B6B;      /* secondary text (5.3:1 on paper) */
-  --hair:#DCDCDC;       /* hairlines, the empty distinction ring, the unlit months */
-  --wash:#F2F2F2;       /* the colophon */
-  --bleu:#2038D5;       /* the one colour: the promise, the action, the distinction (8.1:1 on paper) */
-  --bleu-ink:#FFFFFF;   /* text on the blue */
-  --display:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --paper:#FFFFFF;      /* ground of the page, the tickets */
+  --ink:#17191E;        /* text, the rail's outline, lit months (17.6:1 on paper, 14.6:1 on steel) */
+  --ink-2:#5A606B;      /* secondary text (6.3:1 on paper, 5.2:1 on steel, 5.7:1 on wash) */
+  --ink-3:#6E7480;      /* control borders, placeholders, the empty distinction ring (4.7:1 on paper, 3.9:1 on steel; never text on steel) */
+  --line:#D9DDE2;       /* hairlines between sections and blocks */
+  --perf:#A3A9B1;       /* perforations, inside a ticket only (decorative) */
+  --steel:#E7EAED;      /* the pass: ground of the board and of the posting form */
+  --wash:#F2F4F6;       /* the unlit months of a ticket */
+  --bleu:#2038D5;       /* the one colour (8.1:1 on paper, 6.7:1 on steel): promise, primary action, pressed filter, current page, distinction, focus */
+  --on-bleu:#FFFFFF;    /* text on the blue (8.1:1) */
+  --rail-hi:#FFFFFF;    /* the rail, top light */
+  --rail-mid:#D2D7DC;   /* the rail, body */
+  --rail-lo:#9EA5AE;    /* the rail, underside */
+  --shadow:23,25,30;    /* rgb of the ink, for the paper's shadow */
+  --sans:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   --mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;
-  --rule:6px;
+  --ease:cubic-bezier(.2,.7,.2,1);
   color-scheme:light;
 }
 
 /* ---------- base ---------- */
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);font-size:17px;line-height:1.5;
-  font-optical-sizing:auto;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
-@media (prefers-reduced-motion:no-preference){
-  html{scroll-behavior:smooth}
-  .btn,.tbtn,.chip,.nav a,.link,.job-link,.more summary,.address .mail{transition:background-color .12s,color .12s,border-color .12s}
-}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;font-weight:400;font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
 html[lang="en"] [data-lang="fr"],html[lang="fr"] [data-lang="en"]{display:none}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:3px solid var(--bleu);outline-offset:3px}
+:focus-visible{outline:2.5px solid var(--bleu);outline-offset:3px;border-radius:2px}
 img,svg{display:block;max-width:100%}
-.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
 p{margin:0 0 1em}
-h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;overflow-wrap:anywhere}
-.mono{font-family:var(--mono)}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;overflow-wrap:break-word;text-wrap:balance}
 .muted{color:var(--ink-2)}
 .small{font-size:14px;color:var(--ink-2)}
 
-/* the registers of the one face */
-.poster{font-size:clamp(42px,9.6vw,136px);line-height:.9;font-weight:800;font-stretch:78%;letter-spacing:-.03em;margin:0}
-.poster em{font-style:normal;color:var(--bleu)}
-.display{font-size:clamp(40px,7vw,96px);line-height:.92;font-weight:800;font-stretch:80%;letter-spacing:-.03em;margin:0}
-.kicker{font-size:clamp(28px,3vw,40px);line-height:1;font-weight:700;font-stretch:88%;letter-spacing:-.02em;margin:0;text-wrap:balance}
-h3{font-size:24px;line-height:1.1;font-stretch:90%}
-.lead{font-size:clamp(19px,2vw,23px);line-height:1.35;font-weight:500;letter-spacing:-.01em;max-width:40ch;margin:0}
-.eyebrow,.tag,.f-label{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin:0}
+/* the registers: the poster's voice, condensed and heavy, for the two titles */
+.headline{font-size:clamp(42px,6.6vw,96px);line-height:.95;letter-spacing:-.02em;font-weight:800;font-stretch:85%;margin:0}
+.headline em{font-style:normal;color:var(--bleu)}
+.display{font-size:clamp(40px,6vw,88px);line-height:.95;letter-spacing:-.02em;font-weight:800;font-stretch:85%;margin:0}
+.kicker{font-size:clamp(28px,3.2vw,42px);line-height:1.02;letter-spacing:-.02em;font-weight:700;font-stretch:88%;margin:0}
+h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
+.lead{font-size:clamp(19px,1.9vw,22px);line-height:1.42;font-weight:450;letter-spacing:-.008em;max-width:36ch;margin:0}
+.eyebrow,.tag,.f-label{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin:0}
+.eyebrow{color:var(--ink-2)}
 
 /* ---------- buttons, links ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 18px;border:2px solid var(--ink);
-  background:var(--paper);color:var(--ink);font:inherit;font-weight:600;font-size:16px;line-height:1;cursor:pointer;border-radius:0}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:50px;padding:13px 22px;border:1.5px solid var(--ink);
+  border-radius:999px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;font-weight:600;line-height:1.2;letter-spacing:-.005em;
+  cursor:pointer;text-align:left}
 .btn:hover{background:var(--ink);color:var(--paper)}
-.btn.primary{background:var(--bleu);border-color:var(--bleu);color:var(--bleu-ink)}
+.btn.primary{background:var(--bleu);border-color:var(--bleu);color:var(--on-bleu)}
 .btn.primary:hover{background:var(--ink);border-color:var(--ink)}
-.btn.small{padding:9px 12px;font-size:14px;border-width:1.5px}
-.link{font-weight:500;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-.link:hover{color:var(--bleu)}
-.cta-row{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.btn.small{min-height:38px;padding:8px 16px;font-size:14px}
+.btn .arrow{display:inline-block}
+.link{font-weight:500;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--ink-3)}
+.link:hover{text-decoration-color:var(--ink)}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 
-/* ---------- masthead: the imprint line of the poster ---------- */
-.site-head{border-bottom:var(--rule) solid var(--ink);position:relative}
-.head-row{display:flex;align-items:center;gap:36px;height:72px}
-.brand{display:inline-flex;align-items:center;gap:10px;font-size:22px;letter-spacing:-.01em;white-space:nowrap}
-.brand .brandword{font-weight:800;font-stretch:85%}
-/* the group's medallion, one ink, ring and N only: a stamp, not a badge */
-.mark{width:26px;height:26px;flex:none}
-.mark .ring{fill:none;stroke:var(--ink);stroke-width:18}
-.mark .n{fill:none;stroke:var(--ink);stroke-width:24;stroke-linecap:square;stroke-linejoin:round}
-.mark .inner,.mark .dot{display:none}
-.nav{display:flex;gap:26px}
-.nav a{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 0;border-bottom:2px solid transparent}
-.nav a:hover{border-bottom-color:var(--hair)}
-.nav a[aria-current="page"]{border-bottom-color:var(--ink)}
-.head-tools{margin-left:auto;display:flex;align-items:center;gap:10px}
-.tbtn{height:36px;min-width:36px;padding:0 10px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);border-radius:0;
-  font:inherit;font-size:13px;font-weight:600;letter-spacing:.06em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-.tbtn:hover{background:var(--ink);color:var(--paper)}
-.tbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:square}
-.menu{display:none}
-
-/* ---------- the poster, and the head of every other page ---------- */
-.page-hero{padding:36px 0 44px}
-.page-hero.home{padding-bottom:0}
-.page-hero .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:34px}
-.page-hero .eyebrow::before{content:"";width:44px;height:2px;background:var(--ink);flex:none}
-.page-hero .display + .lead,.page-hero .lead + .job-facts{margin-top:24px}
-.page-hero .cta-row{margin-top:26px;flex-direction:row;flex-wrap:wrap;align-items:center}
-.page-hero .more{margin-top:16px}
-.hero-base{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);gap:28px 72px;align-items:end;
-  margin-top:44px;padding:28px 0 48px;border-top:1px solid var(--ink)}
-.hero-base .more{margin-top:14px}
-.hero-base .cta-row{margin-top:0;flex-direction:column;align-items:stretch}
-
-/* ---------- sections: the kicker in the margin, the matter on the right ---------- */
-.section{border-top:var(--rule) solid var(--ink);padding:32px 0 72px}
-.section.tight{padding-bottom:64px}
-.sec{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,3fr);gap:24px 64px;align-items:start}
-.sec > .kicker{position:sticky;top:24px}
-
-/* explanations fold behind a square plus */
-.more{margin:12px 0 0;max-width:62ch}
-.more summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;padding:4px 0}
+/* explanations fold behind a round plus */
+.more{margin:14px 0 0;max-width:62ch}
+.more summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;padding:4px 0;border-radius:4px}
 .more summary::-webkit-details-marker{display:none}
-.more summary::before{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;border:1.5px solid var(--ink);font-size:14px;font-weight:500;line-height:1;flex:none}
-.more[open] summary::before{content:"−"}
-.more summary:hover{color:var(--bleu)}
-.more summary:hover::before{border-color:var(--bleu)}
+.more summary::before{content:"+";display:inline-grid;place-items:center;width:20px;height:20px;border:1.5px solid var(--ink);border-radius:50%;
+  font-family:var(--mono);font-size:12px;font-weight:500;line-height:1;flex:none}
+.more[open] > summary::before{content:"−"}
+.more summary:hover::before{background:var(--ink);color:var(--paper)}
 .more > :not(summary){margin-top:10px}
 .more p{color:var(--ink-2);font-size:16px;margin:0 0 .8em}
 .more p:last-child{margin-bottom:0}
-.more summary.kicker-sum{font-size:clamp(28px,3vw,40px);line-height:1;font-weight:700;font-stretch:88%;letter-spacing:-.02em}
-.more summary.kicker-sum::before{width:26px;height:26px;font-size:18px}
 
-/* ---------- the index of offers ---------- */
-.jobs-bar{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
-.jobs-count{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.jobs-filters,.chips{display:flex;flex-wrap:wrap;gap:0 24px;align-items:center;margin-top:18px;border-bottom:1px solid var(--ink)}
-.chip{position:relative;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;padding:10px 0;font:inherit;font-size:15px;font-weight:600;color:var(--ink-2);cursor:pointer;border-radius:0}
-.chip:hover{color:var(--ink)}
-.chip[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--bleu)}
-.chip:has(input:checked){color:var(--ink);border-bottom-color:var(--bleu)}
-.chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
-/* the same two states without :has(), through the sibling span */
-.chip input:checked + span{color:var(--ink);box-shadow:0 3px 0 var(--bleu)}
-.chip input:focus-visible + span{outline:3px solid var(--bleu);outline-offset:3px}
-.jobs-select{margin-left:auto;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;background:transparent;padding:10px 22px 10px 0;border-radius:0;
-  font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;-webkit-appearance:none;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23141414' stroke-width='1.6'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right center;background-size:12px;max-width:100%}
-.job{display:grid;grid-template-columns:104px minmax(0,1fr) auto;grid-template-areas:"side main months" "side main act";
-  gap:8px 36px;padding:26px 0 28px;border-bottom:1px solid var(--hair);align-items:start}
-.job:hover h3{color:var(--bleu)}
-.job-side{grid-area:side;display:flex;flex-direction:column;gap:6px;padding-top:6px}
-.job-n{font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+/* ---------- masthead ---------- */
+.site-head{background:var(--paper);border-bottom:1px solid var(--line);position:relative;z-index:30}
+.head-row{display:flex;align-items:center;gap:36px;height:72px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:500;letter-spacing:-.015em;white-space:nowrap;border-radius:4px}
+.brand .brandword{font-weight:800;font-stretch:85%}
+/* two tickets under the rail, the second printed blue */
+.mark{width:30px;height:30px;flex:none}
+.mark .mk-rail{fill:var(--ink)}
+.mark .mk-t{fill:var(--paper);stroke:var(--ink);stroke-width:1.8;stroke-linejoin:round}
+.mark .mk-b{fill:var(--bleu)}
+.nav{display:flex;gap:30px}
+.nav a{position:relative;font-size:15px;font-weight:500;padding:8px 0}
+.nav a:hover{color:var(--ink-2)}
+/* the page you are on is held by a ball, as a ticket on the rail */
+.nav a[aria-current="page"]::after{content:"";position:absolute;left:50%;bottom:-6px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--bleu)}
+.head-tools{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tbtn{height:38px;min-width:38px;padding:0 12px;border:1.5px solid var(--ink-3);border-radius:999px;background:var(--paper);color:var(--ink);
+  font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.tbtn:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.tbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.menu{display:none}
+
+/* ---------- the head of the home page: the line, and the rail drawn beside it ---------- */
+.hero{padding:80px 0 96px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px 56px;align-items:end}
+.hero .eyebrow{margin-bottom:26px}
+.hero .lead{margin-top:30px}
+.hero .cta-row{margin-top:32px}
+.hero-art{align-self:center;color:var(--ink)}
+.pass-drawing{width:100%;height:auto;overflow:visible}
+
+/* ---------- the head of every other page ---------- */
+.page-hero{padding:72px 0 80px}
+.page-hero .eyebrow{margin-bottom:24px}
+.page-hero .display + .lead,.page-hero .lead + .job-facts{margin-top:28px}
+.page-hero .cta-row{margin-top:32px}
+.page-hero .more{margin-top:18px}
+
+/* ---------- sections: a hairline between each, and air ---------- */
+.section{padding:96px 0 104px}
+.section + .section,.page-hero + .section:not(.tight){border-top:1px solid var(--line)}
+.section > .wrap > .kicker{margin-bottom:44px}
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px 64px;align-items:start}
+.split > .kicker,.section > .split > .kicker{margin:0}
+.split-head .lead{margin-top:18px;max-width:26ch}
+
+/* ---------- the pass: steel, a rail per row, a ball per ticket ---------- */
+.pass{background:var(--steel);padding:64px 0 96px;overflow:hidden;overflow:clip;isolation:isolate}
+.pass-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.jobs-count{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--ink-2)}
+.jobs-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:24px}
+.jobs-filters .chip{height:38px;padding:0 16px;border:1.5px solid var(--ink-3);border-radius:999px;background:var(--paper);color:var(--ink);
+  font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.jobs-filters .chip:hover{border-color:var(--ink)}
+.jobs-filters .chip[aria-pressed="true"]{background:var(--bleu);border-color:var(--bleu);color:var(--on-bleu)}
+/* "logé" is a toggle, not a kind: it carries its own ball, empty or lit */
+#jobsHousing{margin-left:8px}
+#jobsHousing::before{content:"";width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;flex:none}
+#jobsHousing[aria-pressed="true"]::before{background:currentColor}
+.jobs-select{margin-left:auto;height:38px;max-width:100%;padding:0 38px 0 16px;border:1.5px solid var(--ink-3);border-radius:999px;background-color:var(--paper);
+  font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);cursor:pointer;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317191E' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;background-size:12px}
+.jobs-select:hover{border-color:var(--ink)}
+
+.jobs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:48px 28px;margin-top:44px;align-items:start}
+.job,.jobs-empty,.form-hang,.offer-hang{position:relative;padding-top:11px}
+/* the rail: each ticket draws it across the whole band, so every row hangs from one continuous bar */
+.job::before,.jobs-empty::before,.form-hang::before,.offer-hang::before{content:"";position:absolute;top:0;left:-100vw;right:-100vw;height:20px;z-index:3;
+  background:linear-gradient(180deg,var(--rail-hi) 0,var(--rail-hi) 18%,var(--rail-mid) 52%,var(--rail-lo) 86%,var(--rail-mid) 100%);
+  box-shadow:0 0 0 1px rgba(var(--shadow),.28),0 8px 10px -6px rgba(var(--shadow),.32)}
+/* the steel ball that holds the ticket in the rail's groove */
+.job::after,.jobs-empty::after,.form-hang::after,.offer-hang::after{content:"";position:absolute;top:6px;left:50%;width:12px;height:12px;margin-left:-6px;z-index:4;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#FFFFFF 0,#E3E6EA 32%,#9EA5AE 78%,#7D848E 100%);box-shadow:0 0 0 1px rgba(var(--shadow),.45),0 2px 2px rgba(var(--shadow),.25)}
+.hang{position:relative;z-index:2;filter:drop-shadow(0 1px 1px rgba(var(--shadow),.16)) drop-shadow(0 12px 14px rgba(var(--shadow),.10))}
+/* the paper: no radius, the bottom torn off the roll */
+.slip{position:relative;background:var(--paper);padding:26px 22px 34px;
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%}
+
+/* what the printer prints on a ticket: all of it in ink */
+.job-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:14px;margin-bottom:16px;
+  background:linear-gradient(90deg,var(--perf) 55%,transparent 0) bottom left/7px 1.5px repeat-x}
 .job .tag{color:var(--ink);font-weight:500}
-.job-where{margin:0;font-size:14px;line-height:1.35}
-.job-pub{margin:0;font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--ink-2)}
-.job-main{grid-area:main;min-width:0}
-.job-main h3{font-size:clamp(24px,2.6vw,34px);line-height:1.02;font-weight:700;font-stretch:88%;letter-spacing:-.025em;margin:0 0 6px}
-.job-link:hover{color:var(--bleu)}
-.job-rest{font-size:17px;margin:0 0 14px}
-/* the distinction's place beside every restaurant name: a dotted ring while empty, the blue star once earned */
-.distinction{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;vertical-align:-3px;border:1.5px solid var(--bleu);border-radius:50%;color:var(--bleu);font-size:11px;line-height:1}
-.distinction.empty{border:1.5px dotted var(--hair);color:transparent}
-/* the facts a candidate decides on, as labelled figures: dates, hours, pay, housed */
-.job-facts{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0;max-width:72ch}
-.fact{margin:0}
-.fact dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0 0 3px}
-.fact dd{margin:0;font-size:16px;font-weight:500;line-height:1.3;font-variant-numeric:tabular-nums}
-.job .more{margin-top:12px}
+.job-pub{margin:0;font-family:var(--mono);font-size:11.5px;line-height:1.4;color:var(--ink-2);text-align:right}
+.job h3{font-size:24px;line-height:1.08;letter-spacing:-.02em;margin:0 0 8px}
+.job-link{text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:4px}
+.job-link:hover{text-decoration-color:var(--ink)}
+.job-rest{font-size:16px;font-weight:500;line-height:1.35;margin:0}
+.job-where{margin:4px 0 0;font-size:14.5px;line-height:1.4}
+/* the facts a candidate decides on, printed as the lines of a ticket: label left, figure right */
+.job-facts{margin:18px 0 0;padding-top:12px;background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
+.fact{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:5px 0;margin:0}
+.fact dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);flex:none}
+.fact dd{margin:0;font-family:var(--mono);font-size:13px;font-weight:500;line-height:1.45;text-align:right;min-width:0;overflow-wrap:break-word}
+/* the months the offer covers, January to December */
+.job-months{display:flex;gap:2px;margin:14px 0 0;font-family:var(--mono);font-size:10px;font-weight:500}
+.job-months i{flex:1 1 0;font-style:normal;height:22px;display:grid;place-items:center;color:var(--ink-2);background:var(--wash)}
+.job-months i.on{color:var(--paper);background:var(--ink)}
+.job .more{margin-top:14px}
 .job .more summary{font-size:14px}
-/* the months an offer covers: J to D, the lit ones in ink — the one thing only a season board shows */
-.job-months{grid-area:months;justify-self:end;display:flex;gap:2px;margin:6px 0 0;font-family:var(--mono);font-size:11px}
-.job-months i{font-style:normal;width:15px;height:22px;display:grid;place-items:center;color:var(--ink-2);border-bottom:1px solid var(--hair)}
-.job-months i.on{color:var(--paper);background:var(--ink);border-bottom-color:var(--ink)}
-.job-act{grid-area:act;justify-self:end;align-self:end;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.job-act .btn{min-width:250px}
-.jobs-empty{padding:44px 0;display:flex;gap:24px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--hair)}
-.jobs-empty p{margin:0;max-width:48ch;font-size:19px;font-weight:500;line-height:1.35}
+.job .more p{font-size:15px}
+.job-act{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.job-act .btn{width:100%}
+.job-act .link{align-self:center;font-family:var(--mono);font-size:13px}
+/* the distinction's place beside every restaurant: a dotted ring while empty, the blue rosette once earned */
+.distinction{display:inline-block;width:18px;height:18px;margin-left:8px;vertical-align:-3px}
+.distinction svg{width:18px;height:18px}
+.distinction.empty{border:1.5px dotted var(--ink-3);border-radius:50%;width:16px;height:16px;vertical-align:-2px}
+.sl-o{fill:var(--bleu)}
+.sl-i{fill:none;stroke:var(--paper);stroke-width:1.3}
 
-/* ---------- three numbered columns: a real sequence, read in order ---------- */
-.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:0 40px;border-top:1px solid var(--ink)}
-.step{padding:18px 0 8px}
-.step-n{display:block;font-size:clamp(64px,7vw,104px);line-height:.85;font-weight:800;font-stretch:75%;letter-spacing:-.04em;margin:0 0 18px}
-.step h3{font-size:22px;margin:0 0 8px}
-.step p{color:var(--ink-2);margin:0;font-size:16px}
+.jobs-empty{grid-column:1/-1;justify-self:start;width:min(100%,540px)}
+.jobs-empty .slip{padding:30px 26px 38px}
+.jobs-empty p{margin:0 0 24px;font-size:19px;line-height:1.45;font-weight:500;letter-spacing:-.008em}
 
-/* ---------- what an offer says: an index of four ---------- */
-.facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:22px}
-.facts-grid .more{margin:0;max-width:none;border-top:1px solid var(--ink);padding:14px 0 18px}
-.facts-grid .more summary{font-size:20px;font-weight:700;font-stretch:90%;letter-spacing:-.01em}
+/* ---------- a real sequence: a line and three balls, read left to right ---------- */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 44px;position:relative}
+.steps::before{content:"";position:absolute;top:7px;left:7px;right:calc((100% - 88px) / 3 - 7px);height:1.5px;background:var(--ink)}
+.step{position:relative;padding-top:40px}
+.step::before{content:"";position:absolute;top:0;left:0;width:15px;height:15px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#FFFFFF 0,#E3E6EA 34%,#A9B0B8 100%);box-shadow:0 0 0 1.5px var(--ink)}
+.step h3{margin:0 0 8px}
+.step p{color:var(--ink-2);margin:0;font-size:16px;max-width:34ch}
 
-/* ---------- for restaurants: three columns, one figure each ---------- */
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
-.tier{padding:18px 40px 28px 0;display:flex;flex-direction:column}
-.tier + .tier{padding-left:40px;border-left:1px solid var(--hair)}
+/* ---------- what an offer says: four folds ---------- */
+.facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+.facts-grid .more{margin:0;max-width:none;border-top:1px solid var(--line);padding:16px 0 20px}
+.facts-grid .more summary{font-size:19px;letter-spacing:-.01em}
+
+/* ---------- for restaurants: three columns, a hairline between them ---------- */
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
+.tier{padding:24px 32px 32px;display:flex;flex-direction:column}
+.tier:first-child{padding-left:0}
 .tier:last-child{padding-right:0}
-.tier .name{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 18px;font-weight:500}
-.tier .price{font-size:clamp(40px,4.6vw,64px);line-height:.95;font-weight:800;font-stretch:80%;letter-spacing:-.03em;margin:0}
-.tier.featured .price{color:var(--bleu)}
-.tier .per{color:var(--ink-2);font-size:15px;margin:8px 0 0}
-.tier .note{margin:18px 0 22px;font-size:16px;line-height:1.45;color:var(--ink)}
+.tier + .tier{border-left:1px solid var(--line)}
+.tier .name{font-size:15px;font-weight:600;color:var(--ink-2);margin:0 0 16px}
+.tier .price{font-size:clamp(34px,3.6vw,48px);line-height:1;font-weight:800;font-stretch:85%;letter-spacing:-.03em;margin:0}
+.tier .per{font-size:15px;color:var(--ink-2);margin:10px 0 0}
+.tier .note{margin:18px 0 26px;font-size:16px;line-height:1.5}
 .tier .btn{margin-top:auto;align-self:flex-start}
-.tiers + .more{margin-top:22px}
+.tiers + .more{margin-top:24px}
 .price-note{margin:0}
 
-/* ---------- the facts list ---------- */
-.facts{list-style:none;padding:0;margin:14px 0 0;max-width:70ch}
-.facts li{padding:14px 0;border-top:1px solid var(--hair);color:var(--ink-2);font-size:16px}
-.facts li:last-child{border-bottom:1px solid var(--hair)}
-.facts li::before{content:"—";margin-right:12px;color:var(--ink)}
+/* ---------- the distinction: a modest mark beside its text ---------- */
+.dist{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 28px;align-items:start}
+.dist > div:last-child{max-width:44rem}
+.seal-wrap{padding-top:2px}
+.seal-art{width:clamp(44px,4.6vw,56px);height:auto}
+.dist .lead{margin-top:18px}
 
-/* ---------- the form: every field a box on the paper ---------- */
-.jobs-form{margin-top:0}
-.f-sec{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,3fr);gap:16px 64px;padding:26px 0 30px;border-top:1px solid var(--ink)}
-.f-sec:first-child{border-top:0;padding-top:0}
-.f-sec > .f-label{margin-top:8px}
-.f-sec .chips{margin-top:0}
-.f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 24px}
-.jobs-form label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;min-width:0}
-.jobs-form input:not([type="checkbox"]):not([type="radio"]),.jobs-form textarea{font:inherit;font-size:16px;padding:0 12px;height:46px;width:100%;
-  border:2px solid var(--ink);border-radius:0;background:var(--paper);color:var(--ink);-webkit-appearance:none;appearance:none}
-.jobs-form textarea{height:auto;min-height:130px;padding:10px 12px;resize:vertical;line-height:1.45}
+/* ---------- in practice ---------- */
+.more summary.kicker-sum{font-size:clamp(28px,3.2vw,42px);line-height:1.02;font-weight:700;font-stretch:88%;letter-spacing:-.02em;gap:16px}
+.more summary.kicker-sum::before{width:32px;height:32px;font-size:16px}
+.facts{list-style:none;padding:0;margin:22px 0 0;max-width:70ch}
+.facts li{padding:14px 0 14px 26px;border-top:1px solid var(--line);color:var(--ink-2);font-size:16px;position:relative}
+.facts li:last-child{border-bottom:1px solid var(--line)}
+.facts li::before{content:"";position:absolute;left:2px;top:23px;width:7px;height:7px;border-radius:50%;background:var(--ink)}
+
+/* ---------- the posting form: the order pad, hung on the pass ---------- */
+.pass-form{padding:56px 0 96px}
+.form-hang{max-width:960px}
+.form-hang .slip{padding:40px 44px 52px}
+.jobs-form{margin:0}
+.f-sec{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,4fr);gap:14px 40px;padding:26px 0 30px;
+  background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
+.f-sec:first-child{background:none;padding-top:0}
+.f-sec > .f-label{margin-top:10px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .chip{position:relative;display:inline-flex;cursor:pointer}
+.chips .chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.chips .chip span{display:inline-flex;align-items:center;height:40px;padding:0 18px;border:1.5px solid var(--ink-3);border-radius:999px;font-size:15px;font-weight:600;background:var(--paper)}
+.chips .chip:hover span{border-color:var(--ink)}
+.chips .chip input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chips .chip input:focus-visible + span{outline:2.5px solid var(--bleu);outline-offset:3px}
+.f-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 20px}
+.jobs-form label{display:flex;flex-direction:column;gap:7px;font-size:14px;font-weight:600;min-width:0}
+.jobs-form input:not([type="checkbox"]):not([type="radio"]),.jobs-form textarea{font:inherit;font-size:16px;font-weight:400;padding:0 14px;height:48px;width:100%;
+  border:1.5px solid var(--ink-3);border-radius:8px;background:var(--paper);color:var(--ink);-webkit-appearance:none;appearance:none;min-width:0}
+.jobs-form textarea{height:auto;min-height:132px;padding:12px 14px;resize:vertical;line-height:1.5}
 .jobs-form input[type="date"],.jobs-form input[type="number"],.jobs-form input[name="dept"],.jobs-form input[type="tel"]{font-family:var(--mono);font-size:15px}
-.jobs-form input:focus-visible,.jobs-form textarea:focus-visible{outline:3px solid var(--bleu);outline-offset:2px;border-color:var(--bleu)}
-.jobs-form ::placeholder{color:var(--ink-2);opacity:1}
-.f-check{flex-direction:row;align-items:flex-start;gap:12px;font-weight:500;font-size:15px}
-.f-check input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--bleu);flex:none}
-.f-text{margin-top:0}
-.f-count{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-weight:400;letter-spacing:.06em}
-.f-note{margin:14px 0 0;max-width:62ch}
+.jobs-form input:hover,.jobs-form textarea:hover{border-color:var(--ink)}
+.jobs-form input:focus-visible,.jobs-form textarea:focus-visible{outline:2.5px solid var(--bleu);outline-offset:2px;border-color:var(--ink)}
+.jobs-form ::placeholder{color:var(--ink-3);opacity:1}
+.jobs-form .f-check{flex-direction:row;align-items:flex-start;gap:12px;font-weight:500;font-size:15px;line-height:1.45}
+.jobs-form .f-grid .f-check{align-self:end;min-height:48px;align-items:center}
+.f-check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--ink);flex:none}
+.f-count{font-family:var(--mono);font-size:12px;color:var(--ink-2);font-weight:400;letter-spacing:.02em;align-self:flex-end}
+.f-note{margin:16px 0 0;max-width:62ch}
+.f-lawful{margin-top:22px}
+.f-send{margin-top:28px;gap:18px}
 .note{font-size:15px;color:var(--ink-2);margin:0;max-width:40ch}
-.note.ok{color:var(--bleu);font-weight:600;margin-top:18px}
-.jobs-form .cta-row{flex-direction:row;align-items:center;gap:20px;flex-wrap:wrap}
+.note.ok{color:var(--ink);font-weight:600;margin-top:20px;padding-left:22px;position:relative}
+.note.ok::before{content:"";position:absolute;left:0;top:6px;width:11px;height:11px;border-radius:50%;background:var(--ink)}
 
-/* ---------- contact: the address is the only object ---------- */
-.address{margin:26px 0 0;padding-top:24px;border-top:var(--rule) solid var(--ink)}
-.address .mail{display:inline-block;font-size:clamp(28px,4.6vw,64px);font-weight:700;font-stretch:85%;letter-spacing:-.025em;line-height:1;overflow-wrap:anywhere}
-.address .mail:hover{color:var(--bleu)}
+/* ---------- contact: the address is the object ---------- */
+.address{margin:32px 0 0}
+.address .mail{display:inline-block;font-size:clamp(28px,4.6vw,56px);font-weight:700;font-stretch:88%;letter-spacing:-.025em;line-height:1.1;overflow-wrap:anywhere;
+  text-decoration:underline;text-decoration-color:var(--ink-3);text-decoration-thickness:3px;text-underline-offset:8px}
+.address .mail:hover{text-decoration-color:var(--ink)}
 
-/* ---------- legal: prose, the titles printed small ---------- */
-.prose{max-width:72ch}
-.prose h2{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin:34px 0 12px;padding-top:14px;border-top:1px solid var(--ink)}
+/* ---------- legal: prose, a hairline over each title ---------- */
+.prose{max-width:70ch}
+.prose h2{font-size:21px;line-height:1.2;font-stretch:90%;letter-spacing:-.012em;margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
 .prose > div > h2:first-child{margin-top:0}
-.prose p{font-size:17px;line-height:1.55}
-.prose .link{color:var(--bleu);text-decoration-color:var(--bleu)}
+.prose p{font-size:17px;line-height:1.6}
+.page-hero + .section.tight{padding-top:0}
+
+/* ---------- an offer's own page (tools/build.py) ---------- */
+.offer-page{padding-bottom:56px}
+.offer-page .lead{max-width:none}
+.offer-hang{max-width:640px}
+.offer-hang .slip{padding:30px 30px 40px}
+.offer-hang .job-facts{margin-top:0;padding-top:0;background:none}
+.offer-hang .fact dt{font-size:11.5px}
+.offer-hang .fact dd{font-size:14.5px}
+.offer-text{margin:20px 0 0;padding-top:18px;color:var(--ink-2);font-size:16px;background:linear-gradient(90deg,var(--perf) 55%,transparent 0) top left/7px 1.5px repeat-x}
+.offer-hang .cta-row{margin-top:26px}
 
 /* ---------- the colophon ---------- */
-.site-foot{border-top:var(--rule) solid var(--ink);padding:30px 0 22px;background:var(--wash)}
+.site-foot{padding:48px 0 28px;border-top:1px solid var(--line)}
+main:has(> .pass:last-child) + .site-foot{border-top:0}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
 .foot-grid nav,.foot-links{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-.foot-grid a:not(.brand){font-size:15px;font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--hair)}
+.foot-grid a:not(.brand){font-size:15px;font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--line)}
 .foot-grid a:not(.brand):hover{text-decoration-color:var(--ink)}
-.foot-grid .small{margin:12px 0 0;max-width:36ch}
-.foot-bottom{display:flex;justify-content:space-between;gap:16px;margin-top:30px;padding-top:14px;border-top:1px solid var(--ink);
-  font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;flex-wrap:wrap}
+.foot-grid .small{margin:14px 0 0;max-width:36ch}
+.foot-bottom{display:flex;justify-content:space-between;gap:16px;margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:14px;color:var(--ink-2);flex-wrap:wrap}
+.foot-bottom a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--line)}
+.foot-bottom a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+
+/* ---------- motion: nothing on load; a ticket under the pointer lifts 2px ---------- */
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+  .btn,.tbtn,.chip span,.jobs-filters .chip,.nav a,.link,.job-link,.more summary::before,.address .mail,.jobs-form input,.jobs-form textarea,.foot-grid a,.foot-bottom a{transition:background-color .15s,color .15s,border-color .15s,text-decoration-color .15s}
+}
+@media (prefers-reduced-motion:no-preference) and (hover:hover){
+  .job .hang{transition:transform .2s var(--ease),filter .2s var(--ease)}
+  .job:hover .hang{transform:translateY(-2px);filter:drop-shadow(0 1px 1px rgba(var(--shadow),.18)) drop-shadow(0 16px 18px rgba(var(--shadow),.14))}
+}
 
 /* ---------- responsive ---------- */
-/* between the phone menu and the full masthead the row cannot hold the button too */
-@media (max-width:840px){
+@media (max-width:1040px){
   .head-tools .btn{display:none}
 }
 @media (max-width:960px){
-  .sec,.f-sec{grid-template-columns:1fr;gap:20px}
-  .sec > .kicker{position:static}
-  .steps{grid-template-columns:1fr;gap:0}
-  .step{border-top:1px solid var(--hair);padding:18px 0 22px}
-  .step:first-child{border-top:0}
-  .step-n{font-size:56px;margin-bottom:10px}
-  .tiers{grid-template-columns:1fr}
-  .tier{padding:18px 0 26px}
-  .tier + .tier{padding-left:0;border-left:0;border-top:1px solid var(--hair)}
+  .hero{padding:56px 0 68px}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-art{max-width:520px;width:100%}
+  .split{grid-template-columns:1fr;gap:26px}
+  .section{padding:72px 0 80px}
   .facts-grid{grid-template-columns:1fr}
-  .f-grid{grid-template-columns:1fr 1fr}
-  .foot-grid{grid-template-columns:1fr;gap:20px}
+  .tiers{grid-template-columns:1fr}
+  .tier,.tier:first-child,.tier:last-child{padding:22px 0 28px}
+  .tier + .tier{border-left:0;border-top:1px solid var(--line)}
+  .f-sec{grid-template-columns:1fr;gap:14px}
+  .f-sec > .f-label{margin-top:0}
+  .f-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-grid > div:first-child{grid-column:1/-1}
+}
+@media (max-width:760px){
+  /* the sequence turns: balls down a vertical line */
+  .steps{grid-template-columns:1fr;gap:30px}
+  .steps::before{display:none}
+  .step{padding:0 0 0 38px}
+  .step::before{top:5px}
+  .step:not(:last-child)::after{content:"";position:absolute;left:7px;top:20px;bottom:-35px;width:1.5px;background:var(--ink)}
 }
 @media (max-width:720px){
   .wrap{padding:0 16px}
-  .head-row{height:60px;gap:16px}
-  .brand{font-size:20px}
-  .nav{display:none;position:absolute;left:0;right:0;top:66px;z-index:20;flex-direction:column;gap:0;background:var(--paper);
-    border-bottom:var(--rule) solid var(--ink);padding:4px 16px 8px;margin:0}
+  .head-row{height:62px;gap:12px}
+  .brand{font-size:19px}
+  .mark{width:28px;height:28px}
+  .nav{display:none;position:absolute;left:0;right:0;top:100%;z-index:40;flex-direction:column;gap:0;background:var(--paper);
+    border-bottom:1px solid var(--line);box-shadow:0 14px 20px -12px rgba(var(--shadow),.18);padding:6px 16px 12px;margin:0}
   .nav.open{display:flex}
-  .nav a{padding:14px 0;border-bottom:1px solid var(--hair)}
-  .nav a[aria-current="page"]{border-bottom-color:var(--hair)}
+  .nav a{padding:14px 0;border-bottom:1px solid var(--line);font-size:17px}
+  .nav a:last-child{border-bottom:0}
+  .nav a[aria-current="page"]::after{left:auto;right:4px;bottom:auto;top:50%;margin:-3.5px 0 0}
   .menu{display:inline-flex}
-  .head-tools .btn{display:none}
-  .page-hero{padding:24px 0 36px}
-  .page-hero .eyebrow{margin-bottom:22px}
-  .hero-base{grid-template-columns:1fr;gap:22px;margin-top:28px;padding:22px 0 36px}
-  .section{padding:26px 0 52px}
+  .hero{padding:40px 0 56px}
+  .hero .lead{margin-top:22px}
+  .hero .cta-row,.page-hero .cta-row{flex-direction:column;align-items:stretch}
+  .page-hero{padding:44px 0 56px}
+  .section{padding:60px 0 68px}
+  .section > .wrap > .kicker{margin-bottom:30px}
+  .dist{gap:0 18px}
+  .seal-art{width:40px}
+  .pass{padding:44px 0 64px}
+  .jobs-filters .chip{padding:0 14px}
+  #jobsHousing{margin-left:0}
   .jobs-select{margin-left:0;width:100%}
-  .job{grid-template-columns:1fr auto;grid-template-areas:"side side" "main main" "months months" "act act";gap:8px 16px;padding:22px 0}
-  .job-side{flex-direction:row;align-items:baseline;gap:12px;flex-wrap:wrap;padding-top:0}
-  .job-where,.job-pub{width:100%}
-  .job-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
-  .job-months{justify-self:start;margin-top:2px}
-  .job-act{justify-self:stretch;align-items:stretch;margin-top:8px}
-  .job-act .btn{min-width:0}
-  .jobs-empty p{font-size:17px}
+  .jobs-list{grid-template-columns:1fr;gap:40px;margin-top:32px}
+  .slip{padding:24px 18px 32px}
+  .form-hang .slip{padding:28px 18px 40px}
+  .offer-hang .slip{padding:26px 18px 36px}
+  .offer-hang .cta-row{flex-direction:column;align-items:stretch}
   .f-grid{grid-template-columns:1fr}
-  .jobs-form .cta-row{flex-direction:column;align-items:stretch}
+  .f-send{flex-direction:column;align-items:stretch}
+  .foot-grid{grid-template-columns:1fr;gap:22px}
 }

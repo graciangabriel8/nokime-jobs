@@ -46,7 +46,9 @@
     for (var k = 1; k <= 12; k++) out += "<i" + (on[k] ? ' class="on"' : "") + ">" + L.charAt(k - 1) + "</i>";
     return '<p class="job-months" aria-hidden="true">' + out + "</p>";
   }
-  /* the facts a candidate decides on, each under its printed label */
+  /* the distinction, once earned: a blue rosette (the same drawing as tools/build.py and the home page) */
+  var SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg>';
+  /* the facts a candidate decides on, printed as ticket lines: label, then figure */
   function fact(cls, label, value) { return '<div class="fact ' + cls + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd></div>"; }
   function facts(o) {
     return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
@@ -67,23 +69,25 @@
       return (state.kind === "all" || o.kind === state.kind) && (state.region === "all" || regionOf(o) === state.region) && (!state.housing || o.housing);
     });
     var count = $("#jobsCount"); if (count) count.textContent = OFFERS.length ? t(rows.length === 1 ? "jobsCount1" : "jobsCountN", { n: rows.length }) : "";
-    if (!rows.length) {
-      list.innerHTML = '<div class="jobs-empty"><p>' + esc(OFFERS.length ? t("jobsNoneFiltered") : t("jobsEmpty")) + '</p><a class="btn primary" href="' + esc(list.getAttribute("data-post-href") || "../publier/") + '"><span>' + esc(t("jobsPost")) + '</span><span class="arrow" aria-hidden="true">→</span></a></div>';
+    if (!rows.length) {   /* the rail stays up, with one blank ticket on it */
+      list.innerHTML = '<div class="jobs-empty"><div class="hang"><div class="slip"><p>' + esc(OFFERS.length ? t("jobsNoneFiltered") : t("jobsEmpty")) + '</p><a class="btn primary" href="' + esc(list.getAttribute("data-post-href") || "../publier/") + '"><span>' + esc(t("jobsPost")) + '</span><span class="arrow" aria-hidden="true">→</span></a></div></div></div>';
       return;
     }
     var base = list.getAttribute("data-offer-base");
-    list.innerHTML = rows.map(function (o, i) {
-      return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '">' +
-        '<div class="job-side"><span class="job-n" aria-hidden="true">' + (i < 9 ? "0" : "") + (i + 1) + '</span><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
-          '<p class="job-where">' + esc(o.city) + '<span class="muted"> · ' + esc(regionOf(o)) + "</span></p>" +
+    /* one ticket per offer, held on the rail: kind and date printed at the top, then the role, the house,
+       the facts as ticket lines, the months, and the one action */
+    list.innerHTML = rows.map(function (o) {
+      return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '"><div class="hang"><div class="slip">' +
+        '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
           (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
-        '<div class="job-main"><h3>' + (o.demo || !base ? esc(o.role) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(o.role) + "</a>") + "</h3>" +
-          '<p class="job-rest">' + esc(o.restaurant) + (o.distinction ? '<span class="distinction" title="' + esc(t("distinctionTitle")) + '">✦</span>' : '<span class="distinction empty" aria-hidden="true"></span>') + "</p>" +
-          facts(o) +
-          (o.text ? '<details class="more"><summary>' + esc(t("more")) + "</summary><p>" + esc(o.text) + "</p></details>" : "") + "</div>" +
+        "<h3>" + (o.demo || !base ? esc(o.role) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(o.role) + "</a>") + "</h3>" +
+        '<p class="job-rest">' + esc(o.restaurant) + (o.distinction ? '<span class="distinction" role="img" aria-label="' + esc(t("distinctionTitle")) + '" title="' + esc(t("distinctionTitle")) + '">' + SEAL + "</span>" : '<span class="distinction empty" aria-hidden="true"></span>') + "</p>" +
+        '<p class="job-where">' + esc(o.city) + '<span class="muted"> · ' + esc(regionOf(o)) + "</span></p>" +
+        facts(o) +
         monthStrip(o) +
+        (o.text ? '<details class="more"><summary>' + esc(t("more")) + "</summary><p>" + esc(o.text) + "</p></details>" : "") +
         '<div class="job-act"><a class="btn primary" href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
-          ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></article>";
+          ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></div></div></article>";
     }).join("");
   }
 
