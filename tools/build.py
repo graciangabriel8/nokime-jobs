@@ -28,6 +28,20 @@ DEPT = {d: r for r, ds in REGIONS.items() for d in ds.split()}
 def fr_date(iso):
     d = datetime.date.fromisoformat(iso); return d.strftime("%-d ") + ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][d.month - 1] + d.strftime(" %Y")
 SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg>'   # the distinction's rosette, as js/jobs.js draws it
+I18N_FR = (root / "js/i18n.js").read_text(encoding="utf-8").split("\n  en: {")[0]
+def fr_str(k): return re.search(r'\b%s: "([^"]*)"' % k, I18N_FR).group(1)   # the pay wording has one home, the fr block of js/i18n.js
+def past_two_months(a, b):   # as js/jobs.js: two calendar months, the day after the same date two months on
+    d = datetime.date.fromisoformat(a); y, mo = divmod(d.month - 1 + 2, 12); y += d.year; mo += 1
+    last = (datetime.date(y + mo // 12, mo % 12 + 1, 1) - datetime.timedelta(days=1)).day
+    return datetime.date.fromisoformat(b) >= datetime.date(y, mo, min(d.day, last))
+def allowance_due(o):   # as js/jobs.js: past two months, or 309 hours reachable (hours a week, else the form's maximum 48, per week begun)
+    days = (datetime.date.fromisoformat(o["end"]) - datetime.date.fromisoformat(o["start"])).days + 1
+    return days > 0 and (past_two_months(o["start"], o["end"]) or (int(o.get("hours") or 0) or 48) * -(-days // 7) > 308)
+def pay_of(o): return "" if o.get("payHidden") else str(o.get("pay") or "").strip()
+def pay_fact(o):   # the pay is always a fact: the restaurant's words, or "Non communiquée" and the legal floor where there is one
+    if pay_of(o): return '<div class="fact"><dt>Rémunération</dt><dd>%s</dd></div>' % html.escape(pay_of(o))
+    note = (fr_str("payNote_stage") if allowance_due(o) else "") if o["kind"] == "stage" else fr_str("payNote_" + o["kind"])
+    return '<div class="fact%s"><dt>Rémunération</dt><dd>%s</dd>%s</div>' % (" noted" if note else "", html.escape(fr_str("payUndisclosed")), '<dd class="fact-note">%s</dd>' % html.escape(note) if note else "")
 def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"')
 
 odir = root / "o"
@@ -36,8 +50,8 @@ for old in odir.glob("*/"):
 for o in live:
     e = html.escape
     title = "%s — %s, %s · Nokime Jobs" % (o["role"], o["restaurant"], o["city"])
-    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), o.get("pay", ""), ", logé" if o.get("housing") and "logé" not in o.get("pay", "") else "")
-    facts = "".join('<div class="fact"><dt>%s</dt><dd>%s</dd></div>' % (k, html.escape(v)) for k, v in [("Dates", "du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))), ("Heures", ("%s h par semaine" % o["hours"]) if o.get("hours") else ""), ("Rémunération", o.get("pay", "")), ("Logement", "Logé" if o.get("housing") else "")] if v)
+    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "")
+    facts = "".join('<div class="fact"><dt>%s</dt><dd>%s</dd></div>' % (k, html.escape(v)) for k, v in [("Dates", "du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))), ("Heures", ("%s h par semaine" % o["hours"]) if o.get("hours") else "")] if v) + pay_fact(o) + ('<div class="fact"><dt>Logement</dt><dd>Logé</dd></div>' if o.get("housing") else "")
     ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": (o.get("text") or desc), "datePosted": o.get("published", today),
           "validThrough": (o.get("expires") or o["end"]) + "T23:59:59", "employmentType": EMP[o["kind"]],
           "hiringOrganization": {"@type": "Organization", "name": o["restaurant"]},

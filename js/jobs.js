@@ -37,11 +37,22 @@
   /* the distinction, once earned: a blue rosette (the same drawing as tools/build.py and the home page) */
   var SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg>';
   /* the facts a candidate decides on: a small label above each value */
-  function fact(cls, label, value) { return '<div class="fact ' + cls + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd></div>"; }
+  function fact(cls, label, value, note) { return '<div class="fact ' + cls + (note ? " noted" : "") + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd>" + (note ? '<dd class="fact-note">' + esc(note) + "</dd>" : "") + "</div>"; }
+  /* the pay is always a fact: the restaurant's words, or "not disclosed" and, where the law sets a floor, one line saying so
+     (a stage owes the statutory allowance beyond two consecutive months or from its 309th hour, so its line shows only when
+     the dates run past two months or the hours can reach 309: hours a week, or the form's maximum of 48 when not given, per week begun) */
+  function pastTwoMonths(a, b) { var d = new Date(a + "T12:00:00"), day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + 2); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); return new Date(b + "T12:00:00") >= d; }
+  function allowanceDue(o) { var days = Math.round((new Date(o.end + "T12:00:00") - new Date(o.start + "T12:00:00")) / 864e5) + 1; return days > 0 && (pastTwoMonths(o.start, o.end) || (Number(o.hours) || 48) * Math.ceil(days / 7) > 308); }
+  function payFact(o) {
+    var pay = o.payHidden ? "" : String(o.pay || "").trim();
+    if (pay) return fact("pay", t("colPay"), esc(pay));
+    var note = o.kind === "stage" ? (o.start && o.end && allowanceDue(o) ? t("payNote_stage") : "") : (o.kind === "alternance" || o.kind === "saison") ? t("payNote_" + o.kind) : "";
+    return fact("pay", t("colPay"), esc(t("payUndisclosed")), note);
+  }
   function facts(o) {
     return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
       (o.hours ? fact("hours", t("colHours"), esc(t("jobsHours", { h: o.hours }))) : "") +
-      (o.pay ? fact("pay", t("colPay"), esc(o.pay)) : "") +
+      payFact(o) +
       (o.housing ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : "") + "</dl>";
   }
   function applyMail(o) {
@@ -99,15 +110,20 @@
       var kind = (form.querySelector("[name=kind]:checked") || {}).value || "";
       var lines = [
         ["Type", { stage: "Stage", alternance: "Alternance", saison: "Saison" }[kind] || kind], ["Restaurant", f("restaurant")], ["Ville", f("city")], ["Département", f("dept")],
-        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", f("pay")], ["Logement", f("housing")],
+        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", f("housing")],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
       var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
       location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
       var ok = $("#postSent"); if (ok) ok.hidden = false;
     });
-    var kindInputs = $$("[name=kind]", form), pay = form.elements.pay;
-    kindInputs.forEach(function (r) { r.addEventListener("change", function () { if (pay && !pay.value.trim() && r.value === "stage") pay.value = I18N.fr.payLegal; /* offers are French, whatever the reader's language */ }); });
+    var kindInputs = $$("[name=kind]", form), pay = form.elements.pay, payHidden = form.elements.payHidden, payKept = "";
+    kindInputs.forEach(function (r) { r.addEventListener("change", function () { if (pay && !pay.disabled && !pay.value.trim() && r.value === "stage") pay.value = I18N.fr.payLegal; /* offers are French, whatever the reader's language */ }); });
+    /* "do not show the pay": the field empties and locks; unticked, it comes back with what was typed */
+    if (pay && payHidden) payHidden.addEventListener("change", function () {
+      if (payHidden.checked) { payKept = pay.value; pay.value = ""; pay.disabled = true; } else { pay.disabled = false; pay.value = payKept; }
+    });
+    if (pay && payHidden && payHidden.checked) { payKept = pay.value; pay.value = ""; pay.disabled = true; }   /* a box the browser restored ticked */
     var txt = form.elements.text, cnt = $("#textCount");
     if (txt && cnt) { var upd = function () { cnt.textContent = txt.value.length + " / 300"; }; txt.addEventListener("input", upd); upd(); }
   }

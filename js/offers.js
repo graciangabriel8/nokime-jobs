@@ -4,7 +4,8 @@
 
    kind: "stage" | "alternance" | "saison"
    dept: the département number as a string ("74"); the région is derived.
-   housing: true when lodging is provided; pay: free text ("gratification légale", "1 900 € brut").
+   housing: true when lodging is provided; pay: free text ("gratification légale", "1 900 € brut"), optional:
+   empty, missing or with payHidden: true, the offer reads "Non communiquée" and, where the law sets one, the floor for its kind.
    distinction: null until the working-comfort distinction exists.
 */
 window.NOKIME_JOBS = [];
@@ -22,7 +23,7 @@ window.NOKIME_JOBS_DEMO = [
     text: "Huit semaines sur tous les postes, du garde-manger au chaud. Convention avec l’école.",
     published: "2026-09-22", expires: "2027-01-05", distinction: null, demo: true },
   { id: "demo-3", kind: "alternance", restaurant: "Exemple — maison étoilée", city: "Annecy", dept: "74", role: "Apprenti pâtisserie",
-    start: "2027-01-04", end: "2028-12-22", hours: 35, pay: "Salaire d’apprenti selon l’âge", housing: false,
+    start: "2027-01-04", end: "2028-12-22", hours: 35, housing: false,
     contact: { name: "Le chef pâtissier", email: "exemple@exemple.invalid", phone: "" },
     text: "Deux ans en pâtisserie de restaurant, un mentor, un rythme école-entreprise 1-3.",
     published: "2026-09-22", expires: "2026-10-30", distinction: null, demo: true }
