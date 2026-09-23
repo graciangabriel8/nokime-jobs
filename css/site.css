@@ -241,7 +241,8 @@ html:not([lang="en"]) .only-en{display:none}
 .tier .per{font-size:15px;color:var(--ink-2);margin:10px 0 0}
 .tier .note{margin:18px 0 26px;font-size:16px;line-height:1.5}
 .tier .btn{margin-top:auto;align-self:flex-start}
-.tiers + .more{margin-top:24px}
+.vat-note{margin:14px 0 0}
+.vat-note + .more{margin-top:24px}
 .price-note{margin:0}
 
 /* ---------- the distinction: a modest mark beside its text ---------- */
