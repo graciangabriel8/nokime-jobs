@@ -56,7 +56,7 @@ window.NOKIME_I18N = {
     jobsNoneFiltered: "No offer with these filters.",
     jobsPublished: "posted {d}",
     jobsPost: "Post an offer", jobsDemoTag: "example", jobsDates: "{a} to {b}", jobsHours: "{h} h a week", jobsHoused: "Housed",
-    jobsApply: "Write to the restaurant", jobsAllRegions: "All regions",
+    jobsOriginal: "Original offer, in French", jobsAllOffers: "All offers", jobsApply: "Write to the restaurant", jobsAllRegions: "All regions",
     applySubject: "Application — {role} — {restaurant}",
     applyBody: "Hello,\n\nI am writing about your offer “{role}” from {start}, seen on Nokime Jobs.\n\nMy school, my class:\nMy availability:\nWhat I can do:\n\nThank you for your time,\n",
     payLegal: "Statutory internship allowance", payUndisclosed: "Not disclosed",

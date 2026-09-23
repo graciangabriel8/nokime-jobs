@@ -2,13 +2,16 @@
 """Every data-t key, data-title and data-desc used by a page must exist in the `en`
 block of js/i18n.js, or the English view keeps that string in French. Prints what is
 missing, and the `en` keys no page uses (informational). Exit 1 on a missing key."""
-import re, pathlib, sys
+import re, pathlib, sys, json
 root = pathlib.Path(__file__).resolve().parent.parent
 pages = sorted(root.glob("**/index.html")) + [p for p in [root / "404.html"] if p.exists()]
 used = {}
 for p in pages:
     s = p.read_text(encoding="utf-8")
-    for k in re.findall(r'data-t="([^"]+)"', s): used.setdefault(k, set()).add(p.relative_to(root).as_posix())
+    m = re.search(r"Object\.assign\(NOKIME_I18N\.en,(\{.*?\})\);</script>", s)   # an offer page carries its own English
+    own = set(json.loads(m.group(1))) if m else set()
+    for k in re.findall(r'data-t="([^"]+)"', s):
+        if k not in own: used.setdefault(k, set()).add(p.relative_to(root).as_posix())
     for k in re.findall(r'data-t-attr="[^"]*?:([^",]+)"', s): used.setdefault(k.strip(), set()).add(p.relative_to(root).as_posix())
     for k in re.findall(r'data-(?:title|desc)="([^"]+)"', s): used.setdefault(k, set()).add(p.relative_to(root).as_posix())
 js = (root / "js" / "i18n.js").read_text(encoding="utf-8")

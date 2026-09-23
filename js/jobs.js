@@ -10,6 +10,20 @@
   function lang() { try { var v = localStorage.getItem("nokime-lang"); if (v === "fr" || v === "en") return v; } catch (e) {} return (navigator.language || "fr").toLowerCase().indexOf("fr") === 0 ? "fr" : "en"; }
   function t(k, vars) { var L = lang(), s = (I18N[L] && I18N[L][k]) != null ? I18N[L][k] : (I18N.fr[k] != null ? I18N.fr[k] : k); return vars ? String(s).replace(/\{(\w+)\}/g, function (_, v) { return vars[v] != null ? vars[v] : ""; }) : s; }
 
+  /* an offer's own words: Nokime's English translation in the English view when there is one, else the French original */
+  /* a field's English counts only where its French is shown: a hidden pay stays hidden, a text needs its French */
+  var TR_KEYS = ["role", "restaurant", "pay", "text"];
+  function shown(o, k) { return k === "pay" ? !o.payHidden && !!String(o.pay || "").trim() : k === "text" ? !!o.text : true; }
+  function tr(o) { return lang() === "en" && o.en && TR_KEYS.some(function (k) { return o.en[k] && shown(o, k); }) ? o.en : null; }
+  function tx(o, k) { var e = tr(o); return e && e[k] && shown(o, k) ? e[k] : o[k]; }
+  /* under a translation, the offer as the restaurant wrote it: the French is the original */
+  function original(o) {
+    if (!tr(o)) return "";
+    var pay = o.payHidden ? "" : String(o.pay || "").trim();
+    return '<div class="job-orig" lang="fr"><p class="job-orig-label" lang="en">' + esc(t("jobsOriginal")) + "</p><p><b>" + esc(o.role) + "</b> · " + esc(o.restaurant) +
+      (pay ? " · " + esc(pay) : "") + "</p>" + (tr(o).text && o.text ? "<p>" + esc(o.text) + "</p>" : "") + "</div>";   /* an untranslated text is already shown, in French */
+  }
+
   /* départements → régions, so an offer only carries its département */
   var REGIONS = {
     "Auvergne-Rhône-Alpes": "01 03 07 15 26 38 42 43 63 69 73 74", "Bourgogne-Franche-Comté": "21 25 39 58 70 71 89 90",
@@ -45,7 +59,7 @@
   function allowanceDue(o) { var days = Math.round((new Date(o.end + "T12:00:00") - new Date(o.start + "T12:00:00")) / 864e5) + 1; return days > 0 && (pastTwoMonths(o.start, o.end) || (Number(o.hours) || 48) * Math.ceil(days / 7) > 308); }
   function payFact(o) {
     var pay = o.payHidden ? "" : String(o.pay || "").trim();
-    if (pay) return fact("pay", t("colPay"), esc(pay));
+    if (pay) return fact("pay", t("colPay"), esc(String(tx(o, "pay") || pay).trim()));   /* disclosed or not is the French original's call */
     var note = o.kind === "stage" ? (o.start && o.end && allowanceDue(o) ? t("payNote_stage") : "") : (o.kind === "alternance" || o.kind === "saison") ? t("payNote_" + o.kind) : "";
     return fact("pay", t("colPay"), esc(t("payUndisclosed")), note);
   }
@@ -80,10 +94,10 @@
         '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
           '<p class="job-where">' + esc(o.city) + (regionOf(o) ? '<span class="muted"> · ' + esc(regionOf(o)) + "</span>" : "") + "</p>" +
           (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
-        "<h3>" + (o.demo || !base ? esc(o.role) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(o.role) + "</a>") + "</h3>" +
-        '<p class="job-rest">' + esc(o.restaurant) + (o.distinction ? '<span class="distinction" role="img" aria-label="' + esc(t("distinctionTitle")) + '" title="' + esc(t("distinctionTitle")) + '">' + SEAL + "</span>" : '<span class="distinction empty" aria-hidden="true"></span>') + "</p></div>" +
+        "<h3>" + (o.demo || !base ? esc(tx(o, "role")) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(tx(o, "role")) + "</a>") + "</h3>" +
+        '<p class="job-rest">' + esc(tx(o, "restaurant")) + (o.distinction ? '<span class="distinction" role="img" aria-label="' + esc(t("distinctionTitle")) + '" title="' + esc(t("distinctionTitle")) + '">' + SEAL + "</span>" : '<span class="distinction empty" aria-hidden="true"></span>') + "</p></div>" +
         facts(o) +
-        (o.text ? '<details class="more"><summary>' + esc(t("more")) + "</summary><p>" + esc(o.text) + "</p></details>" : "") +
+        (o.text || tr(o) ? '<details class="more"><summary>' + esc(t("more")) + "</summary>" + (o.text ? "<p>" + esc(tx(o, "text")) + "</p>" : "") + original(o) + "</details>" : "") +
         '<div class="job-act"><a class="btn primary" href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
           ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></article>";
     }).join("");

@@ -164,6 +164,12 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .job > .more{margin:0}
 .job .more summary{font-size:15px}
 .job .more p{font-size:16px}
+/* under a translation, the French original, smaller and grey */
+.job-orig{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.job-orig p,.more .job-orig p{margin:0 0 .5em;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.job-orig b{font-weight:600;color:var(--ink)}
+.job-orig .job-orig-label{margin-bottom:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+html:not([lang="en"]) .only-en{display:none}
 .job-act{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px}
 .job-act .link{font-size:15px;font-variant-numeric:tabular-nums}
 /* the distinction's place beside every restaurant: a dotted ring while empty, the blue rosette once earned */
