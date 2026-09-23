@@ -27,6 +27,7 @@ head = home[:home.index("<header")]; header = home[home.index("<header"):home.in
 footer = home[home.index("<footer"):home.index('<script src="js/i18n.js')]; scripts = home[home.index('<script src="js/i18n.js'):home.index('<script src="js/offers.js')]
 KIND = {"stage": "Stage", "alternance": "Alternance", "saison": "Saison"}
 EMP = {"stage": "INTERN", "alternance": "FULL_TIME", "saison": "TEMPORARY"}
+METIER = {"cuisine": "Cuisine", "salle": "Salle", "hebergement": "Hébergement", "spa": "Spa"}   # as js/jobs.js; the English is in js/i18n.js (metier_*)
 REGIONS = {"Auvergne-Rhône-Alpes": "01 03 07 15 26 38 42 43 63 69 73 74", "Bourgogne-Franche-Comté": "21 25 39 58 70 71 89 90", "Bretagne": "22 29 35 56", "Centre-Val de Loire": "18 28 36 37 41 45", "Corse": "2A 2B 20", "Grand Est": "08 10 51 52 54 55 57 67 68 88", "Hauts-de-France": "02 59 60 62 80", "Île-de-France": "75 77 78 91 92 93 94 95", "Normandie": "14 27 50 61 76", "Nouvelle-Aquitaine": "16 17 19 23 24 33 40 47 64 79 86 87", "Occitanie": "09 11 12 30 31 32 34 46 48 65 66 81 82", "Pays de la Loire": "44 49 53 72 85", "Provence-Alpes-Côte d’Azur": "04 05 06 13 83 84", "Outre-mer": "971 972 973 974 976"}
 DEPT = {d: r for r, ds in REGIONS.items() for d in ds.split()}
 def fr_date(iso):
@@ -65,7 +66,8 @@ for o in live:
     en.update({"o" + k[0].upper() + k[1:]: tr[k] for k in ("role", "restaurant", "pay", "text") if tr.get(k)})
     en = {("oRest" if k == "oRestaurant" else k): v for k, v in en.items()}
     t_ = lambda k: ' data-t="%s"' % k if k in en else ""
-    facts = ('<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
+    facts = (('<div class="fact"><dt data-t="colMetier">Métier</dt><dd data-t="metier_%s">%s</dd></div>' % (o["metier"], METIER[o["metier"]]) if o.get("metier") in METIER else "") +   # absent or unknown: not shown
+             '<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
              ('<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) if o.get("hours") else "") +
              pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
                             '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else ""))   # as js/jobs.js: absent, not shown
@@ -99,7 +101,7 @@ for o in live:
         <dl class="job-facts">%s</dl>
         %s%s
         <div class="cta-row">
-          <a class="btn primary" href="%s"><span data-t="jobsApply">Écrire au restaurant</span><span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn primary" href="%s"><span data-t="jobsApply">Écrire à l’établissement</span><span class="arrow" aria-hidden="true">→</span></a>
           %s
           <a class="btn" href="../../#offres"><span data-t="jobsAllOffers">Toutes les offres</span></a>
         </div>

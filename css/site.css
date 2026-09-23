@@ -144,6 +144,7 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317191E' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 15px center;background-size:12px}
 .jobs-select:hover{border-color:var(--ink)}
+.jobs-select + .jobs-select{margin-left:0}   /* the métier and the région side by side, pushed right together */
 
 /* the board: one white card per offer, one per row, stacked like a list you scan in one pass */
 .jobs-list{display:flex;flex-direction:column;gap:16px;margin-top:40px}
@@ -155,7 +156,7 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 /* the top line: the kind in a pill and the date, the place under them where the line is short */
 .job-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px}
 .tag{display:inline-flex;align-items:center;min-height:28px;padding:3px 12px;border:1px solid var(--ink-3);border-radius:999px;
-  font-size:13px;font-weight:600;line-height:1.2;color:var(--ink);white-space:nowrap}
+  font-size:13px;font-weight:600;line-height:1.2;color:var(--ink)}   /* one line whenever it fits; « Alternance · Hébergement · exemple » wraps rather than cross into the facts column */
 /* "Mise en avant": a paid place at the top, said by a label beside the kind; ink and a thin square-cornered border, never the blue,
    and nothing else about the card changes */
 .boost{display:inline-flex;align-items:center;min-height:28px;padding:3px 10px;border:1px solid var(--ink);border-radius:4px;
@@ -194,6 +195,7 @@ html:not([lang="en"]) .only-en{display:none}
 .sl-o{fill:var(--bleu)}
 .sl-i{fill:none;stroke:var(--paper);stroke-width:1.3}
 @media (min-width:721px) and (max-width:959px){
+  .jobs-select{margin-left:0}   /* on a tablet the two selects wrap under the chips: keep them left-aligned together */
   .job-where{order:0;flex:0 1 auto}
 }
 /* from 960px an offer is one row in three columns: who and where, the facts, the action */

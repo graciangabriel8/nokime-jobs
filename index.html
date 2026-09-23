@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nokime Jobs — stages, alternances et saisons en cuisine</title>
-<meta name="description" content="Nokime Jobs : des offres de stage, d’alternance et de saison dans des cuisines qui en valent la peine. Gratuit pour les candidats ; les restaurants publient et répondent directement.">
+<title>Nokime Jobs — stages, alternances et saisons en hôtellerie-restauration</title>
+<meta name="description" content="Nokime Jobs : des offres de stage, d’alternance et de saison en hôtellerie-restauration, en cuisine, en salle, à l’hébergement et au spa, dans des maisons qui en valent la peine. Gratuit pour les candidats ; les établissements publient et répondent directement.">
 <meta name="theme-color" content="#FFFFFF">
-<meta property="og:title" content="Nokime Jobs — stages, alternances et saisons en cuisine">
-<meta property="og:description" content="Des stages et des saisons dans des cuisines qui en valent la peine.">
+<meta property="og:title" content="Nokime Jobs — stages, alternances et saisons en hôtellerie-restauration">
+<meta property="og:description" content="Des stages et des saisons dans des maisons qui en valent la peine.">
 <meta property="og:image" content="https://graciangabriel8.github.io/nokime-jobs/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -18,8 +18,8 @@
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="css/fonts.css?v=21">
-<link rel="stylesheet" href="css/site.css?v=21">
+<link rel="stylesheet" href="css/fonts.css?v=22">
+<link rel="stylesheet" href="css/site.css?v=22">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titleHome" data-desc="descHome">
@@ -50,9 +50,9 @@
     <div class="wrap hero-grid">
       <div class="hero-text">
         <p class="eyebrow" data-t="jobsEyebrow">Nokime Jobs</p>
-        <h1 class="headline"><span data-t="jobsTitle1">Des stages et des saisons dans des cuisines </span><em data-t="jobsTitle2">qui en valent la peine.</em></h1>
-        <p class="lead" data-t="jobsLead">Gratuit pour ceux qui cherchent. Les restaurants publient leurs offres et vous répondent directement.</p>
-        <details class="more"><summary data-t="more">En savoir plus</summary><p data-t="jobsMore">Une offre dit tout avant que vous écriviez : le poste, les dates, les heures, la rémunération quand le restaurant l’indique, le logement. Vous écrivez au restaurant, pas à nous.</p></details>
+        <h1 class="headline"><span data-t="jobsTitle1">Des stages et des saisons dans des maisons </span><em data-t="jobsTitle2">qui en valent la peine.</em></h1>
+        <p class="lead" data-t="jobsLead">Gratuit pour ceux qui cherchent, en cuisine, en salle, à l’hébergement et au spa. Les hôtels et les restaurants publient leurs offres et vous répondent directement.</p>
+        <details class="more"><summary data-t="more">En savoir plus</summary><p data-t="jobsMore">Une offre dit tout avant que vous écriviez : le poste, les dates, les heures, la rémunération quand l’établissement l’indique, le logement. Vous écrivez à l’établissement, pas à nous.</p></details>
         <div class="cta-row">
           <a class="btn primary" href="#offres"><span data-t="jobsCta1">Voir les offres</span><span class="arrow" aria-hidden="true">→</span></a>
           <a class="btn" href="publier/"><span data-t="jobsCta2">Publier une offre</span><span class="arrow" aria-hidden="true">→</span></a>
@@ -71,13 +71,14 @@
         <h2 class="kicker" id="offresTitle" data-t="jobsKicker">En ce moment.</h2>
         <span class="jobs-count" id="jobsCount" aria-live="polite"></span>
       </div>
-      <div class="jobs-search"><label class="vh" for="jobsSearch" data-t="jobsSearchLabel">Rechercher une offre</label><input class="jobs-search-input" id="jobsSearch" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" data-t-attr="placeholder:jobsSearchPh" placeholder="Poste, restaurant, ville…"></div>
+      <div class="jobs-search"><label class="vh" for="jobsSearch" data-t="jobsSearchLabel">Rechercher une offre</label><input class="jobs-search-input" id="jobsSearch" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" data-t-attr="placeholder:jobsSearchPh" placeholder="Poste, établissement, ville…"></div>
       <div class="jobs-filters" role="group" data-t-attr="aria-label:jobsFilters" aria-label="Filtres">
         <button class="chip" type="button" data-kind="all" aria-pressed="true" data-t="kindAll">Tous</button>
         <button class="chip" type="button" data-kind="stage" data-t="kind_stage">Stage</button>
         <button class="chip" type="button" data-kind="alternance" data-t="kind_alternance">Alternance</button>
         <button class="chip" type="button" data-kind="saison" data-t="kind_saison">Saison</button>
         <button class="chip" type="button" id="jobsHousing" aria-pressed="false" data-t="jobsHoused">Logé</button>
+        <select class="jobs-select" id="jobsMetier" data-t-attr="aria-label:jobsMetierLabel" aria-label="Métier"></select>
         <select class="jobs-select" id="jobsRegion" data-t-attr="aria-label:jobsRegionLabel" aria-label="Région"></select>
       </div>
       <div class="jobs-list" id="jobsList" data-post-href="publier/" data-offer-base="o/"><noscript><p>Les offres se chargent avec JavaScript. Écrivez-nous : contact@copius.fr</p></noscript></div>
@@ -89,9 +90,9 @@
     <div class="wrap">
       <h2 class="kicker" data-t="seekKicker">Pour ceux qui cherchent.</h2>
       <ol class="steps">
-        <li class="step"><h3 data-t="j1t">Vous lisez l’offre</h3><p data-t="j1p">Le poste, les dates, les heures, la rémunération quand le restaurant l’indique, le logement : tout est écrit avant que vous écriviez.</p></li>
-        <li class="step"><h3 data-t="j2t">Vous écrivez au restaurant</h3><p data-t="j2p">Par courriel ou par téléphone, directement. Nokime ne garde ni CV ni candidature.</p></li>
-        <li class="step"><h3 data-t="j3t">L’école fait la convention</h3><p data-t="j3p">Pour un stage, la convention passe par votre établissement. Pour une saison, c’est un contrat avec le restaurant.</p></li>
+        <li class="step"><h3 data-t="j1t">Vous lisez l’offre</h3><p data-t="j1p">Le poste, les dates, les heures, la rémunération quand l’établissement l’indique, le logement : tout est écrit avant que vous écriviez.</p></li>
+        <li class="step"><h3 data-t="j2t">Vous écrivez à l’établissement</h3><p data-t="j2p">Par courriel ou par téléphone, directement. Nokime ne garde ni CV ni candidature.</p></li>
+        <li class="step"><h3 data-t="j3t">L’école fait la convention</h3><p data-t="j3p">Pour un stage, la convention passe par votre établissement. Pour une saison, c’est un contrat avec l’employeur.</p></li>
       </ol>
     </div>
   </section>
@@ -113,7 +114,7 @@
 
   <section class="section" id="prix">
     <div class="wrap">
-      <h2 class="kicker" data-t="restoKicker">Pour les restaurants.</h2>
+      <h2 class="kicker" data-t="restoKicker">Pour les établissements.</h2>
       <p class="free-banner" data-t="restoFree">Votre première saison est offerte : trois mois au niveau Brigade, à compter de votre première offre, une seule fois par établissement. Sans engagement : à la fin, vous décidez de continuer ou non.</p>
       <div class="tiers">
         <div class="tier">
@@ -141,11 +142,11 @@
           <p class="name" data-t="jt4n">Candidats</p>
           <p class="price" data-t="jt4p">0 €</p>
           <p class="per" data-t="jt4per">toujours</p>
-          <p class="note" data-t="jt4note">Aucun compte, aucune donnée gardée. On lit, on écrit au restaurant.</p>
+          <p class="note" data-t="jt4note">Aucun compte, aucune donnée gardée. On lit, on écrit à l’établissement.</p>
           <a class="btn" href="#offres"><span data-t="jt4cta">Voir les offres</span><span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
-      <details class="more"><summary data-t="jobsWhyQ">Pourquoi payant d’un seul côté ?</summary><p class="price-note" data-t="jobsWhyA">Parce qu’un stagiaire n’a pas à payer pour trouver une cuisine, et qu’un restaurant qui paie rédige ses offres avec soin. Les écoles pourront partager la page ; leurs élèves y viendront sans nous.</p></details>
+      <details class="more"><summary data-t="jobsWhyQ">Pourquoi payant d’un seul côté ?</summary><p class="price-note" data-t="jobsWhyA">Parce qu’un stagiaire n’a pas à payer pour trouver un stage, et qu’un établissement qui paie rédige ses offres avec soin. Les écoles pourront partager la page ; leurs élèves y viendront sans nous.</p></details>
     </div>
   </section>
 
@@ -154,8 +155,8 @@
       <div class="seal-wrap"><svg class="seal-art" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg></div>
       <div>
         <h2 class="kicker" data-t="distKicker">En préparation : une distinction.</h2>
-        <p class="lead" data-t="distLead">Une marque pour les cuisines où les stagiaires reviennent. Décernée sur leurs réponses, jamais un classement.</p>
-        <details class="more"><summary data-t="more">En savoir plus</summary><p data-t="distMore">À la fin d’un stage, un questionnaire court, sans texte libre : heures réellement faites, repos, gratification versée à temps, ce qu’on a appris, comment on a été traité, si l’on reviendrait. Une cuisine reçoit la distinction à partir de plusieurs réponses concordantes. Rien n’est publié sur les autres.</p></details>
+        <p class="lead" data-t="distLead">Une marque pour les maisons où les stagiaires reviennent. Décernée sur leurs réponses, jamais un classement.</p>
+        <details class="more"><summary data-t="more">En savoir plus</summary><p data-t="distMore">À la fin d’un stage, un questionnaire court, sans texte libre : heures réellement faites, repos, gratification versée à temps, ce qu’on a appris, comment on a été traité, si l’on reviendrait. Une maison reçoit la distinction à partir de plusieurs réponses concordantes. Rien n’est publié sur les autres.</p></details>
         <div class="cta-row"><a class="btn" href="questionnaire/"><span data-t="qCta">Répondre au questionnaire</span><span class="arrow" aria-hidden="true">→</span></a></div>
       </div>
     </div>
@@ -166,7 +167,7 @@
       <details class="more"><summary class="kicker-sum" data-t="factsKicker">Concrètement.</summary>
       <ul class="facts">
         <li data-t="jf1">Les offres sont rédigées en français, disent leur type et leurs dates, et disparaissent à l’échéance.</li>
-        <li data-t="jf2">La réponse part de votre messagerie vers celle du restaurant.</li>
+        <li data-t="jf2">La réponse part de votre messagerie vers celle de l’établissement.</li>
         <li data-t="jf3">Le filtre par région se déduit du département de l’offre ; le filtre « logé » compte pour les saisons.</li>
         <li data-t="jf4">Chaque offre a une place pour la distinction, vide tant qu’elle n’est pas méritée.</li>
       </ul></details>
@@ -180,7 +181,7 @@
     <div class="foot-grid">
       <div>
         <a class="brand" href="./"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="mk-t" d="M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><path class="mk-b" d="M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><rect class="mk-rail" x="1.5" y="4" width="29" height="6" rx="3"/></svg><span>Nokime <span class="brandword">Jobs</span></span></a>
-        <p class="small" data-t="footTag">Stages, alternances et saisons en cuisine. Un outil Nokime.</p>
+        <p class="small" data-t="footTag">Stages, alternances et saisons en hôtellerie-restauration. Un outil Nokime.</p>
       </div>
       <nav aria-label="Pied de page" data-t-attr="aria-label:footNav">
         <a href="./#offres" data-t="navOffers">Les offres</a>
@@ -203,9 +204,9 @@
   </div>
 </footer>
 
-<script src="js/i18n.js?v=21"></script>
-<script src="js/site.js?v=21"></script>
-<script src="js/offers.js?v=21"></script>
-<script src="js/jobs.js?v=21"></script>
+<script src="js/i18n.js?v=22"></script>
+<script src="js/site.js?v=22"></script>
+<script src="js/offers.js?v=22"></script>
+<script src="js/jobs.js?v=22"></script>
 </body>
 </html>

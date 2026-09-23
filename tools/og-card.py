@@ -40,7 +40,7 @@ card = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 <g transform="translate(66,58) scale(1.5)">{mark}</g>
 <text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}">Nokime Jobs</text>
 <text font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="64" letter-spacing="-1.1" fill="{INK}">
-<tspan x="70" y="258">Des stages et des saisons</tspan><tspan x="70" y="320">dans des cuisines</tspan><tspan x="70" y="382" fill="{BLEU}">qui en valent la peine.</tspan></text>
+<tspan x="70" y="258">Des stages et des saisons</tspan><tspan x="70" y="320">dans des maisons</tspan><tspan x="70" y="382" fill="{BLEU}">qui en valent la peine.</tspan></text>
 <text x="72" y="530" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK}">STAGES · ALTERNANCES · SAISONS</text>
 <text x="72" y="562" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK2}">GRATUIT POUR LES CANDIDATS</text>
 </g>

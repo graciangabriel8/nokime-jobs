@@ -34,14 +34,17 @@
   };
   var DEPT_REGION = {}; Object.keys(REGIONS).forEach(function (r) { REGIONS[r].split(" ").forEach(function (d) { DEPT_REGION[d] = r; }); });
   function regionOf(o) { return DEPT_REGION[String(o.dept)] || ""; }
+  /* the department an offer is in; an offer without one (or with an unknown one) shows none */
+  var METIERS = ["cuisine", "salle", "hebergement", "spa"];
+  function metierOf(o) { return METIERS.indexOf(o.metier) >= 0 ? o.metier : ""; }
 
-  var demo = /[?&]demo=1/.test(location.search);
+  var demo = /[?&]demo=1(&|$)/.test(location.search);
   var today = new Date().toISOString().slice(0, 10);
   var OFFERS = (window.NOKIME_JOBS || []).concat(demo ? (window.NOKIME_JOBS_DEMO || []) : [])
     .filter(function (o) { var x = o.expires || o.end; return /^\d{4}-\d{2}-\d{2}$/.test(String(x)) && x >= today; })   /* undated or malformed: not shown */
     .sort(function (a, b) { return (b.published || "").localeCompare(a.published || ""); });
 
-  var state = { kind: "all", region: "all", housing: false, q: "" };
+  var state = { kind: "all", metier: "all", region: "all", housing: false, q: "" };
 
   /* "Mise en avant": a paid boost, honoured only when all hold: the offer is transparent (pay shown, hours given, housing
      stated yes or no), the establishment signed the charte d'accueil, and the boost is not paused while a serious report
@@ -59,10 +62,11 @@
   }
 
   /* the search: case and accents ignored; every word must appear in the role, the restaurant, the town, the région,
-     the kind or the text (in the English view, Nokime's English of them too) */
+     the kind, the department or the text (in the English view, Nokime's English of them too) */
   function fold(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/œ/g, "oe").replace(/æ/g, "ae").replace(/[’‘]/g, "'"); }
   function haystack(o) {
     var f = [o.role, o.restaurant, o.city, regionOf(o), I18N.fr["kind_" + o.kind], t("kind_" + o.kind), o.text];
+    if (metierOf(o)) f.push(I18N.fr["metier_" + o.metier], t("metier_" + o.metier));
     if (lang() === "en" && o.en) ["role", "restaurant", "text"].forEach(function (k) { if (o.en[k] && shown(o, k)) f.push(o.en[k]); });
     return fold(f.join("\n"));
   }
@@ -106,7 +110,7 @@
     var list = $("#jobsList"); if (!list) return;
     var w = words(state.q);
     var rows = OFFERS.filter(function (o) {
-      return (state.kind === "all" || o.kind === state.kind) && (state.region === "all" || regionOf(o) === state.region) && (!state.housing || o.housing) && found(o, w);
+      return (state.kind === "all" || o.kind === state.kind) && (state.metier === "all" || metierOf(o) === state.metier) && (state.region === "all" || regionOf(o) === state.region) && (!state.housing || o.housing) && found(o, w);
     });
     var count = $("#jobsCount"); if (count) count.textContent = OFFERS.length ? t(rows.length === 1 ? "jobsCount1" : "jobsCountN", { n: rows.length }) : "";
     if (!rows.length) {   /* a plain card: the message and the way to post an offer */
@@ -116,11 +120,11 @@
     var base = list.getAttribute("data-offer-base");
     var ordered = boostOrder(rows); rows = ordered.rows;
     var boostLabel = '<span class="boost" title="' + esc(t("jobsBoostTitle")) + '">' + esc(t("jobsBoost")) + '<span class="vh"> (' + esc(t("jobsBoostTitle")) + ")</span></span>";
-    /* one card per offer, read top to bottom: the top line (kind, place, date), the role, the restaurant,
+    /* one card per offer, read top to bottom: the top line (kind and department, place, date), the role, the restaurant,
        the facts, the folded text, and the one action; from 960px the CSS sets them in three columns */
     list.innerHTML = rows.map(function (o) {
       return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '"><div class="job-head">' +
-        '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
+        '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (metierOf(o) ? " · " + esc(t("metier_" + o.metier)) : "") + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
           (ordered.top.indexOf(o) >= 0 ? boostLabel : "") +
           '<p class="job-where">' + esc(o.city) + (regionOf(o) ? '<span class="muted"> · ' + esc(regionOf(o)) + "</span>" : "") + "</p>" +
           (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
@@ -134,6 +138,8 @@
   }
 
   function renderFilters() {
+    var ms = $("#jobsMetier");   /* the four departments, always offered */
+    if (ms) ms.innerHTML = ["all"].concat(METIERS).map(function (m) { return '<option value="' + m + '"' + (state.metier === m ? " selected" : "") + ">" + esc(t(m === "all" ? "metierAll" : "metier_" + m)) + "</option>"; }).join("");
     var sel = $("#jobsRegion"); if (!sel) return;
     var regs = {}; OFFERS.forEach(function (o) { var r = regionOf(o); if (r) regs[r] = 1; });
     sel.innerHTML = '<option value="all">' + esc(t("jobsAllRegions")) + "</option>" + Object.keys(regs).sort().map(function (r) { return '<option value="' + esc(r) + '"' + (state.region === r ? " selected" : "") + ">" + esc(r) + "</option>"; }).join("");
@@ -143,6 +149,7 @@
   $$("[data-kind]").forEach(function (b) { b.addEventListener("click", function () { state.kind = b.getAttribute("data-kind"); renderFilters(); renderList(); }); });
   var hb = $("#jobsHousing"); if (hb) hb.addEventListener("click", function () { state.housing = !state.housing; renderFilters(); renderList(); });
   var rs = $("#jobsRegion"); if (rs) rs.addEventListener("change", function () { state.region = rs.value; renderList(); });
+  var mq = $("#jobsMetier"); if (mq) mq.addEventListener("change", function () { state.metier = mq.value; renderList(); });
   /* the search box: the list and the count follow the typing, 150 ms after the last key; a value the browser restored counts */
   var sb = $("#jobsSearch"), sbTimer = null;
   if (sb) {
@@ -159,8 +166,9 @@
       if (!form.checkValidity()) { form.reportValidity(); return; }
       var f = function (n) { var el = form.elements[n]; return el ? (el.type === "checkbox" ? (el.checked ? "oui" : "non") : String(el.value || "").trim()) : ""; };
       var kind = (form.querySelector("[name=kind]:checked") || {}).value || "";
+      var metier = (form.querySelector("[name=metier]:checked") || {}).value || "";
       var lines = [
-        ["Type", { stage: "Stage", alternance: "Alternance", saison: "Saison" }[kind] || kind], ["Restaurant", f("restaurant")], ["Ville", f("city")], ["Département", f("dept")],
+        ["Type", { stage: "Stage", alternance: "Alternance", saison: "Saison" }[kind] || kind], ["Métier", I18N.fr["metier_" + metier] || metier], ["Établissement", f("restaurant")], ["Ville", f("city")], ["Département", f("dept")],
         ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", f("housing")],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
