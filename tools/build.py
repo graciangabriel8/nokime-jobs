@@ -49,7 +49,7 @@ def pay_fact(o):   # the pay is always a fact: the restaurant's words, or "Non c
     nk = ("payNote_stage" if allowance_due(o) else "") if o["kind"] == "stage" else "payNote_" + o["kind"]
     note = fr_str(nk) if nk else ""
     return '<div class="fact%s"><dt data-t="colPay">Rémunération</dt><dd data-t="payUndisclosed">%s</dd>%s</div>' % (" noted" if note else "", html.escape(fr_str("payUndisclosed")), '<dd class="fact-note" data-t="%s">%s</dd>' % (nk, html.escape(note)) if note else "")
-def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"')
+def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"').replace('href="charte/"', 'href="../../charte/"')
 
 odir = root / "o"
 for old in odir.glob("*/"):
@@ -67,7 +67,8 @@ for o in live:
     t_ = lambda k: ' data-t="%s"' % k if k in en else ""
     facts = ('<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
              ('<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) if o.get("hours") else "") +
-             pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") else ""))
+             pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
+                            '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else ""))   # as js/jobs.js: absent, not shown
     orig = ('<div class="job-orig only-en" lang="fr"><p class="job-orig-label" lang="en" data-t="jobsOriginal">Original offer, in French</p><p><b>%s</b> · %s%s</p>%s</div>' %
             (html.escape(o["role"]), html.escape(o["restaurant"]), " · " + html.escape(pay_of(o)) if pay_of(o) else "", '<p>%s</p>' % html.escape(o["text"]) if tr.get("text") else "")) if tr else ""   # an untranslated text is already shown, in French
     ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": (o.get("text") or desc), "datePosted": o.get("published", today),
@@ -163,6 +164,6 @@ i_new = between(i18n.read_text(encoding="utf-8"), "questions", "\n".join(en_line
 page.write_text(p_new, encoding="utf-8"); i18n.write_text(i_new, encoding="utf-8")
 print("questionnaire: %d questions written" % len(QUESTIONS))
 
-urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/"] + [BASE + "o/%s/" % o["id"] for o in live]
+urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/", BASE + "charte/"] + [BASE + "o/%s/" % o["id"] for o in live]
 (root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join("  <url><loc>%s</loc></url>\n" % u for u in urls) + "</urlset>\n", encoding="utf-8")
 print("offers: %d live, %d pages written, sitemap %d urls" % (len(live), len(live), len(urls)))

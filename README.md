@@ -10,6 +10,13 @@ Stages, alternances et saisons en cuisine. Gratuit pour les candidats ; les rest
 Serve locally: `python3 -m http.server 8648` (or `preview_start` name `nokime-jobs`).
 Ship: `python3 tools/bump.py` (assets touched), `python3 tools/check-i18n.py`, `python3 tools/build.py`, commit, push.
 
+## Prices, search, « Mise en avant » and the charter
+
+- **Prices.** Restaurants choose a tier: Une offre 19 € HT (one offer online at a time), Brigade 39 € HT (up to five), Maison 79 € HT (unlimited, and « Mise en avant »), each billed for every month with at least one offer online, through a payment link; no card is taken on the site. Candidates pay 0 €. The first season is free: three months at the Brigade level, counted from the first offer, once per establishment, without commitment. The model is written in four places that must stay identical: the home page's `#prix` section (`restoFree`, `jt*`), the posting page (`postPriceA`, `p2t`/`p2p`), and the legal notice (Prix).
+- **Search.** The box above the filters; `fold`, `haystack` and `found` in `js/jobs.js`. Case and accents are ignored and every word must appear in the role, the restaurant, the town, the région, the kind or the text (Nokime's English too in the English view). It narrows the list together with the filters.
+- **« Mise en avant ».** `boostable()`, `boostOrder()` and `MAX_BOOST = 3` in `js/jobs.js`. An offer in `js/offers.js` is featured only with `boost: true` and `charter: true`, without `boostPaused: true`, and when it states its pay (not `payHidden`), its `hours` and `housing` (true or false). After the filters and the search, at most three such offers, the most recently published, come first with the label; every other offer stays newest first. The rule is told to readers in the home page's « Comment la liste est classée » fold and in the legal notice: change them with the code.
+- **The charter.** `charte/`, public and in the sitemap, linked from every footer, the Maison tier, the ordering fold and the legal notice. An establishment joins it by email; then set `charter: true` on its offers, and `boostPaused: true` while a serious report about it is checked.
+
 ## Le questionnaire
 
 `questionnaire/` is a short multiple-choice questionnaire for people who did an internship, an apprenticeship or a season in a kitchen. It prepares the distinction and nothing else: no answer is ever published, neither alone nor added up for an establishment, and nothing about any restaurant is published. It is reached from the home page's distinction section, from the écoles page and from the footer; it has no menu item.

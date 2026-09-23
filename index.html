@@ -18,8 +18,8 @@
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="css/fonts.css?v=18">
-<link rel="stylesheet" href="css/site.css?v=18">
+<link rel="stylesheet" href="css/fonts.css?v=21">
+<link rel="stylesheet" href="css/site.css?v=21">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titleHome" data-desc="descHome">
@@ -51,7 +51,7 @@
       <div class="hero-text">
         <p class="eyebrow" data-t="jobsEyebrow">Nokime Jobs</p>
         <h1 class="headline"><span data-t="jobsTitle1">Des stages et des saisons dans des cuisines </span><em data-t="jobsTitle2">qui en valent la peine.</em></h1>
-        <p class="lead" data-t="jobsLead">Gratuit pour ceux qui cherchent. Les restaurants publient, une offre à la fois, et vous répondent directement.</p>
+        <p class="lead" data-t="jobsLead">Gratuit pour ceux qui cherchent. Les restaurants publient leurs offres et vous répondent directement.</p>
         <details class="more"><summary data-t="more">En savoir plus</summary><p data-t="jobsMore">Une offre dit tout avant que vous écriviez : le poste, les dates, les heures, la rémunération quand le restaurant l’indique, le logement. Vous écrivez au restaurant, pas à nous.</p></details>
         <div class="cta-row">
           <a class="btn primary" href="#offres"><span data-t="jobsCta1">Voir les offres</span><span class="arrow" aria-hidden="true">→</span></a>
@@ -71,6 +71,7 @@
         <h2 class="kicker" id="offresTitle" data-t="jobsKicker">En ce moment.</h2>
         <span class="jobs-count" id="jobsCount" aria-live="polite"></span>
       </div>
+      <div class="jobs-search"><label class="vh" for="jobsSearch" data-t="jobsSearchLabel">Rechercher une offre</label><input class="jobs-search-input" id="jobsSearch" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" data-t-attr="placeholder:jobsSearchPh" placeholder="Poste, restaurant, ville…"></div>
       <div class="jobs-filters" role="group" data-t-attr="aria-label:jobsFilters" aria-label="Filtres">
         <button class="chip" type="button" data-kind="all" aria-pressed="true" data-t="kindAll">Tous</button>
         <button class="chip" type="button" data-kind="stage" data-t="kind_stage">Stage</button>
@@ -80,6 +81,7 @@
         <select class="jobs-select" id="jobsRegion" data-t-attr="aria-label:jobsRegionLabel" aria-label="Région"></select>
       </div>
       <div class="jobs-list" id="jobsList" data-post-href="publier/" data-offer-base="o/"><noscript><p>Les offres se chargent avec JavaScript. Écrivez-nous : contact@copius.fr</p></noscript></div>
+      <details class="more jobs-order"><summary data-t="jobsOrderQ">Comment la liste est classée</summary><p data-t="jobsOrderA">Par défaut, les offres les plus récentes d’abord. Jusqu’à trois offres « Mise en avant » passent en premier : l’établissement a payé pour cela. La mise en avant est réservée aux offres qui disent leur rémunération, leurs heures et le logement, et aux établissements qui ont adhéré à la charte d’accueil de Nokime Jobs, au choix de Nokime Jobs ; si un signalement sérieux nous parvient, elle est suspendue le temps de vérifier. Les filtres et la recherche s’appliquent à toutes les offres de la même façon. La distinction et le questionnaire n’ont aucun lien avec un paiement.</p><p><a class="link" href="charte/" data-t="jobsCharterLink">Lire la charte d’accueil</a></p></details>
     </div>
   </section>
 
@@ -112,31 +114,38 @@
   <section class="section" id="prix">
     <div class="wrap">
       <h2 class="kicker" data-t="restoKicker">Pour les restaurants.</h2>
-      <p class="free-banner" data-t="restoFree">Votre première saison est offerte : trois mois de publication gratuite pour toutes vos offres, à compter de la première. Sans engagement : à la fin, vous décidez de continuer ou non.</p>
+      <p class="free-banner" data-t="restoFree">Votre première saison est offerte : trois mois au niveau Brigade, à compter de votre première offre, une seule fois par établissement. Sans engagement : à la fin, vous décidez de continuer ou non.</p>
       <div class="tiers">
         <div class="tier">
-          <p class="name" data-t="jt1n">Un mois</p>
-          <p class="price" data-t="jt1p">Une offre</p>
-          <p class="per" data-t="jt1per">en ligne trente jours</p>
-          <p class="note" data-t="jt1note">Relue sous quarante-huit heures. Gratuite pendant vos trois premiers mois, sans engagement ; ensuite, le tarif est indiqué avec la validation.</p>
+          <p class="name" data-t="jt1n">Une offre</p>
+          <p class="price" data-t="jt1p">19 € HT</p>
+          <p class="per" data-t="jt1per">par mois où l’offre est en ligne</p>
+          <p class="note" data-t="jt1note">Une offre en ligne à la fois.</p>
           <a class="btn" href="publier/"><span data-t="jt1cta">Publier une offre</span><span class="arrow" aria-hidden="true">→</span></a>
         </div>
-        <div class="tier">
-          <p class="name" data-t="jt2n">Une saison</p>
-          <p class="price" data-t="jt2p">Une offre</p>
-          <p class="per" data-t="jt2per">en ligne jusqu’à la date de fin</p>
-          <p class="note" data-t="jt2note">Pour un recrutement d’hiver ou d’été. Vous nous prévenez quand le poste est pourvu.</p>
-          <a class="btn" href="publier/"><span data-t="jt2cta">Publier une offre</span><span class="arrow" aria-hidden="true">→</span></a>
-        </div>
         <div class="tier featured">
-          <p class="name" data-t="jt3n">Candidats</p>
-          <p class="price" data-t="jt3p">0 €</p>
-          <p class="per" data-t="jt3per">toujours</p>
-          <p class="note" data-t="jt3note">Aucun compte, aucune donnée gardée. On lit, on écrit au restaurant.</p>
-          <a class="btn primary" href="#offres"><span data-t="jt3cta">Voir les offres</span><span class="arrow" aria-hidden="true">→</span></a>
+          <p class="name" data-t="jt2n">Brigade</p>
+          <p class="price" data-t="jt2p">39 € HT</p>
+          <p class="per" data-t="jt2per">par mois où au moins une offre est en ligne</p>
+          <p class="note" data-t="jt2note">Jusqu’à cinq offres en ligne à la fois.</p>
+          <a class="btn primary" href="publier/"><span data-t="jt2cta">Publier une offre</span><span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div class="tier">
+          <p class="name" data-t="jt3n">Maison</p>
+          <p class="price" data-t="jt3p">79 € HT</p>
+          <p class="per" data-t="jt3per">par mois où au moins une offre est en ligne</p>
+          <p class="note"><span data-t="jt3note">Offres illimitées, et la mise en avant de vos offres transparentes, si vous adhérez à la </span><a class="link" href="charte/" data-t="jt3noteLink">charte d’accueil</a>.</p>
+          <a class="btn" href="publier/"><span data-t="jt3cta">Publier une offre</span><span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div class="tier">
+          <p class="name" data-t="jt4n">Candidats</p>
+          <p class="price" data-t="jt4p">0 €</p>
+          <p class="per" data-t="jt4per">toujours</p>
+          <p class="note" data-t="jt4note">Aucun compte, aucune donnée gardée. On lit, on écrit au restaurant.</p>
+          <a class="btn" href="#offres"><span data-t="jt4cta">Voir les offres</span><span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
-      <details class="more"><summary data-t="jobsWhyQ">Pourquoi payant d’un seul côté ?</summary><p class="price-note" data-t="jobsWhyA">Parce qu’un stagiaire n’a pas à payer pour trouver une cuisine, et qu’un restaurant qui paie une offre la rédige avec soin. Les écoles pourront partager la page ; leurs élèves y viendront sans nous.</p></details>
+      <details class="more"><summary data-t="jobsWhyQ">Pourquoi payant d’un seul côté ?</summary><p class="price-note" data-t="jobsWhyA">Parce qu’un stagiaire n’a pas à payer pour trouver une cuisine, et qu’un restaurant qui paie rédige ses offres avec soin. Les écoles pourront partager la page ; leurs élèves y viendront sans nous.</p></details>
     </div>
   </section>
 
@@ -179,6 +188,7 @@
         <a href="ecoles/" data-t="navSchools">Écoles</a>
         <a href="contact/" data-t="navContact">Contact</a>
         <a href="questionnaire/" data-t="footQuestionnaire">Le questionnaire</a>
+        <a href="charte/" data-t="footCharter">La charte d’accueil</a>
       </nav>
       <div class="foot-links">
         <a href="mailto:contact@copius.fr">contact@copius.fr</a>
@@ -193,9 +203,9 @@
   </div>
 </footer>
 
-<script src="js/i18n.js?v=18"></script>
-<script src="js/site.js?v=18"></script>
-<script src="js/offers.js?v=18"></script>
-<script src="js/jobs.js?v=18"></script>
+<script src="js/i18n.js?v=21"></script>
+<script src="js/site.js?v=21"></script>
+<script src="js/offers.js?v=21"></script>
+<script src="js/jobs.js?v=21"></script>
 </body>
 </html>

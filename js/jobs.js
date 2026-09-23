@@ -41,7 +41,33 @@
     .filter(function (o) { var x = o.expires || o.end; return /^\d{4}-\d{2}-\d{2}$/.test(String(x)) && x >= today; })   /* undated or malformed: not shown */
     .sort(function (a, b) { return (b.published || "").localeCompare(a.published || ""); });
 
-  var state = { kind: "all", region: "all", housing: false };
+  var state = { kind: "all", region: "all", housing: false, q: "" };
+
+  /* "Mise en avant": a paid boost, honoured only when all hold: the offer is transparent (pay shown, hours given, housing
+     stated yes or no), the establishment signed the charte d'accueil, and the boost is not paused while a serious report
+     is checked. A boost on any other offer is ignored and it keeps its place. After the filters and the search, at most
+     MAX_BOOST boosted offers, the most recently published, come first and carry the label; every other offer, extra boosts
+     included, stays newest first. */
+  var MAX_BOOST = 3;
+  function boostable(o) {
+    return o.boost === true && o.charter === true && o.boostPaused !== true &&
+      !o.payHidden && !!String(o.pay || "").trim() && Number(o.hours) > 0 && typeof o.housing === "boolean";
+  }
+  function boostOrder(rows) {
+    var top = rows.filter(boostable).slice(0, MAX_BOOST);
+    return { rows: top.concat(rows.filter(function (o) { return top.indexOf(o) < 0; })), top: top };
+  }
+
+  /* the search: case and accents ignored; every word must appear in the role, the restaurant, the town, the région,
+     the kind or the text (in the English view, Nokime's English of them too) */
+  function fold(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/œ/g, "oe").replace(/æ/g, "ae").replace(/[’‘]/g, "'"); }
+  function haystack(o) {
+    var f = [o.role, o.restaurant, o.city, regionOf(o), I18N.fr["kind_" + o.kind], t("kind_" + o.kind), o.text];
+    if (lang() === "en" && o.en) ["role", "restaurant", "text"].forEach(function (k) { if (o.en[k] && shown(o, k)) f.push(o.en[k]); });
+    return fold(f.join("\n"));
+  }
+  function words(q) { return fold(q).split(/\s+/).filter(Boolean); }
+  function found(o, w) { if (!w.length) return true; var h = haystack(o); return w.every(function (x) { return h.indexOf(x) >= 0; }); }
 
   function fmtDate(iso) {
     if (!iso) return "";
@@ -67,7 +93,7 @@
     return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
       (o.hours ? fact("hours", t("colHours"), esc(t("jobsHours", { h: o.hours }))) : "") +
       payFact(o) +
-      (o.housing ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : "") + "</dl>";
+      (o.housing === true ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : o.housing === false ? fact("housing", t("colHousing"), esc(t("jobsNotHoused"))) : "") + "</dl>";   /* absent: not shown */
   }
   function applyMail(o) {
     var subj = t("applySubject", { role: o.role, restaurant: o.restaurant });
@@ -78,20 +104,24 @@
 
   function renderList() {
     var list = $("#jobsList"); if (!list) return;
+    var w = words(state.q);
     var rows = OFFERS.filter(function (o) {
-      return (state.kind === "all" || o.kind === state.kind) && (state.region === "all" || regionOf(o) === state.region) && (!state.housing || o.housing);
+      return (state.kind === "all" || o.kind === state.kind) && (state.region === "all" || regionOf(o) === state.region) && (!state.housing || o.housing) && found(o, w);
     });
     var count = $("#jobsCount"); if (count) count.textContent = OFFERS.length ? t(rows.length === 1 ? "jobsCount1" : "jobsCountN", { n: rows.length }) : "";
     if (!rows.length) {   /* a plain card: the message and the way to post an offer */
-      list.innerHTML = '<div class="jobs-empty"><p>' + esc(OFFERS.length ? t("jobsNoneFiltered") : t("jobsEmpty")) + '</p><a class="btn primary" href="' + esc(list.getAttribute("data-post-href") || "../publier/") + '"><span>' + esc(t("jobsPost")) + '</span><span class="arrow" aria-hidden="true">→</span></a></div>';
+      list.innerHTML = '<div class="jobs-empty"><p>' + esc(!OFFERS.length ? t("jobsEmpty") : w.length ? t("jobsNoneSearch") : t("jobsNoneFiltered")) + '</p><a class="btn primary" href="' + esc(list.getAttribute("data-post-href") || "../publier/") + '"><span>' + esc(t("jobsPost")) + '</span><span class="arrow" aria-hidden="true">→</span></a></div>';
       return;
     }
     var base = list.getAttribute("data-offer-base");
+    var ordered = boostOrder(rows); rows = ordered.rows;
+    var boostLabel = '<span class="boost" title="' + esc(t("jobsBoostTitle")) + '">' + esc(t("jobsBoost")) + '<span class="vh"> (' + esc(t("jobsBoostTitle")) + ")</span></span>";
     /* one card per offer, read top to bottom: the top line (kind, place, date), the role, the restaurant,
        the facts, the folded text, and the one action; from 960px the CSS sets them in three columns */
     list.innerHTML = rows.map(function (o) {
       return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '"><div class="job-head">' +
         '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
+          (ordered.top.indexOf(o) >= 0 ? boostLabel : "") +
           '<p class="job-where">' + esc(o.city) + (regionOf(o) ? '<span class="muted"> · ' + esc(regionOf(o)) + "</span>" : "") + "</p>" +
           (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
         "<h3>" + (o.demo || !base ? esc(tx(o, "role")) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(tx(o, "role")) + "</a>") + "</h3>" +
@@ -113,6 +143,13 @@
   $$("[data-kind]").forEach(function (b) { b.addEventListener("click", function () { state.kind = b.getAttribute("data-kind"); renderFilters(); renderList(); }); });
   var hb = $("#jobsHousing"); if (hb) hb.addEventListener("click", function () { state.housing = !state.housing; renderFilters(); renderList(); });
   var rs = $("#jobsRegion"); if (rs) rs.addEventListener("change", function () { state.region = rs.value; renderList(); });
+  /* the search box: the list and the count follow the typing, 150 ms after the last key; a value the browser restored counts */
+  var sb = $("#jobsSearch"), sbTimer = null;
+  if (sb) {
+    state.q = sb.value || "";
+    var onSearch = function () { clearTimeout(sbTimer); sbTimer = setTimeout(function () { if (sb.value !== state.q) { state.q = sb.value; renderList(); } }, 150); };
+    sb.addEventListener("input", onSearch); sb.addEventListener("search", onSearch);
+  }
 
   /* ---------- the posting form: a mail to Nokime, every field in the body ---------- */
   var form = $("#postForm");

@@ -120,6 +120,16 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .pass{background:var(--steel);padding:64px 0 96px}
 .pass-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 .jobs-count{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--ink-2)}
+/* the search: the inputs' box (1.5px, radius 8), a drawn lens in ink; full width on a phone */
+.jobs-search{margin-top:24px;max-width:560px}
+.jobs-search + .jobs-filters{margin-top:12px}
+.jobs-search-input{font:inherit;font-size:16px;font-weight:400;height:48px;width:100%;min-width:0;padding:0 14px 0 44px;
+  border:1.5px solid var(--ink-3);border-radius:8px;background-color:var(--paper);color:var(--ink);-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2317191E' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='4.8'/%3E%3Cpath d='M10.5 10.5 14 14'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 15px center;background-size:16px}
+.jobs-search-input:hover{border-color:var(--ink)}
+.jobs-search-input:focus-visible{outline:2.5px solid var(--bleu);outline-offset:2px;border-color:var(--ink)}
+.jobs-search-input::placeholder{color:var(--ink-3);opacity:1}
 .jobs-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:24px}
 .jobs-filters .chip{height:38px;padding:0 16px;border:1.5px solid var(--ink-3);border-radius:999px;background:var(--paper);color:var(--ink);
   font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
@@ -146,6 +156,11 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .job-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px}
 .tag{display:inline-flex;align-items:center;min-height:28px;padding:3px 12px;border:1px solid var(--ink-3);border-radius:999px;
   font-size:13px;font-weight:600;line-height:1.2;color:var(--ink);white-space:nowrap}
+/* "Mise en avant": a paid place at the top, said by a label beside the kind; ink and a thin square-cornered border, never the blue,
+   and nothing else about the card changes */
+.boost{display:inline-flex;align-items:center;min-height:28px;padding:3px 10px;border:1px solid var(--ink);border-radius:4px;
+  font-size:12px;font-weight:600;line-height:1.2;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);white-space:nowrap;cursor:help}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .job-where{order:3;flex:1 1 100%;margin:0;font-size:15px;line-height:1.35;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
 .job-pub{margin:0 0 0 auto;font-size:14px;line-height:1.35;color:var(--ink-2);white-space:nowrap}
 .job h3{font-size:25px;line-height:1.1;letter-spacing:-.02em;margin:0}
@@ -193,6 +208,8 @@ html:not([lang="en"]) .only-en{display:none}
 }
 
 /* no offer, or none under these filters: a plain card with the message and the way to post one */
+/* how the list is ordered: folded under it, on the steel band */
+.jobs-order{margin-top:28px}
 .jobs-empty{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;padding:28px}
 .jobs-empty p{margin:0;max-width:52ch;font-size:19px;line-height:1.45;font-weight:500;letter-spacing:-.008em}
 
@@ -212,8 +229,8 @@ html:not([lang="en"]) .only-en{display:none}
 
 /* ---------- for restaurants: three columns, a hairline between them ---------- */
 .free-banner{margin:0 0 32px;padding:18px 24px;background:var(--steel);color:var(--ink);border-radius:12px;font-size:clamp(18px,1.7vw,20px);line-height:1.4;font-weight:600;letter-spacing:-.008em}   /* the first free season: ink on the steel panel, never the blue */
-.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
-.tier{padding:24px 32px 32px;display:flex;flex-direction:column}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
+.tier{padding:24px 28px 32px;display:flex;flex-direction:column}
 .tier:first-child{padding-left:0}
 .tier:last-child{padding-right:0}
 .tier + .tier{border-left:1px solid var(--line)}
@@ -369,6 +386,7 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .jobs-filters .chip{padding:0 14px}
   #jobsHousing{margin-left:0}
   .jobs-select{margin-left:0;width:100%}
+  .jobs-search{max-width:none}
   .jobs-list{gap:12px;margin-top:28px}
   .job{padding:22px 20px}
   .job h3{font-size:23px}
@@ -416,4 +434,24 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
 }
 @media (max-width:720px){
   .f-period{grid-template-columns:1fr}
+}
+
+/* four tiers: four columns on a desktop, two by two on a tablet, one column on a phone (the 960px rule above) */
+@media (min-width:721px) and (max-width:1180px){
+  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tiers .tier{padding:24px 28px 30px;border-left:0;border-top:0}
+  .tiers .tier:nth-child(odd){padding-left:0}
+  .tiers .tier:nth-child(even){padding-right:0;border-left:1px solid var(--line)}
+  .tiers .tier:nth-child(n+3){border-top:1px solid var(--line)}
+}
+
+/* ---------- the charter: six commitments as a plain list, the rail's ball before each ---------- */
+.pledges{list-style:none;margin:0;padding:0;max-width:46rem;border-top:1.5px solid var(--ink)}
+.pledges li{position:relative;padding:18px 0 20px 30px;border-bottom:1px solid var(--line);font-size:clamp(18px,1.7vw,20px);line-height:1.45;font-weight:500;letter-spacing:-.008em}
+.pledges li::before{content:"";position:absolute;left:2px;top:27px;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink)}
+.pledges-note{margin:22px 0 48px;max-width:46rem;color:var(--ink-2)}
+@media (max-width:720px){
+  .pledges li{padding:16px 0 18px 26px}
+  .pledges li::before{top:24px}
+  .pledges-note{margin-bottom:36px}
 }
