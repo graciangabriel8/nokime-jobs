@@ -117,6 +117,8 @@ window.NOKIME_I18N = {
     schAskMore: "Nokime is made by a BTS MHR student. Schools are best placed to say what an offer lacks to be useful in class, and to write the distinction’s questions with us. Write to us, we answer fast.",
     titleContact: "Contact — Nokime Jobs", descContact: "Write to Nokime Jobs: an offer to post, a question, a school that wants to know more.",
     ctTitle: "Write to us.", ctLead: "An offer to post, a question about an offer, a school that wants to know more: one address.", ctCta: "Write",
+    title404: "Page not found — Nokime Jobs", desc404: "An offer leaves the site once its position is filled or its end date has passed.",
+    nfTitle: "This page doesn’t exist, or no longer does.", nfLead: "An offer leaves the site once its position is filled or its end date has passed.",
     ctQ: "A position is filled?", ctA: "Write us the establishment’s and the position’s name: the offer is taken down the same day.",
     titleLegal: "Legal notice — Nokime Jobs", descLegal: "Publisher, hosting, personal data and prices of Nokime Jobs.",
     /* the charter */

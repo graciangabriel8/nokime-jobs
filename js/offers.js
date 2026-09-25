@@ -1,5 +1,6 @@
 /* Nokime Jobs — the offers. Written in French, as the law wants job offers in France (Code du travail L5331-4).
    One object per offer; the list page renders them, newest first, until `expires`.
+   Live offers are strict JSON: every key in double quotes ("id": "…"), unlike the demo list below; tools/build.py stops otherwise.
    Add an offer here after the restaurant's mail has been checked (and, after its three free months, its plan paid).
 
    kind: "stage" | "alternance" | "saison"

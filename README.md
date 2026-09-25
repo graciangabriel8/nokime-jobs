@@ -10,6 +10,8 @@ Stages, alternances et saisons en hôtellerie-restauration, en cuisine, en salle
 Serve locally: `python3 -m http.server 8648` (or `preview_start` name `nokime-jobs`).
 Ship: `python3 tools/bump.py` (assets touched), `python3 tools/check-i18n.py`, `python3 tools/build.py`, commit, push.
 
+Hosting: Apache on OVH serves the site at https://jobs.nokime.fr/; a push to `main` deploys through OVH's Git webhook within seconds. `.htaccess` forces HTTPS and serves `404.html` for any missing path, so every URL in that page is root-absolute. The old github.io address only serves redirect stubs from the `gh-pages` branch. `bump.py` still matters: browsers keep the CSS and JS they cached, and a new `?v=` makes them fetch the new files.
+
 ## Prices, search, « Mise en avant » and the charter
 
 - **Prices.** Establishments choose a tier: Une offre 19 € (one offer online at a time), Brigade 39 € (up to five), Maison 79 € (unlimited, and « Mise en avant »), each billed for every month with at least one offer online, through a payment link; no card is taken on the site. No VAT is charged: a note under the tiers and the legal notice carry « TVA non applicable, article 293 B du Code général des impôts », and a price shown is the price paid. Candidates pay 0 €. The first season is free: three months at the Brigade level, counted from the first offer, once per establishment, without commitment. The model is written in four places that must stay identical: the home page's `#prix` section (`restoFree`, `jt*`), the posting page (`postPriceA`, `p2t`/`p2p`), and the legal notice (Prix).

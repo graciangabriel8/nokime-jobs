@@ -6,6 +6,9 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # A Git deploy may leave its folder in the web root: never serve it.
 RedirectMatch 404 ^/\.git(/|$)
 
+# Any missing path, at any depth, gets the site's own page (its links are root-absolute).
+ErrorDocument 404 /404.html
+
 AddType font/woff2 .woff2
 AddDefaultCharset UTF-8
 AddCharset UTF-8 .css .js .xml .txt

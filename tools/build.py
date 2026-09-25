@@ -19,7 +19,11 @@ today = datetime.date.today().isoformat()
 
 src = (root / "js/offers.js").read_text(encoding="utf-8")
 m = re.search(r"window\.NOKIME_JOBS\s*=\s*(\[.*?\]);\s*\n", src, re.S)
-offers = json.loads(m.group(1)) if m and m.group(1).strip() != "[]" else []
+try:
+    offers = json.loads(m.group(1)) if m and m.group(1).strip() != "[]" else []
+except json.JSONDecodeError as err:   # an offer copied from the demo list keeps its unquoted keys
+    at = src[:m.start(1)].count("\n") + err.lineno; col = err.colno + (m.start(1) - src.rfind("\n", 0, m.start(1)) - 1 if err.lineno == 1 else 0)
+    sys.exit("js/offers.js, ligne %d, colonne %d : NOKIME_JOBS doit être du JSON strict (clés entre guillemets doubles)." % (at, col))
 live = [o for o in offers if not o.get("demo") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(o.get("expires") or o.get("end") or "")) and (o.get("expires") or o["end"]) >= today]   # as js/jobs.js: undated or past its end, no page
 
 home = (root / "index.html").read_text(encoding="utf-8")
