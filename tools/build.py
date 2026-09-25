@@ -14,7 +14,7 @@ js/i18n.js, each between its start/end markers. Nothing about any answer is read
 """
 import json, re, sys, pathlib, datetime, shutil, html, urllib.parse
 root = pathlib.Path(__file__).resolve().parent.parent
-BASE = "https://graciangabriel8.github.io/nokime-jobs/"
+BASE = "https://jobs.nokime.fr/"
 today = datetime.date.today().isoformat()
 
 src = (root / "js/offers.js").read_text(encoding="utf-8")

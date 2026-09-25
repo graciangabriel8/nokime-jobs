@@ -1,0 +1,11 @@
+# Nokime Jobs on OVH (Apache), since the move from GitHub Pages.
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# A Git deploy may leave its folder in the web root: never serve it.
+RedirectMatch 404 ^/\.git(/|$)
+
+AddType font/woff2 .woff2
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .css .js .xml .txt
