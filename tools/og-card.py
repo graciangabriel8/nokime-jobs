@@ -20,6 +20,7 @@ def ttf(family_query):
 
 sans = ttf("Bricolage+Grotesque:opsz,wdth,wght@96,85,800")
 mono = ttf("DM+Mono:wght@500")
+wordmark = base64.b64encode((root / "fonts" / "archivo-wordmark.woff2").read_bytes()).decode()   # the group's « nokime »
 
 home = (root / "index.html").read_text(encoding="utf-8")
 drawing = re.search(r'<svg class="pass-drawing" viewBox="0 0 520 330"[^>]*>(.*?)</svg>', home, re.S).group(1).replace("currentColor", INK)
@@ -32,13 +33,14 @@ card = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 <defs><style>
 @font-face{{font-family:"Bricolage Grotesque";src:url(data:font/ttf;base64,{sans}) format("truetype")}}
 @font-face{{font-family:"DM Mono";src:url(data:font/ttf;base64,{mono}) format("truetype")}}
+@font-face{{font-family:"Nokime Wordmark";font-weight:700;font-stretch:112%;src:url(data:font/woff2;base64,{wordmark}) format("woff2")}}
 </style></defs>
 <rect width="1200" height="1200" fill="{PAPER}"/>
 <g transform="translate(0,285)">
 <rect x="780" y="0" width="420" height="630" fill="{STEEL}"/>
 <g transform="translate(790,180) scale(.77)">{drawing}</g>
 <g transform="translate(66,58) scale(1.5)">{mark}</g>
-<text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}">Nokime Jobs</text>
+<text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}"><tspan font-family="Nokime Wordmark, Helvetica, sans-serif" font-weight="700" font-stretch="112%" letter-spacing="-0.48">nokime</tspan> Jobs</text>
 <text font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="64" letter-spacing="-1.1" fill="{INK}">
 <tspan x="70" y="258">Des stages et des saisons</tspan><tspan x="70" y="320">dans des maisons</tspan><tspan x="70" y="382" fill="{BLEU}">qui en valent la peine.</tspan></text>
 <text x="72" y="530" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK}">STAGES · ALTERNANCES · SAISONS</text>

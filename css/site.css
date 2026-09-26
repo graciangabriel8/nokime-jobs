@@ -75,6 +75,7 @@ h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .head-row{display:flex;align-items:center;gap:36px;height:72px}
 .brand{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:500;letter-spacing:-.015em;white-space:nowrap;border-radius:4px}
 .brand .brandword{font-weight:800;font-stretch:85%}
+.brand .wordmark{font-family:'Nokime Wordmark',var(--sans);font-weight:700;font-stretch:112%;letter-spacing:-.015em}
 /* two tickets under the rail, the second printed blue */
 .mark{width:30px;height:30px;flex:none}
 .mark .mk-rail{fill:var(--ink)}

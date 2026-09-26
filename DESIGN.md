@@ -34,6 +34,7 @@ Decorative only, no text: `--line #D9DDE2`, the hairlines and the 1px border of 
 
 - **Bricolage Grotesque** (variable: weight 200–800, width 75–100 %, optical size 12–96) is the voice. The headline is 800 at width 85 %, `clamp(42px, 6.6vw, 96px)`, line-height .95, −0.02em; page titles the same at `clamp(40px, 6vw, 88px)`; section titles 700 at width 88 %, `clamp(28px, 3.2vw, 42px)`; h3 700 at width 90 %, 22px; an offer's role 25px (23px on a phone); inside an offer everything is Bricolage: the kind's pill 600 at 13px, the fact labels 600 at 12px in uppercase (+0.06em), the fact values 500 at 16px with tabular numerals, the restaurant 500 at 17px; lead 450, `clamp(19px, 1.9vw, 22px)`/1.42; body 17px/1.55.
 - **DM Mono** (400, 500) labels, and never appears inside an offer: the section eyebrows, the count of offers, the form's section labels and character count, and the figures typed into the form (dates, hours, département, phone). Tier names, the footer line and the legal titles are set in Bricolage, not in uppercase mono.
+- **The lockup** is the group's wordmark « nokime » (Archivo Bold at 112 % width, `fonts/archivo-wordmark.woff2`, the group site's file, at the brand's size) followed by « Jobs » in Bricolage 800 at width 85 %, beside the mark, in the header, the footer and the link-preview card.
 
 Both are self-hosted woff2 (latin, latin-ext), OFL, the same files as the poster; nothing loads from a third party.
 

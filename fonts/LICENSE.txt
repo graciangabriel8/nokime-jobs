@@ -1,7 +1,8 @@
-The font files in this directory are latin and latin-ext subsets fetched from Google Fonts, redistributed under the SIL Open Font License 1.1 below. Both fonts' own copyright notices:
+The font files in this directory are latin and latin-ext subsets of Bricolage Grotesque and DM Mono fetched from Google Fonts, and a cut of Archivo SemiExpanded Bold to the six letters of « nokime » (the group's wordmark, copied from the group site), redistributed under the SIL Open Font License 1.1 below. The fonts' own copyright notices:
 
 Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage)
 Copyright 2020 The DM Mono Project Authors (https://github.com/googlefonts/dm-mono)
+Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo).
 
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
 -----------------------------------------------------------
