@@ -23,7 +23,7 @@ Hosting: Apache on OVH serves the site at https://jobs.nokime.fr/; a push to `ma
 
 `questionnaire/` is a short multiple-choice questionnaire for people who did an internship, an apprenticeship or a season in a hotel or a restaurant, in the kitchen, the dining room, the rooms division or the spa. It prepares the distinction and nothing else: no answer is ever published, neither alone nor added up for an establishment, and nothing about any establishment is published. It is reached from the home page's distinction section, from the écoles page and from the footer; it has no menu item.
 
-- The button builds a mail to contact@copius.fr in `js/jobs.js`: every answer in French, the two confirmations, a codes line to copy into the private file, and a closing line asking for the proof. Nothing is sent by the site.
+- The button builds a mail to contact@nokime.fr in `js/jobs.js`: every answer in French, the two confirmations, a codes line to copy into the private file, and a closing line asking for the proof. Nothing is sent by the site.
 - **The questions are written once**, in `tools/questionnaire_questions.py`. `tools/build.py` writes the period selects and the question fieldsets into `questionnaire/index.html` and the English strings into `js/i18n.js`, each between its `start`/`end` markers. Never rename a question or option id once answers use it.
 - **Answers, identities, proofs and the verification log never enter this repository.** They live in a private folder outside any repository (`~/Projets/kairos/jobs-retours/`, whose `LISEZMOI.md` says how to check a proof, log it, keep the answers, withdraw them and delete them after three years). `tools/build.py` reads nothing from it.
 

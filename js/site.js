@@ -5,7 +5,7 @@
   "use strict";
 
   var LS_LANG = "nokime-lang";
-  var ADDRESS = "contact@copius.fr";
+  var ADDRESS = "contact@nokime.fr";
   var I18N = window.NOKIME_I18N || { fr: {}, en: {} };
 
   var $ = function (s, r) { return (r || document).querySelector(s); };

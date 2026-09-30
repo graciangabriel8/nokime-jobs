@@ -3,7 +3,7 @@
 (function () {
   "use strict";
   var I18N = window.NOKIME_I18N || { fr: {}, en: {} };
-  var ADDRESS = "contact@copius.fr";
+  var ADDRESS = "contact@nokime.fr";
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
