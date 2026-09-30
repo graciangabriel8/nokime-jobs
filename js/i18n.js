@@ -90,7 +90,7 @@ window.NOKIME_I18N = {
     p3t: "The offer is online", p3p: "Candidates write to you directly. You tell us when the position is filled.",
     jobsEyebrowLink: "Nokime Jobs", offersTitle: "The offers.", offersLead: "Internships, apprenticeships and seasons. Free for those who are looking; you write directly to the establishment.",
     jobsKicker: "Right now.", seekKicker: "For those who are looking.", restoKicker: "For hotels and restaurants.",
-    restoFree: "Your first season is on us: three months at the Brigade level, counted from your first offer, once per establishment. No commitment: at the end, you decide whether to continue.",
+    restoFree: "Your first three months are on us: at the Brigade level, counted from your first offer, once per establishment. No commitment: at the end, you decide whether to continue.",
     jt1n: "One offer", jt1p: "€95", jt1per: "per six-month season, or €190 a year", jt1note: "One offer online at a time.", jt1cta: "Post an offer",
     jt2n: "Brigade", jt2p: "€195", jt2per: "per six-month season, or €390 a year", jt2note: "Up to five offers online at a time.", jt2cta: "Post an offer",
     jt3n: "Maison", jt3p: "€395", jt3per: "per six-month season, or €790 a year", jt3note: "Unlimited offers, and your transparent offers featured, if you join the ", jt3noteLink: "welcome charter", jt3cta: "Post an offer",
