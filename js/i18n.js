@@ -83,7 +83,7 @@ window.NOKIME_I18N = {
     fMinors: "Applications from minors (under 18)", fMinorsOk: "Accepted", fMinorsNo: "Not accepted",
     fMinorsRule: "Only decline minors if the internship needs what the law does not allow them: a refusal based on age must be justified by their protection.", fMinorsLawQ: "What the law limits", fMinorsLaw: "The law protects an intern under 18: as a rule, at most 8 h a day and 35 h a week; no night work, except by derogation until 11:30 pm in hotels and restaurants; some regulated tasks (machines especially) only in vocational training, after a derogation declaration; bar service in a drinks establishment only over 16, in training towards a qualification, in an approved establishment.",
     fKind: "Kind of offer", fRestaurant: "Establishment", fCity: "City", fDept: "Département", fRole: "Position", fStart: "Start", fEnd: "End",
-    fHours: "Hours a week", fPay: "Pay", fPayHidden: "Do not show the pay on the offer", fHousing: "Lodging provided", fContact: "Contact name", fEmail: "Contact email", fPhone: "Phone",
+    fHours: "Hours a week", fPay: "Pay", fPayHidden: "Do not show the pay on the offer", fHousing: "Housing", fContact: "Contact name", fEmail: "Contact email", fPhone: "Phone",
     fContactNote: "The email and the phone number are published with the offer; the contact’s name is not.", fContactLink: "Personal data",
     pfDesc: "Description, a few lines", fLawful: "The offer is accurate, written in French, and carries no discriminatory wording.",
     fSend: "Send the offer", fSendNote: "The button opens your mail client with the offer ready to go.", fSent: "Thank you. We review it and answer within forty-eight hours.",

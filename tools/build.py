@@ -26,6 +26,9 @@ except json.JSONDecodeError as err:   # an offer copied from the demo list keeps
     sys.exit("js/offers.js, ligne %d, colonne %d : NOKIME_JOBS doit être du JSON strict (clés entre guillemets doubles)." % (at, col))
 live = [o for o in offers if not o.get("demo") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(o.get("expires") or o.get("end") or "")) and (o.get("expires") or o["end"]) >= today]   # as js/jobs.js: undated or past its end, no page
 
+for o in live:
+    if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
+
 home = (root / "index.html").read_text(encoding="utf-8")
 head = home[:home.index("<header")]; header = home[home.index("<header"):home.index("<main>")]
 footer = home[home.index("<footer"):home.index('<script src="js/i18n.js')]; scripts = home[home.index('<script src="js/i18n.js'):home.index('<script src="js/offers.js')]

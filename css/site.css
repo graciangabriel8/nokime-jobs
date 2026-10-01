@@ -301,7 +301,8 @@ html:not([lang="en"]) .only-en{display:none}
 .jobs-form ::placeholder{color:var(--ink-3);opacity:1}
 .jobs-form .f-check{flex-direction:row;align-items:flex-start;gap:12px;font-weight:500;font-size:15px;line-height:1.45}
 .jobs-form .f-wide{grid-column:span 2}
-/* the two yes/no choices of the offer share one line, under the fields they qualify */
+.jobs-form .f-wide > .f-label{margin-bottom:10px}   /* the housing question inside the fields grid: a gap between its line and its chips */
+/* the pay's own yes/no choice, on a line under the fields it qualifies */
 .jobs-form .f-checks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px 32px}
 .jobs-form input:disabled,.jobs-form input:disabled:hover{background:var(--steel);border-color:var(--line);cursor:not-allowed}
 .f-check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--ink);flex:none}

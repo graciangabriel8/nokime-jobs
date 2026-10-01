@@ -9,7 +9,7 @@
    shown beside the kind and filtered by the board's métier select; absent, no department is shown and the offer drops out only
    when a department is selected.
    dept: the département number as a string ("74"); the région is derived.
-   housing: true when lodging is provided, false when not (the offer reads "Non logé"), absent and nothing is shown; pay: free text ("gratification légale", "1 900 € brut"), optional:
+   housing: mandatory on every offer, true when lodging is provided (the offer reads "Logé"), false when not ("Non logé"); tools/build.py stops on a live offer without it; pay: free text ("gratification légale", "1 900 € brut"), optional:
    empty, missing or with payHidden: true, the offer reads "Non communiquée" and, where the law sets one, the floor for its kind.
    minors: stage offers only; true when applications from minors (under 18) are accepted (the offer reads "Mineurs : Acceptés"), false when 18 and over only,
    absent and nothing is shown. It changes nothing else: not the featured offers, the order, the filters, the search or the counts.

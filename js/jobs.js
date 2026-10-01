@@ -170,7 +170,7 @@
       var metier = (form.querySelector("[name=metier]:checked") || {}).value || "";
       var lines = [
         ["Type", { stage: "Stage", alternance: "Alternance", saison: "Saison" }[kind] || kind], ["Métier", I18N.fr["metier_" + metier] || metier], ["Établissement", f("restaurant")], ["Ville", f("city")], ["Département", f("dept")],
-        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", f("housing")],
+        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", (form.querySelector("[name=housing]:checked") || {}).value === "oui" ? "logé" : "non logé"],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
       if (kind === "stage") { var mn = (form.querySelector("[name=minors]:checked") || {}).value; lines.splice(11, 0, ["Mineurs", mn === "oui" ? "acceptés" : "non acceptés"]); }   /* after "Logement" */
