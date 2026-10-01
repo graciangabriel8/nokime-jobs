@@ -215,10 +215,11 @@
       if (endYear) endYear.setCustomValidity(ym("start") && ym("end") && ym("end") < ym("start") ? t("qEndBeforeStart") : "");
       if (!qform.checkValidity()) { qform.reportValidity(); return; }
       var type = qform.querySelector("[name=type]:checked");
+      var metier = qform.querySelector("[name=metier]:checked");
       var lines = [[labelOf("etablissement"), val("etablissement")], [labelOf("ville"), val("ville")], [labelOf("dept"), val("dept")],
-        [frOf($("[data-t=qType]", qform)), frOf(type.nextElementSibling)], [frOf($("[data-t=fStart]", qform)), monthOf("start")], [frOf($("[data-t=fEnd]", qform)), monthOf("end")],
+        [frOf($("[data-t=qType]", qform)), frOf(type.nextElementSibling)], [frOf($("[data-t=qMetier]", qform)), frOf(metier.nextElementSibling)], [frOf($("[data-t=fStart]", qform)), monthOf("start")], [frOf($("[data-t=fEnd]", qform)), monthOf("end")],
         [FR.qMailSchool, val("ecole")], ["", ""]];
-      var codes = ["type=" + type.value, "debut=" + ym("start"), "fin=" + ym("end")];
+      var codes = ["type=" + type.value, "metier=" + metier.value, "debut=" + ym("start"), "fin=" + ym("end")];
       $$("[data-q]", qform).forEach(function (fs) {
         var on = $$("input:checked", fs);
         lines.push([frOf($("legend [data-t]", fs)), on.map(function (i) { return frOf(i.nextElementSibling); }).join(", ") || "\u2014"]);

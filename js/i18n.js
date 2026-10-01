@@ -141,7 +141,7 @@ window.NOKIME_I18N = {
     chReportT: "If a report reaches us",
     chReportM: "If a serious report reaches us from a school or a candidate, the establishment’s featuring is suspended while we check, and the establishment is told. What falls under the law, such as harassment or undeclared work, is also reported to the school, the labour inspectorate or the police.",
     /* the questionnaire */
-    qEndBeforeStart: "The end is before the start.", qSecPlace: "The establishment", qEtab: "Establishment", qSecPeriod: "The period", qType: "I was there for", qMonth: "Month", qYear: "Year",
+    qEndBeforeStart: "The end is before the start.", qSecPlace: "The establishment", qEtab: "Establishment", qSecPeriod: "The period", qType: "I was there for", qMetier: "I mostly worked in", qMonth: "Month", qYear: "Year",
     qSecAnswers: "Your answers", qSeveral: "(several answers possible)",
     qHint: "About your own experience, at this establishment. For an offence, such as harassment or violence, this form is not the right place: talk to your school, the labour inspectorate or the police.",
     qSecSend: "Sending", qC1: "I worked at this establishment on these dates.", footQuestionnaire: "The questionnaire", footCharter: "The welcome charter", qCta: "Answer the questionnaire",
