@@ -97,7 +97,8 @@
     return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
       (o.hours ? fact("hours", t("colHours"), esc(t("jobsHours", { h: o.hours }))) : "") +
       payFact(o) +
-      (o.housing === true ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : o.housing === false ? fact("housing", t("colHousing"), esc(t("jobsNotHoused"))) : "") + "</dl>";   /* absent: not shown */
+      (o.housing === true ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : o.housing === false ? fact("housing", t("colHousing"), esc(t("jobsNotHoused"))) : "") +
+      (o.kind === "stage" && o.minors === true ? fact("minors", t("colMinors"), esc(t("jobsMinorsOk"))) : o.kind === "stage" && o.minors === false ? fact("minors", t("colMinors"), esc(t("jobsMinorsNo"))) : "") + "</dl>";   /* absent, or not a stage: not shown */
   }
   function applyMail(o) {
     var subj = t("applySubject", { role: o.role, restaurant: o.restaurant });
@@ -172,11 +173,21 @@
         ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", f("housing")],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
+      if (kind === "stage") { var mn = (form.querySelector("[name=minors]:checked") || {}).value; lines.splice(11, 0, ["Mineurs", mn === "oui" ? "acceptés" : "non acceptés"]); }   /* after "Logement" */
       var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
       location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
       var ok = $("#postSent"); if (ok) ok.hidden = false;
     });
     var kindInputs = $$("[name=kind]", form), pay = form.elements.pay, payHidden = form.elements.payHidden, payKept = "";
+    /* "minors": asked for a stage only; shown and required then, hidden, disabled and cleared otherwise */
+    var minorsSec = $("#minorsSec"), minorsInputs = $$("[name=minors]", form);
+    var syncMinors = function () {
+      var stage = !!form.querySelector("[name=kind][value=stage]:checked");
+      if (minorsSec) minorsSec.hidden = !stage;
+      minorsInputs.forEach(function (m) { m.disabled = !stage; m.required = stage; if (!stage) m.checked = false; });
+    };
+    kindInputs.forEach(function (r) { r.addEventListener("change", syncMinors); });
+    syncMinors();   /* a kind the browser restored */
     kindInputs.forEach(function (r) { r.addEventListener("change", function () { if (pay && !pay.disabled && !pay.value.trim() && r.value === "stage") pay.value = I18N.fr.payLegal; /* offers are French, whatever the reader's language */ }); });
     /* "do not show the pay": the field empties and locks; unticked, it comes back with what was typed */
     if (pay && payHidden) payHidden.addEventListener("change", function () {

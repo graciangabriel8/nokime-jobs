@@ -11,6 +11,8 @@
    dept: the département number as a string ("74"); the région is derived.
    housing: true when lodging is provided, false when not (the offer reads "Non logé"), absent and nothing is shown; pay: free text ("gratification légale", "1 900 € brut"), optional:
    empty, missing or with payHidden: true, the offer reads "Non communiquée" and, where the law sets one, the floor for its kind.
+   minors: stage offers only; true when applications from minors (under 18) are accepted (the offer reads "Mineurs : Acceptés"), false when 18 and over only,
+   absent and nothing is shown. It changes nothing else: not the featured offers, the order, the filters, the search or the counts.
    distinction: null until the working-comfort distinction exists.
    boost: true when the restaurant paid for "Mise en avant"; honoured only when the offer states its pay (not payHidden), its hours
    and housing (true or false), and only with charter: true (the establishment signed the charte d’accueil, charte/) and without
@@ -32,7 +34,7 @@ window.NOKIME_JOBS_DEMO = [
           text: "A brigade of eight, a short menu, produce from the valley. Two consecutive days off outside school holidays." },
     published: "2026-09-22", expires: "2026-12-01", distinction: null, demo: true },
   { id: "demo-2", metier: "cuisine", kind: "stage", restaurant: "Exemple — bistrot de quartier", city: "Lyon", dept: "69", role: "Stage en cuisine",
-    start: "2027-01-11", end: "2027-03-05", hours: 39, pay: "Gratification légale", housing: false,
+    start: "2027-01-11", end: "2027-03-05", hours: 39, pay: "Gratification légale", housing: false, minors: false,
     contact: { name: "La cheffe", email: "exemple@exemple.invalid", phone: "" },
     text: "Huit semaines sur tous les postes, du garde-manger au chaud. Convention avec l’école.",
     en: { role: "Kitchen internship", restaurant: "Example — neighbourhood bistro", pay: "Statutory internship allowance",
@@ -53,7 +55,7 @@ window.NOKIME_JOBS_DEMO = [
           text: "Hot station, lunch and dinner service, two days off a week. A studio of your own, five minutes on foot." },
     published: "2026-09-15", expires: "2026-11-25", distinction: null, demo: true },
   { id: "demo-5", metier: "cuisine", kind: "stage", restaurant: "Exemple — table de quartier", city: "Saint-Étienne", dept: "42", role: "Stage en pâtisserie",
-    start: "2027-01-18", end: "2027-03-26", hours: 35, pay: "Gratification légale, repas fournis", housing: true, boost: true, charter: true,
+    start: "2027-01-18", end: "2027-03-26", hours: 35, pay: "Gratification légale, repas fournis", housing: true, minors: true, boost: true, charter: true,
     contact: { name: "La cheffe pâtissière", email: "exemple@exemple.invalid", phone: "" },
     text: "Dix semaines aux desserts de l’assiette et au goûter du dimanche. Chambre dans l’appartement au-dessus du restaurant.",
     en: { role: "Pastry internship", restaurant: "Example — neighbourhood restaurant", pay: "Statutory internship allowance, meals provided",

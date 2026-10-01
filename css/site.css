@@ -279,6 +279,7 @@ html:not([lang="en"]) .only-en{display:none}
 .form-card{max-width:960px;padding:40px 44px 44px}
 .jobs-form{margin:0}
 .f-sec{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,4fr);gap:14px 40px;padding:26px 0 30px;border-top:1px solid var(--line)}
+.f-sec[hidden]{display:none}
 .f-sec:first-child{border-top:0;padding-top:0}
 .f-sec:last-child{padding-bottom:0}
 .f-sec > .f-label{margin-top:10px;color:var(--ink)}

@@ -18,8 +18,8 @@
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../css/fonts.css?v=40">
-<link rel="stylesheet" href="../css/site.css?v=40">
+<link rel="stylesheet" href="../css/fonts.css?v=41">
+<link rel="stylesheet" href="../css/site.css?v=41">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titlePost" data-desc="descPost">
@@ -64,6 +64,17 @@
             <label class="chip"><input type="radio" name="kind" value="stage" required><span data-t="kind_stage">Stage</span></label>
             <label class="chip"><input type="radio" name="kind" value="alternance"><span data-t="kind_alternance">Alternance</span></label>
             <label class="chip"><input type="radio" name="kind" value="saison"><span data-t="kind_saison">Saison</span></label>
+          </div>
+        </div>
+        <div class="f-sec" id="minorsSec" role="radiogroup" aria-labelledby="minorsLabel" hidden>
+          <p class="f-label" id="minorsLabel" data-t="fMinors">Candidatures de mineurs (moins de 18 ans)</p>
+          <div>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="minors" value="oui" disabled><span data-t="fMinorsOk">Acceptées</span></label>
+              <label class="chip"><input type="radio" name="minors" value="non" disabled><span data-t="fMinorsNo">Non acceptées</span></label>
+            </div>
+            <p class="small f-note" data-t="fMinorsRule">Ne refusez les mineurs que si le stage exige ce que la loi ne leur permet pas : un refus fondé sur l’âge doit être justifié par leur protection.</p>
+            <details class="more f-more"><summary data-t="fMinorsLawQ">Ce que la loi encadre</summary><p class="small" data-t="fMinorsLaw">La loi protège un stagiaire mineur : en principe 8 h par jour et 35 h par semaine au plus ; pas de travail de nuit, sauf dérogation jusqu’à 23 h 30 en hôtellerie-restauration ; certains travaux réglementés (machines notamment) seulement en formation professionnelle, après une déclaration de dérogation ; le service au bar d’un débit de boissons seulement à plus de 16 ans, en formation diplômante, dans un établissement agréé.</p></details>
           </div>
         </div>
         <div class="f-sec" role="radiogroup" aria-labelledby="metierLabel">
@@ -161,8 +172,8 @@
   </div>
 </footer>
 
-<script src="../js/i18n.js?v=40"></script>
-<script src="../js/site.js?v=40"></script>
-<script src="../js/jobs.js?v=40"></script>
+<script src="../js/i18n.js?v=41"></script>
+<script src="../js/site.js?v=41"></script>
+<script src="../js/jobs.js?v=41"></script>
 </body>
 </html>

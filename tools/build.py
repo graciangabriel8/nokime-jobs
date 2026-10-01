@@ -74,7 +74,9 @@ for o in live:
              '<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
              ('<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) if o.get("hours") else "") +
              pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
-                            '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else ""))   # as js/jobs.js: absent, not shown
+                            '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else "") +
+             ('<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsOk">Acceptés</dd></div>' if o["kind"] == "stage" and o.get("minors") is True else
+              '<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsNo">18 ans et plus</dd></div>' if o["kind"] == "stage" and o.get("minors") is False else ""))   # as js/jobs.js: absent, not shown
     orig = ('<div class="job-orig only-en" lang="fr"><p class="job-orig-label" lang="en" data-t="jobsOriginal">Original offer, in French</p><p><b>%s</b> · %s%s</p>%s</div>' %
             (html.escape(o["role"]), html.escape(o["restaurant"]), " · " + html.escape(pay_of(o)) if pay_of(o) else "", '<p>%s</p>' % html.escape(o["text"]) if tr.get("text") else "")) if tr else ""   # an untranslated text is already shown, in French
     ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": (o.get("text") or desc), "datePosted": o.get("published", today),

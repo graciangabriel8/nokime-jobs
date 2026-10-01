@@ -3,7 +3,7 @@
    every key (the group site's, then this site's). tools/check-i18n.py lists page keys missing from `en`. */
 window.NOKIME_I18N = {
   fr: {
-    colDates: "Dates", colHours: "Heures", colPay: "Rémunération", colHousing: "Logement",
+    colDates: "Dates", colHours: "Heures", colPay: "Rémunération", colHousing: "Logement", colMinors: "Mineurs",
     months: ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],
     langSwitch: "Switch to English",
     menuLabel: "Menu",
@@ -14,7 +14,7 @@ window.NOKIME_I18N = {
     jobsNoneFiltered: "Aucune offre avec ces filtres.",
     jobsNoneSearch: "Aucune offre ne correspond à cette recherche.",
     more: "En savoir plus", jobsPublished: "publiée le {d}",
-    jobsPost: "Publier une offre", jobsDemoTag: "exemple", jobsDates: "du {a} au {b}", jobsHours: "{h} h par semaine", jobsHoused: "Logé", jobsNotHoused: "Non logé",
+    jobsPost: "Publier une offre", jobsDemoTag: "exemple", jobsDates: "du {a} au {b}", jobsHours: "{h} h par semaine", jobsHoused: "Logé", jobsNotHoused: "Non logé", jobsMinorsOk: "Acceptés", jobsMinorsNo: "18 ans et plus",
     jobsApply: "Écrire à l’établissement", jobsAllRegions: "Toutes les régions",
     jobsBoost: "Mise en avant", jobsBoostTitle: "Offre payée pour apparaître en premier",
     applySubject: "Candidature — {role} — {restaurant}",
@@ -30,7 +30,7 @@ window.NOKIME_I18N = {
   },
   en: {
     jobsTitle1: "Internships and seasons in hotels and restaurants ", jobsTitle2: "worth working in.",
-    colDates: "Dates", colHours: "Hours", colPay: "Pay", colHousing: "Housing",
+    colDates: "Dates", colHours: "Hours", colPay: "Pay", colHousing: "Housing", colMinors: "Minors",
     fSecOffer: "The offer", fSecContact: "The contact", fSecText: "The text",
     navManager: "Manager", navCopius: "Copius", navGroup: "The group", navContact: "Contact", navCta: "Write to us",
     footLegal: "Legal notice", footNav: "Footer",
@@ -57,7 +57,7 @@ window.NOKIME_I18N = {
     jobsNoneFiltered: "No offer with these filters.",
     jobsNoneSearch: "No offer matches this search.", jobsSearchLabel: "Search an offer", jobsSearchPh: "Position, establishment, town…",
     jobsPublished: "posted {d}",
-    jobsPost: "Post an offer", jobsDemoTag: "example", jobsDates: "{a} to {b}", jobsHours: "{h} h a week", jobsHoused: "Housed", jobsNotHoused: "Not housed",
+    jobsPost: "Post an offer", jobsDemoTag: "example", jobsDates: "{a} to {b}", jobsHours: "{h} h a week", jobsHoused: "Housed", jobsNotHoused: "Not housed", jobsMinorsOk: "Welcome", jobsMinorsNo: "18 and over",
     jobsOriginal: "Original offer, in French", jobsAllOffers: "All offers", jobsApply: "Write to the employer", jobsAllRegions: "All regions",
     applySubject: "Application — {role} — {restaurant}",
     applyBody: "Hello,\n\nI am writing about your offer “{role}” from {start}, seen on Nokime Jobs.\n\nMy school, my class:\nMy availability:\nWhat I can do:\n\nThank you for your time,\n",
@@ -80,6 +80,8 @@ window.NOKIME_I18N = {
     descPost: "Post an internship, apprenticeship or seasonal offer on Nokime Jobs: a form, a review within forty-eight hours, online until its end date.",
     postTitle: "Post an offer.", postLead: "A form, a review within forty-eight hours, and the offer is online until its end date.",
     postPriceQ: "How much does it cost?", postPriceA: "Launch offer: for the first ten establishments whose first offer is online by 31 March 2027, the whole first season is free: six months at the Brigade level (up to five offers online at a time), counted from the first offer, with no invoice during that season, once per establishment. At the end, you choose a plan at the normal price or you stop, with no commitment. For every other establishment, the first season is at half price: the first three months are free, counted from the first offer, at the Brigade level (up to five offers online at a time). To finish that first season (months four to six) you pay half a season of the plan you choose: One offer €47.50, Brigade €97.50 or Maison €197.50, on an invoice payable on receipt. You may also stop at the end of the three free months, with no commitment; the first-season rate applies once per establishment. After that, you choose a six-month season or a year and receive an invoice by email, payable on receipt; no card is ever entered on this site. Always free for candidates.",
+    fMinors: "Applications from minors (under 18)", fMinorsOk: "Accepted", fMinorsNo: "Not accepted",
+    fMinorsRule: "Only decline minors if the internship needs what the law does not allow them: a refusal based on age must be justified by their protection.", fMinorsLawQ: "What the law limits", fMinorsLaw: "The law protects an intern under 18: as a rule, at most 8 h a day and 35 h a week; no night work, except by derogation until 11:30 pm in hotels and restaurants; some regulated tasks (machines especially) only in vocational training, after a derogation declaration; bar service in a drinks establishment only over 16, in training towards a qualification, in an approved establishment.",
     fKind: "Kind of offer", fRestaurant: "Establishment", fCity: "City", fDept: "Département", fRole: "Position", fStart: "Start", fEnd: "End",
     fHours: "Hours a week", fPay: "Pay", fPayHidden: "Do not show the pay on the offer", fHousing: "Lodging provided", fContact: "Contact name", fEmail: "Contact email", fPhone: "Phone",
     fContactNote: "The email and the phone number are published with the offer; the contact’s name is not.", fContactLink: "Personal data",
