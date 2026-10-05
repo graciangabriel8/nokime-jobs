@@ -23,11 +23,21 @@ Hosting: Apache on OVH serves the site at https://jobs.nokime.fr/; a push to `ma
 
 ## Le questionnaire
 
-`questionnaire/` is a short multiple-choice questionnaire for people who did an internship, an apprenticeship or a season in a hotel or a restaurant, in the kitchen, the dining room, the rooms division or the spa. It prepares the distinction and nothing else: no answer is ever published, neither alone nor added up for an establishment, and nothing about any establishment is published. It is reached from the home page's distinction section, from the écoles page and from the footer; it has no menu item.
+`questionnaire/` is a short multiple-choice questionnaire for people who did an internship, an apprenticeship or a season in a hotel or a restaurant, in the kitchen, the dining room, the rooms division or the spa. It prepares the distinction and counts the posts found through Nokime Jobs (its source question), and nothing else: no answer is ever published, neither alone nor added up for an establishment, and nothing about any establishment is published. It is reached from the home page's distinction section, from the écoles page and from the footer; it has no menu item.
 
 - The button builds a mail to contact@nokime.fr in `js/jobs.js`: every answer in French, the two confirmations, a codes line to copy into the private file, and a closing line asking for the proof. Nothing is sent by the site.
 - **The questions are written once**, in `tools/questionnaire_questions.py`. `tools/build.py` writes the period selects and the question fieldsets into `questionnaire/index.html` and the English strings into `js/i18n.js`, each between its `start`/`end` markers. Never rename a question or option id once answers use it.
 - **Answers, identities, proofs and the verification log never enter this repository.** They live in a private folder outside any repository (`~/Projets/kairos/jobs-retours/`, whose `LISEZMOI.md` says how to check a proof, log it, keep the answers, withdraw them and delete them after three years). `tools/build.py` reads nothing from it.
+
+## Compteur Postuler
+
+Per offer, how many people click « Postuler », so Gabriel can act on offers nobody applies to and show an establishment at renewal. Nothing that identifies a person is kept: a line is only `YYYY-MM-DD,<offer id>` (Europe/Paris day), no IP, user agent, referrer or cookie.
+
+- `api/postuler.php` takes `POST o=<offer id>`, counts it only if the id is a non-demo offer in `js/offers.js` (anything else: 204, nothing written) and appends to `jobs-private/postuler.csv`. The folder sits BESIDE the web root on OVH (`<home>/jobs-private`, next to `<home>/jobs`), mode 0700, file 0600, so it is never served and never in this repository. The id `__probe__` writes to `probe.csv` instead. Bounds: the file stops growing past 5 MB (the private page then says so: archive the file off the server and empty it), and 500 lines per offer per day (checked exactly, under the lock). Offer ids must match `[a-z0-9-]{1,64}`, or their clicks are dropped: `tools/build.py` stops on a live offer whose id does not.
+- The click is sent by `js/site.js` (`navigator.sendBeacon`, once per offer per page load) from any link carrying `data-offer`: the cards (`js/jobs.js`) and the offer pages (`tools/build.py`). The demo cards (`?demo=1`) carry none. The mailto proceeds untouched.
+- `api/compte.php?k=<key>` is the private page: per live offer, newest first, the total, the last 7 and the last 30 days, and the probe count. Only the key's SHA-256 is in the file. The key is never written in this repository: Gabriel keeps it in his password manager and opens `https://jobs.nokime.fr/api/compte.php?k=<key>`; a wrong or missing key answers 404. `api/` is Disallowed in `robots.txt` and the page is `noindex`.
+- After a deploy, test with `curl -s -o /dev/null -w "%{http_code}\n" -d o=__probe__ https://jobs.nokime.fr/api/postuler.php` (204), then read the probe count on the private page.
+- PHP written for 7.4 and later; the legal notice (« Le bouton « Postuler » ») says what is counted.
 
 ## Identity
 

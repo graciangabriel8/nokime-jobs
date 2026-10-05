@@ -27,6 +27,7 @@ except json.JSONDecodeError as err:   # an offer copied from the demo list keeps
 live = [o for o in offers if not o.get("demo") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(o.get("expires") or o.get("end") or "")) and (o.get("expires") or o["end"]) >= today]   # as js/jobs.js: undated or past its end, no page
 
 for o in live:
+    if not re.fullmatch(r"[a-z0-9-]{1,64}", str(o.get("id", ""))): sys.exit("js/offers.js : l’identifiant « %s » ne doit contenir que des minuscules sans accent, des chiffres et des tirets (64 au plus), sinon ses clics sur « Postuler » ne sont pas comptés." % o.get("id", "?"))
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
 
 home = (root / "index.html").read_text(encoding="utf-8")
@@ -94,7 +95,7 @@ for o in live:
     h = re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % e(desc), h)
     h = h.replace(BASE + '">', BASE + "o/" + o["id"] + '/">').replace('<meta name="twitter:card"', '<script type="application/ld+json">%s</script>\n<meta name="twitter:card"' % json.dumps(ld, ensure_ascii=False).replace("<", "\\u003c"))
     h = re.sub(r'<body[^>]*>', '<body>', h)
-    mail = "mailto:%s?subject=%s&body=%s" % (o["contact"]["email"], urllib.parse.quote("Candidature — %s — %s" % (o["role"], o["restaurant"])), urllib.parse.quote("Bonjour,\n\nJe vous écris pour le poste de %s à partir du %s.\n\n" % (o["role"], fr_date(o["start"]))))
+    mail = "mailto:%s?subject=%s&body=%s" % (o["contact"]["email"], urllib.parse.quote("Candidature via Nokime Jobs — %s — %s" % (o["role"], o["restaurant"])), urllib.parse.quote("Bonjour,\n\nJe vous écris pour le poste de %s à partir du %s.\n\n" % (o["role"], fr_date(o["start"]))))
     main = '''<main>
   <section class="page-hero offer-page">
     <div class="wrap">
@@ -110,7 +111,7 @@ for o in live:
         <dl class="job-facts">%s</dl>
         %s%s
         <div class="cta-row">
-          <a class="btn primary" href="%s"><span data-t="jobsApply">Écrire à l’établissement</span><span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn primary" data-offer="%s" href="%s"><span data-t="jobsApply">Postuler</span><span class="arrow" aria-hidden="true">→</span></a>
           %s
           <a class="btn" href="../../#offres"><span data-t="jobsAllOffers">Toutes les offres</span></a>
         </div>
@@ -121,7 +122,7 @@ for o in live:
 
 ''' % ('<span data-t="kind_%s">%s</span>' % (o["kind"], e(KIND[o["kind"]])), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), t_("oRole"), e(o["role"]), t_("oRest"), e(o["restaurant"]),
        '<span class="distinction" role="img" aria-label="Distinction Nokime" title="Distinction Nokime">%s</span>' % SEAL if o.get("distinction") else '<span class="distinction empty" aria-hidden="true"></span>', facts,
-       ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(mail),
+       ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(o["id"]), e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(re.sub(r"\s", "", o["contact"]["phone"])), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     own = '<script>Object.assign(NOKIME_I18N.en,%s);</script>\n' % json.dumps(en, ensure_ascii=False).replace("<", "\\u003c")
     page = rel(h + header + main + footer + scripts.replace("</script>\n", "</script>\n" + own, 1))

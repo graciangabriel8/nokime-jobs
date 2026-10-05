@@ -133,7 +133,7 @@
         '<p class="job-rest">' + esc(tx(o, "restaurant")) + (o.distinction ? '<span class="distinction" role="img" aria-label="' + esc(t("distinctionTitle")) + '" title="' + esc(t("distinctionTitle")) + '">' + SEAL + "</span>" : '<span class="distinction empty" aria-hidden="true"></span>') + "</p></div>" +
         facts(o) +
         (o.text || tr(o) ? '<details class="more"><summary>' + esc(t("more")) + "</summary>" + (o.text ? "<p>" + esc(tx(o, "text")) + "</p>" : "") + original(o) + "</details>" : "") +
-        '<div class="job-act"><a class="btn primary" href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
+        '<div class="job-act"><a class="btn primary"' + (o.demo ? "" : ' data-offer="' + esc(o.id) + '"') + ' href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
           ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></article>";
     }).join("");
   }
@@ -216,10 +216,11 @@
       if (!qform.checkValidity()) { qform.reportValidity(); return; }
       var type = qform.querySelector("[name=type]:checked");
       var metier = qform.querySelector("[name=metier]:checked");
+      var source = qform.querySelector("[name=source]:checked");
       var lines = [[labelOf("etablissement"), val("etablissement")], [labelOf("ville"), val("ville")], [labelOf("dept"), val("dept")],
-        [frOf($("[data-t=qType]", qform)), frOf(type.nextElementSibling)], [frOf($("[data-t=qMetier]", qform)), frOf(metier.nextElementSibling)], [frOf($("[data-t=fStart]", qform)), monthOf("start")], [frOf($("[data-t=fEnd]", qform)), monthOf("end")],
+        [frOf($("[data-t=qType]", qform)), frOf(type.nextElementSibling)], [frOf($("[data-t=qMetier]", qform)), frOf(metier.nextElementSibling)], [frOf($("[data-t=qSource]", qform)), frOf(source.nextElementSibling)], [frOf($("[data-t=fStart]", qform)), monthOf("start")], [frOf($("[data-t=fEnd]", qform)), monthOf("end")],
         [FR.qMailSchool, val("ecole")], ["", ""]];
-      var codes = ["type=" + type.value, "metier=" + metier.value, "debut=" + ym("start"), "fin=" + ym("end")];
+      var codes = ["type=" + type.value, "metier=" + metier.value, "source=" + source.value, "debut=" + ym("start"), "fin=" + ym("end")];
       $$("[data-q]", qform).forEach(function (fs) {
         var on = $$("input:checked", fs);
         lines.push([frOf($("legend [data-t]", fs)), on.map(function (i) { return frOf(i.nextElementSibling); }).join(", ") || "\u2014"]);

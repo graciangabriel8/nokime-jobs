@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Le questionnaire — Nokime Jobs</title>
-<meta name="description" content="Un questionnaire court pour celles et ceux qui ont fait un stage, une alternance ou une saison en hôtellerie-restauration. Il prépare la distinction ; vos réponses ne sont jamais publiées.">
+<meta name="description" content="Un questionnaire court pour celles et ceux qui ont fait un stage, une alternance ou une saison en hôtellerie-restauration. Il prépare la distinction et compte les postes trouvés grâce à Nokime Jobs ; vos réponses ne sont jamais publiées.">
 <meta name="theme-color" content="#FFFFFF">
 <meta property="og:title" content="Le questionnaire — Nokime Jobs">
-<meta property="og:description" content="Un questionnaire court pour celles et ceux qui ont fait un stage, une alternance ou une saison en hôtellerie-restauration. Il prépare la distinction ; vos réponses ne sont jamais publiées.">
+<meta property="og:description" content="Un questionnaire court pour celles et ceux qui ont fait un stage, une alternance ou une saison en hôtellerie-restauration. Il prépare la distinction et compte les postes trouvés grâce à Nokime Jobs ; vos réponses ne sont jamais publiées.">
 <meta property="og:image" content="https://jobs.nokime.fr/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -18,8 +18,8 @@
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../css/fonts.css?v=47">
-<link rel="stylesheet" href="../css/site.css?v=47">
+<link rel="stylesheet" href="../css/fonts.css?v=48">
+<link rel="stylesheet" href="../css/site.css?v=48">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titleQuestionnaire" data-desc="descQuestionnaire">
@@ -56,7 +56,7 @@
   <section class="section tight">
     <div class="wrap">
       <div class="charter">
-        <div><h2 data-t="qForT">À quoi il sert</h2><p data-t="qForP">À préparer la distinction. Vos réponses ne sont jamais publiées, ni seules, ni additionnées pour un établissement.</p><details class="more"><summary data-t="more">En savoir plus</summary><p data-t="qForM">La distinction est décernée à une maison à partir de plusieurs réponses concordantes ; les maisons ne sont jamais classées entre elles. Rien n’est publié sur les autres.</p></details></div>
+        <div><h2 data-t="qForT">À quoi il sert</h2><p data-t="qForP">À préparer la distinction, et à compter les postes trouvés grâce à Nokime Jobs. Vos réponses ne sont jamais publiées, ni seules, ni additionnées pour un établissement ; seul un total pour tout Nokime Jobs peut être publié, s’il compte au moins cinq réponses.</p><details class="more"><summary data-t="more">En savoir plus</summary><p data-t="qForM">La distinction est décernée à une maison à partir de plusieurs réponses concordantes ; les maisons ne sont jamais classées entre elles. Rien n’est publié sur les autres.</p></details></div>
         <div><h2 data-t="qHowT">Comment</h2><p data-t="qHowP">Vous répondez aux questions, sans texte libre. Votre messagerie s’ouvre avec vos réponses : joignez-y une preuve que vous avez travaillé là.</p><details class="more"><summary data-t="more">En savoir plus</summary><p data-t="qHowM">La preuve : la première page de la convention, le contrat, ou un bulletin de paie où tout est noirci sauf votre nom, l’établissement et les dates. Nous la regardons à la main, puis nous la supprimons, avec le courriel qui l’a portée, dans les trente jours.</p></details></div>
       </div>
     </div>
@@ -90,6 +90,16 @@
                 <label class="chip"><input type="radio" name="metier" value="salle" required><span data-t="metier_salle">Salle</span></label>
                 <label class="chip"><input type="radio" name="metier" value="hebergement" required><span data-t="metier_hebergement">Hébergement</span></label>
                 <label class="chip"><input type="radio" name="metier" value="spa" required><span data-t="metier_spa">Spa</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="f-q"><legend><span data-t="qSource">Comment avez-vous trouvé ce poste ?</span></legend>
+              <div class="chips">
+                <label class="chip"><input type="radio" name="source" value="nokime" required><span data-t="source_nokime">Nokime Jobs</span></label>
+                <label class="chip"><input type="radio" name="source" value="ecole" required><span data-t="source_ecole">Mon école</span></label>
+                <label class="chip"><input type="radio" name="source" value="plateforme" required><span data-t="source_plateforme">Une autre plateforme</span></label>
+                <label class="chip"><input type="radio" name="source" value="spontanee" required><span data-t="source_spontanee">Une candidature spontanée</span></label>
+                <label class="chip"><input type="radio" name="source" value="bouche" required><span data-t="source_bouche">Le bouche-à-oreille</span></label>
+                <label class="chip"><input type="radio" name="source" value="autre" required><span data-t="source_autre">Autrement</span></label>
               </div>
             </fieldset>
 <!-- periode:start (tools/build.py writes this block) -->
@@ -132,7 +142,7 @@
             </div>
             <div class="f-lawful">
               <label class="f-check f-confirm"><input type="checkbox" name="c1" required><span data-t="qC1">Je travaillais dans cet établissement à ces dates.</span></label>
-              <label class="f-check f-confirm"><input type="checkbox" name="c2" required><span data-t="qC2">J’accepte que mes réponses servent à préparer la distinction, sans être publiées.</span></label>
+              <label class="f-check f-confirm"><input type="checkbox" name="c2" required><span data-t="qC2">J’accepte que mes réponses servent à préparer la distinction et à compter les postes trouvés grâce à Nokime Jobs, pour un total de tout le site, sans être publiées elles-mêmes.</span></label>
             </div>
             <p class="small f-note"><span data-t="qData">Ce que nous gardons : vos réponses, l’établissement et la période, et à part, votre nom et votre courriel, seulement pour pouvoir effacer vos réponses si vous le demandez. Rien de tout cela n’est publié. Votre preuve est supprimée dans les trente jours, avec le courriel qui l’a portée. Vos réponses, votre nom et votre courriel sont effacés trois ans après la fin de votre stage, de votre alternance ou de votre saison. Vous pouvez tout retirer avant, quand vous voulez : écrivez-nous, c’est fait sans discussion. La preuve n’est vue que par l’éditeur du site, nommé dans les mentions légales. Avant quinze ans, un parent doit aussi donner son accord.</span> <a class="link" href="../mentions-legales/" data-t="fContactLink">Données personnelles</a></p>
             <div class="cta-row f-send">
@@ -176,8 +186,8 @@
   </div>
 </footer>
 
-<script src="../js/i18n.js?v=47"></script>
-<script src="../js/site.js?v=47"></script>
-<script src="../js/jobs.js?v=47"></script>
+<script src="../js/i18n.js?v=48"></script>
+<script src="../js/site.js?v=48"></script>
+<script src="../js/jobs.js?v=48"></script>
 </body>
 </html>

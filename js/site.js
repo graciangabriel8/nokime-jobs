@@ -41,8 +41,8 @@
   }
 
   var MAIL = {
-    fr: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — une école", body: "Établissement :\nCe que j’en pense :\nCe qui manque pour la classe :\n" } },
-    en: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — a school", body: "School:\nWhat I think of it:\nWhat is missing for the classroom:\n" } }
+    fr: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — une école", body: "Établissement :\nCe que j’en pense :\nCe qui manque pour la classe :\n" }, filled: { subject: "Poste pourvu — Nokime Jobs", body: "Offre : [poste, établissement]\nPourvu le : \nPourvu grâce à Nokime Jobs : oui / non\n" } },
+    en: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — a school", body: "School:\nWhat I think of it:\nWhat is missing for the classroom:\n" }, filled: { subject: "Position filled — Nokime Jobs", body: "Offer: [position, establishment]\nFilled on: \nFilled thanks to Nokime Jobs: yes / no\n" } }
   };
 
   function applyLang() {
@@ -83,6 +83,18 @@
   applyLang();
   markCurrent();
   $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+  /* « Postuler »: count the click for its offer (day and offer id only, kept server-side by api/postuler.php), once per offer per page load;
+     the mailto proceeds untouched, and with no sendBeacon nothing happens */
+  var counted = {};
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[data-offer]") : null;
+    if (!a || !navigator.sendBeacon) return;
+    var id = a.getAttribute("data-offer");
+    if (!id || counted[id]) return;
+    counted[id] = true;
+    try { navigator.sendBeacon("/api/postuler.php", new URLSearchParams({ o: id })); } catch (err) {}
+  });
 
   var lb = $("#langBtn"); if (lb) lb.addEventListener("click", function () { setLang(lang === "fr" ? "en" : "fr"); });
   var mb = $("#menuBtn"), nav = $("#nav");
