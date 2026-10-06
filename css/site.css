@@ -42,6 +42,7 @@ h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;overflow-wrap:break-word
 .kicker{font-size:clamp(28px,3.2vw,42px);line-height:1.02;letter-spacing:-.02em;font-weight:700;font-stretch:88%;margin:0}
 h3{font-size:22px;line-height:1.15;font-stretch:90%;letter-spacing:-.012em}
 .lead{font-size:clamp(19px,1.9vw,22px);line-height:1.42;font-weight:450;letter-spacing:-.008em;max-width:36ch;margin:0}
+p,li{text-wrap:pretty}   /* no last word left alone on its line */
 .eyebrow,.f-label{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin:0}
 .eyebrow{color:var(--ink-2)}
 
