@@ -5,11 +5,13 @@
 # `live` only moves forward along main (GitHub's API refuses anything else, so the clone here needs no history);
 # if main's history were ever rewritten, the move is refused and the run is red. `live` is created once by hand.
 # Runs queue rather than cancel each other; a run whose commit is no longer main's newest stands down and lets
-# the newer run promote it.
+# the newer run promote it. A push that got no run ([skip ci], an Actions incident) is promoted by running this
+# workflow by hand: gh workflow run deploy.yml
 name: Checks, then deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 concurrency:
   group: deploy-main
   cancel-in-progress: false
@@ -21,6 +23,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch live (the checks compare css/ and js/ with it)
+        run: git fetch --depth=1 --no-tags origin live:refs/remotes/origin/live
       - name: Checks
         run: python3 tools/check.py
       - name: Move live to this commit (OVH deploys live)
