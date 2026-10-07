@@ -94,14 +94,28 @@ p,li{text-wrap:pretty}   /* no last word left alone on its line */
 .tbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .menu{display:none}
 
-/* ---------- the head of the home page: the line, and the rail drawn beside it ---------- */
+/* ---------- the head of the home page: the line, and example offers beside it ---------- */
 .hero{padding:80px 0 96px}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px 56px;align-items:end}
 .hero .eyebrow{margin-bottom:26px}
 .hero .lead{margin-top:30px}
 .hero .cta-row{margin-top:32px}
-.hero-art{align-self:center;color:var(--ink)}
-.pass-drawing{width:100%;height:auto;overflow:visible}
+/* ---------- home hero: caption and three example offers (static, no motion; never article.job) ---------- */
+.hero-cap{margin:22px 0 0;font-family:var(--mono);font-size:13px;line-height:1.5;letter-spacing:.02em;color:var(--ink-2)}
+.hero-sample{align-self:center;display:grid;gap:16px;min-width:0}
+.sample{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;padding:20px 22px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.sample:nth-child(2){margin-left:32px}
+.sample .tag{margin-bottom:8px}
+.sample-role{margin:0;font-size:22px;line-height:1.15;font-weight:700;letter-spacing:-.015em}
+.sample-name,.sample-meta{margin:0;font-size:15px;line-height:1.4;color:var(--ink-2)}
+.hero-sample-cap{margin:0;font-size:14px;line-height:1.4;color:var(--ink-2)}
+@media (max-width:960px){
+  .hero-sample{max-width:520px;width:100%}
+}
+@media (max-width:600px){
+  .sample:nth-child(2){margin-left:0}
+  .sample:nth-child(3){display:none}
+}
 
 /* ---------- the head of every other page ---------- */
 .page-hero{padding:72px 0 80px}
@@ -363,7 +377,6 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
 @media (max-width:960px){
   .hero{padding:56px 0 68px}
   .hero-grid{grid-template-columns:1fr}
-  .hero-art{max-width:520px;width:100%}
   .split{grid-template-columns:1fr;gap:26px}
   .section{padding:72px 0 80px}
   .facts-grid{grid-template-columns:1fr}
