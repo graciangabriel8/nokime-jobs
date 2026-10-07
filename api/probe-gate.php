@@ -1,3 +1,3 @@
 <?php
-// Deploy gate probe: php -l on GitHub must refuse this file, so live and the site stay put.
-function ( {
+// Deploy gate probe: now it parses, so live moves and the site answers 204. Removed in the next commit.
+http_response_code(204);

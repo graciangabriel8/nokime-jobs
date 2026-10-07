@@ -102,7 +102,8 @@ php = shutil.which("php")
 if php:
     for f in tracked("api/*.php"):
         r = subprocess.run([php, "-l", str(f)], capture_output=True, text=True)
-        if r.returncode != 0: fail("PHP %s: %s" % (f.relative_to(root), (r.stdout + r.stderr).strip().splitlines()[0]))
+        out = (r.stdout + r.stderr).strip().splitlines() or ["?"]   # "Errors parsing" alone says nothing: show the parse error
+        if r.returncode != 0: fail("PHP %s: %s" % (f.relative_to(root), next((l for l in out if "error:" in l.lower()), out[0]).strip()))
 elif CI: fail("PHP: php is missing on the runner")
 else: print("note: php missing here, api/*.php not linted (GitHub does it)")
 
