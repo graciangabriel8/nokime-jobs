@@ -8,7 +8,9 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function lang() { try { var v = localStorage.getItem("nokime-lang"); if (v === "fr" || v === "en") return v; } catch (e) {} return (navigator.language || "fr").toLowerCase().indexOf("fr") === 0 ? "fr" : "en"; }
+  /* the language site.js has applied to the page (French unless EN was chosen or ?lang=en), then the stored choice, then French;
+     never the browser's language, so the board always matches the page */
+  function lang() { var d = document.documentElement.getAttribute("lang"); if (d === "fr" || d === "en") return d; try { var v = localStorage.getItem("nokime-lang"); if (v === "fr" || v === "en") return v; } catch (e) {} return "fr"; }
   function t(k, vars) { var L = lang(), s = (I18N[L] && I18N[L][k]) != null ? I18N[L][k] : (I18N.fr[k] != null ? I18N.fr[k] : k); return vars ? String(s).replace(/\{(\w+)\}/g, function (_, v) { return vars[v] != null ? vars[v] : ""; }) : s; }
 
   /* an offer's own words: Nokime's English translation in the English view when there is one, else the French original */
