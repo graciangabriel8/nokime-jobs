@@ -5,6 +5,8 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # A Git deploy may leave its folder in the web root: never serve it.
 RedirectMatch 404 ^/\.git(/|$)
+# api/_*.php are helpers and the daily task: never run from the web.
+RedirectMatch 404 ^/api/_
 
 # Any missing path, at any depth, gets the site's own page (its links are root-absolute).
 ErrorDocument 404 /404.html
