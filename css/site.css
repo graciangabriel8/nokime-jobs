@@ -313,6 +313,8 @@ html:not([lang="en"]) .only-en{display:none}
 .f-send{margin-top:28px;gap:18px}
 .note{font-size:15px;color:var(--ink-2);margin:0;max-width:40ch}
 .note.ok{color:var(--ink);font-weight:600;margin-top:20px;padding-left:22px;position:relative}
+.note.err{color:var(--ink);margin-top:20px}
+.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}   /* the field only a robot fills */
 .note.ok::before{content:"";position:absolute;left:0;top:6px;width:11px;height:11px;border-radius:50%;background:var(--ink)}
 
 /* ---------- contact: the address is the object ---------- */

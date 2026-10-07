@@ -1,5 +1,6 @@
-/* Nokime Jobs — list, filters, applying, the posting form and the questionnaire. No backend: applying is a mail
-   to the restaurant, posting and the questionnaire are mails to Nokime. Language follows site.js (localStorage). */
+/* Nokime Jobs — list, filters, applying, the posting form and the questionnaire. Applying is a mail to the restaurant
+   and the questionnaire a mail to Nokime; an offer is sent to api/offre.php, the prepared mail being its way out only
+   when the server cannot take it. Language follows site.js (localStorage). */
 (function () {
   "use strict";
   var I18N = window.NOKIME_I18N || { fr: {}, en: {} };
@@ -159,7 +160,7 @@
     sb.addEventListener("input", onSearch); sb.addEventListener("search", onSearch);
   }
 
-  /* ---------- the posting form: a mail to Nokime, every field in the body ---------- */
+  /* ---------- the posting form: sent to api/offre.php; « Merci » only once the server has the offer ---------- */
   var form = $("#postForm");
   if (form) {
     form.addEventListener("submit", function (e) {
@@ -175,8 +176,25 @@
       ];
       if (kind === "stage") { var mn = (form.querySelector("[name=minors]:checked") || {}).value; lines.splice(11, 0, ["Mineurs", mn === "oui" ? "acceptés" : "non acceptés"]); }   /* after "Logement" */
       var body = lines.map(function (l) { return l[0] ? l[0] + " : " + l[1] : ""; }).join("\n") + "\n\nEnvoyé depuis Nokime Jobs";
-      location.href = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
-      var ok = $("#postSent"); if (ok) ok.hidden = false;
+      var mail = "mailto:" + ADDRESS + "?subject=" + encodeURIComponent("Nokime Jobs — offre : " + f("restaurant")) + "&body=" + encodeURIComponent(body);
+      var ok = $("#postSent"), err = $("#postErr"), btn = form.querySelector("[type=submit]");
+      if (ok) ok.hidden = true;
+      if (err) err.hidden = true;
+      if (btn) btn.disabled = true;
+      var settled = false;
+      var done = function (sent) {
+        if (settled) return; settled = true;
+        if (btn) btn.disabled = false;
+        if (sent) { if (ok) ok.hidden = false; return; }
+        var link = $("#postErrMail"); if (link) link.href = mail;   /* the same offer, ready in the visitor's own mail app */
+        if (err) err.hidden = false;
+      };
+      if (!window.fetch || !window.FormData) { done(false); return; }
+      var ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctl) ctl.abort(); done(false); }, 15000);
+      fetch("../api/offre.php", { method: "POST", body: new FormData(form), credentials: "omit", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.json().then(function (j) { return r.status === 201 && !!(j && j.ok); }, function () { return false; }); })
+        .then(function (sent) { clearTimeout(timer); done(sent); }, function () { clearTimeout(timer); done(false); });
     });
     var kindInputs = $$("[name=kind]", form), pay = form.elements.pay, payHidden = form.elements.payHidden, payKept = "";
     /* "minors": asked for a stage only; shown and required then, hidden, disabled and cleared otherwise */
