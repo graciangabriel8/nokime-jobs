@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render og.png, the 1200×630 card link previews show, and apple-touch-icon.png, in the site's
 own identity: white paper, the steel of the pass, one ink, one blue, Bricolage Grotesque (800,
-width 85 %) and DM Mono. The rail drawing is read out of index.html (one source for both). Fetches two
+width 85 %) and DM Mono. The rail drawing lives in tools/og-drawing.svg (it left the home page on 7 Oct 2026). Fetches two
 static TTFs once from the fonts API (the site itself serves variable woff2 files; QuickLook wants
 TTF), writes SVGs with the fonts embedded, and rasterises them with macOS QuickLook:
 
@@ -22,8 +22,9 @@ sans = ttf("Bricolage+Grotesque:opsz,wdth,wght@96,85,800")
 mono = ttf("DM+Mono:wght@500")
 wordmark = base64.b64encode((root / "fonts" / "archivo-wordmark.woff2").read_bytes()).decode()   # the group's « nokime »
 
-home = (root / "index.html").read_text(encoding="utf-8")
-drawing = re.search(r'<svg class="pass-drawing" viewBox="0 0 520 330"[^>]*>(.*?)</svg>', home, re.S).group(1).replace("currentColor", INK)
+home = (root / "index.html").read_text(encoding="utf-8")   # the mark
+art = (root / "tools" / "og-drawing.svg").read_text(encoding="utf-8")   # the rail drawing
+drawing = re.search(r'<svg class="pass-drawing" viewBox="0 0 520 330"[^>]*>(.*?)</svg>', art, re.S).group(1).replace("currentColor", INK)
 mark = re.search(r'<svg class="mark" viewBox="0 0 32 32" aria-hidden="true">(.*?)</svg>', home, re.S).group(1)
 mark = (mark.replace('class="mk-t"', 'fill="%s" stroke="%s" stroke-width="1.8" stroke-linejoin="round"' % (PAPER, INK))
             .replace('class="mk-b"', 'fill="%s"' % BLEU).replace('class="mk-rail"', 'fill="%s"' % INK))
@@ -42,7 +43,7 @@ card = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 <g transform="translate(66,58) scale(1.5)">{mark}</g>
 <text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}"><tspan font-family="Nokime Wordmark, Helvetica, sans-serif" font-weight="700" font-stretch="112%" letter-spacing="-0.48">nokime</tspan> Jobs</text>
 <text font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="64" letter-spacing="-1.1" fill="{INK}">
-<tspan x="70" y="258">Des stages et des saisons</tspan><tspan x="70" y="320">dans des maisons</tspan><tspan x="70" y="382" fill="{BLEU}">qui en valent la peine.</tspan></text>
+<tspan x="70" y="258">Un stage ou une saison ?</tspan><tspan x="70" y="320" fill="{BLEU}">Lisez l’offre</tspan><tspan x="70" y="382" fill="{BLEU}">avant de postuler.</tspan></text>
 <text x="72" y="530" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK}">STAGES · ALTERNANCES · SAISONS</text>
 <text x="72" y="562" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK2}">GRATUIT POUR LES CANDIDATS</text>
 </g>
