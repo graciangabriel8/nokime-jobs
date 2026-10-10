@@ -159,7 +159,7 @@ window.NOKIME_I18N = {
     jobsTitle1: "An internship or a season? ",
     jobsTitle2: "Read the offer before you apply.",
     jobsTitle: "An internship or a season? Read the offer before you apply.",
-    jobsLead: "Free for you. Hotels and restaurants post, you apply direct.",
+    jobsLead: "Free for you. Your hours, your breaks, your pay, respect: we care about them, and we listen to you.",
     heroCap: "Free for candidates · No account · No CV kept",
     heroSampleCap: "Examples, to show what an offer looks like.",
     hsName: "Name of the hotel or restaurant",
