@@ -43,7 +43,7 @@ card = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 <g transform="translate(66,58) scale(1.5)">{mark}</g>
 <text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}"><tspan font-family="Nokime Wordmark, Helvetica, sans-serif" font-weight="700" font-stretch="112%" letter-spacing="-0.48">nokime</tspan> Jobs</text>
 <text font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="64" letter-spacing="-1.1" fill="{INK}">
-<tspan x="70" y="258">Un stage ou une saison ?</tspan><tspan x="70" y="320" fill="{BLEU}">Lisez l’offre</tspan><tspan x="70" y="382" fill="{BLEU}">avant de postuler.</tspan></text>
+<tspan x="70" y="258">Un stage ou une saison ?</tspan><tspan x="70" y="320" fill="{BLEU}">Si ça se passe mal,</tspan><tspan x="70" y="382" fill="{BLEU}">on agit.</tspan></text>
 <text x="72" y="530" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK}">STAGES · ALTERNANCES · SAISONS</text>
 <text x="72" y="562" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK2}">GRATUIT POUR LES CANDIDATS</text>
 </g>

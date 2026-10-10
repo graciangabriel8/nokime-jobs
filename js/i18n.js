@@ -157,9 +157,9 @@ window.NOKIME_I18N = {
     qSend: "Send my answers", qSendNote: "The button opens your mail client with your answers ready to go. Attach your proof to it.", qSent: "Your mail app opens with your answers: send the email with the proof attached.",
     /* home redesign, 7 Oct 2026: calm hero, example offers, plainer lines (last definition wins) */
     jobsTitle1: "An internship or a season? ",
-    jobsTitle2: "Read the offer before you apply.",
-    jobsTitle: "An internship or a season? Read the offer before you apply.",
-    jobsLead: "Free for you. Hotels and restaurants post, you apply direct.",
+    jobsTitle2: "If it goes wrong, we act.",
+    jobsTitle: "An internship or a season? If it goes wrong, we act.",
+    jobsLead: "A problem on the job? We call you. If it’s confirmed, the establishment leaves Nokime Jobs, even if it pays.",
     heroCap: "Free for candidates · No account · No CV kept",
     heroSampleCap: "Examples, to show what an offer looks like.",
     hsName: "Name of the hotel or restaurant",
