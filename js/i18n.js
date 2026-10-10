@@ -191,7 +191,7 @@ window.NOKIME_I18N = {
     jf2: "Your mail leaves your mailbox and lands direct in the establishment’s.",
     jf3: "The region filter comes from the offer’s département; the “lodged” filter only concerns seasons.",
     jf4: "Every offer has a place for the distinction; it stays empty until it is earned.",
-    descHome: "Nokime Jobs: internships, apprenticeships and seasons in the kitchen, the dining room, the rooms division and the spa. Free for candidates; hotels and restaurants post and answer direct.",
+    descHome: "Nokime Jobs: internships, apprenticeships and seasons in the kitchen, the dining room, the rooms division and the spa. Free for candidates; hotels and restaurants post and answer direct. Staff wellbeing matters.",
     footTag: "Internships, apprenticeships and seasons in hotels and restaurants. Staff wellbeing matters. A Nokime site.",
     /* questions:start — written by tools/build.py from tools/questionnaire_questions.py */
     rq_heures: "The hours worked, compared with the agreement or the contract", rq_heures_prevu: "As planned", rq_heures_plus: "A little more (up to 5 h a week)", rq_heures_beaucoup_plus: "Much more (over 5 h a week)", rq_heures_moins: "Less",
