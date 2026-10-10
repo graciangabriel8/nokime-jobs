@@ -2,8 +2,7 @@
    white card, read like a list in one pass. Around the board, the page is the poster's white paper: black ink,
    one blue, hairlines, a lot of air. Two faces: Bricolage Grotesque speaks (the headline at 800, and every word
    of an offer), DM Mono labels (the eyebrows, the count, the form's section labels).
-   Radius by role: cards are softened at 12px, controls are round like the balls of the rail. Nothing moves on load
-   but the wall of the home page's door, which drifts slowly and stands still under reduced motion.
+   Radius by role: cards are softened at 12px, controls are round like the balls of the rail. Nothing moves on load but the door's wall, which drifts slowly.
    Light only. Every colour goes through a token on :root; ratios are computed (WCAG 2). */
 
 :root{
@@ -95,112 +94,53 @@ p,li{text-wrap:pretty}   /* no last word left alone on its line */
 .tbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .menu{display:none}
 
-/* ---------- the door: the home page's first screen is its own page ----------
-   Behind it a wall of steel plates, each holding a line drawing of a tool of the four trades, drifts slowly in columns
-   (decorative: aria-hidden, no text, no link); in front, a clearing of paper, the mark, the line, one strong blue button.
-   Each column holds its run twice, a plate and its gap apiece, so translateY(-50%) lands on the start of the second run:
-   no seam. The offset stands without the drift too, so still columns keep their stagger. One plate in a few columns
-   (never two in one) is drawn in blue, as one ticket of the mark. */
-.door{position:relative;display:flex;flex-direction:column;min-height:100vh;min-height:100svh;overflow:hidden;background:var(--paper);
-  border-bottom:1px solid var(--line);--tile:104px;--gx:40px;--gy:36px}
-.wall{position:absolute;inset:0;z-index:0;display:flex;justify-content:center;align-items:flex-start;gap:var(--gx);overflow:hidden;pointer-events:none}
-.sprite{position:absolute;width:0;height:0;overflow:hidden}
-.col{flex:none;width:var(--tile);transform:translateY(var(--off,0px));animation:drift var(--dur,80s) linear infinite}
-.col:nth-of-type(even){--off:calc((var(--tile) + var(--gy)) / -2);animation-direction:reverse}
-.col:nth-of-type(3n+2){--dur:92s}
-.col:nth-of-type(3n){--dur:104s}
-@keyframes drift{from{transform:translateY(var(--off,0px))}to{transform:translateY(calc(var(--off,0px) - 50%))}}
-.p{display:block;width:var(--tile);height:var(--tile);margin:0 0 var(--gy);border-radius:50%;background:var(--steel);overflow:visible;
-  color:var(--ink-2);fill:var(--paper);stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.p.b{color:var(--bleu)}
-.door-bar{position:relative;z-index:2;display:flex;justify-content:flex-end;padding:16px clamp(16px,3vw,32px)}
-.door-in{position:relative;z-index:1;margin:auto;display:flex;flex-direction:column;align-items:center;text-align:center;
-  width:100%;max-width:920px;padding:8px 24px clamp(24px,6vh,72px)}
-/* the clearing the plates drift around; never wider than the screen */
-.door-in::before{content:"";position:absolute;left:50%;top:50%;z-index:-1;pointer-events:none;
-  width:min(100vw,max(170%,560px));height:max(170%,540px);transform:translate(-50%,-50%);
-  background:radial-gradient(closest-side,var(--paper) 66%,transparent 100%);   /* without color-mix() */
-  background:radial-gradient(closest-side,var(--paper) 62%,color-mix(in srgb,var(--paper) 82%,transparent) 76%,transparent 100%)}
-.door-in .mark{width:56px;height:56px}
-.door-in .eyebrow{margin-top:18px}
-.door-in .headline{margin-top:18px;font-size:clamp(42px,min(6.6vw,10vh),96px)}   /* a laptop's short screen keeps the whole door in view */
-.door-in .lead{margin:26px auto 0}
-.door-in .more{margin:16px auto 0}
-.door-in .cta-row{justify-content:center;margin-top:30px}
-.door-in .btn{justify-content:center}
-.door-in .btn.primary{min-height:58px;padding:16px 30px;font-size:17.5px}
-.door-in .btn:not(.primary){border-color:var(--ink-3);background:var(--paper)}   /* the second way in, quieter: a thin grey pill, filled in ink under the pointer */
-.door-in .btn:not(.primary):hover{border-color:var(--ink);background:var(--ink)}
-.hero-cap{margin:22px 0 0;font-family:var(--mono);font-size:13px;line-height:1.5;letter-spacing:.02em;color:var(--ink-2)}
-.door-in .hero-cap{margin-top:26px;font-size:12px;letter-spacing:.09em;text-transform:uppercase;text-wrap:balance}
-@media (hover:hover){
-  .wall .p{pointer-events:auto}
-  .col:hover{animation-play-state:paused}
-  .p:hover{transform:scale(1.08)}
-}
-@media (hover:hover) and (prefers-reduced-motion:no-preference){
-  .p{transition:transform .3s}
-}
-@media (prefers-reduced-motion:no-preference){
-  .col{will-change:transform}
-}
-@media (prefers-reduced-motion:reduce){
-  .col{animation:none;will-change:auto}
-}
-/* fewer columns where fewer show: 15 cover 2120px, 11 cover 1544px, 7 a phone's 716px */
-@media (max-width:1400px){
-  .col:nth-of-type(-n+2),.col:nth-of-type(n+14){display:none}
-}
-/* a tablet: the clearing is held to the screen's width, so the headline is held narrower and the solid paper reaches further */
-@media (min-width:601px) and (max-width:1023px) and (min-height:481px){
-  .door-in .headline{max-width:10em;margin-left:auto;margin-right:auto}
-  .door-in::before{background:radial-gradient(closest-side,var(--paper) 70%,transparent 100%);
-    background:radial-gradient(closest-side,var(--paper) 70%,color-mix(in srgb,var(--paper) 82%,transparent) 82%,transparent 100%)}
-}
-/* a phone: the plates fill the top of the screen, the door sits low under the thumb, the wall fading into the paper behind the text */
-@media (max-width:600px){
-  .door{--tile:80px;--gx:26px;--gy:28px}
-  .col:nth-of-type(-n+4),.col:nth-of-type(n+12){display:none}
-  .door-bar{padding:12px 16px}
-  .door-in{margin:auto 0 0;padding:0 16px calc(22px + env(safe-area-inset-bottom))}
-  .door-in::before{left:0;right:0;top:-120px;bottom:0;width:auto;height:auto;transform:none;background:linear-gradient(transparent,var(--paper) 120px)}
-  .door-in .mark{width:44px;height:44px}
-  .door-in .eyebrow{margin-top:12px}
-  .door-in .headline{margin-top:12px;font-size:clamp(34px,10.4vw,44px)}
-  .door-in .lead{margin-top:14px;font-size:18px}
-  .door-in .more{margin-top:8px}
-  .door-in .cta-row{flex-direction:column;align-items:stretch;width:100%;max-width:360px;gap:6px;margin-top:18px}
-  .door-in .btn.primary{min-height:54px}
-  .door-in .hero-cap{margin-top:14px;letter-spacing:.06em}
-}
-/* a short phone (an iPhone SE, a small Android): the mark gives way, the line and the lead tighten, the fade shortens, so the wall keeps the top */
-@media (max-width:600px) and (max-height:700px){
-  .door-in::before{top:-72px;background:linear-gradient(transparent,var(--paper) 72px)}
-  .door-in .mark{display:none}
-  .door-in .eyebrow{margin-top:0}
-  .door-in .headline{margin-top:10px;font-size:clamp(30px,9.2vw,36px)}
-  .door-in .lead{margin-top:10px;font-size:16.5px}
-  .door-in .more{margin-top:4px}
-  .door-in .cta-row{margin-top:14px}
-  .door-in .btn.primary{min-height:50px}
-  .door-in .hero-cap{margin-top:10px}
-}
-/* a short screen (a phone on its side): the door compacts, the mark gives way */
-@media (max-height:480px){
-  .door-in .mark{display:none}
-  .door-bar{padding-top:10px;padding-bottom:4px}
-  .door-in{padding-top:0;padding-bottom:16px}
-  .door-in .eyebrow{margin-top:0}
-  .door-in .headline{margin-top:8px;font-size:clamp(30px,9vh,56px)}
-  .door-in .lead{margin-top:10px;font-size:17px}
-  .door-in .more{margin-top:6px}
-  .door-in .cta-row{margin-top:14px}
-  .door-in .hero-cap{margin-top:12px}
-}
+/* ---------- the door: the home page's first screen, its own page ---------- */
+/* A wall of rows fills the screen and drifts sideways; a white clearing holds the door: the mark, the line, one button.
+   The wall is the page's only motion. Take its structure from the rail: one department a row, a ball between two names. */
+.door{position:relative;display:flex;flex-direction:column;min-height:100vh;min-height:100svh;overflow:hidden;background:var(--paper)}
+.door-bar{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;justify-content:flex-end;
+  padding:14px max(clamp(16px,3vw,32px),env(safe-area-inset-right)) 0 max(clamp(16px,3vw,32px),env(safe-area-inset-left))}
+.door-body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;max-width:920px;margin:0 auto;padding:76px 24px 64px;text-align:center;pointer-events:none}
+/* the text takes the pointer; the rest of the door lets it through to the rows, so a row pauses under the mouse */
+.door-body > *{pointer-events:auto}
+/* the clearing the rows slide around; never wider than the screen; solid out to 72 % so a row never touches the headline's ends */
+.door-body::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;pointer-events:none;
+  width:min(100vw,max(135%,560px));height:max(110%,540px);transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side,var(--paper) 72%,color-mix(in srgb,var(--paper) 80%,transparent) 84%,transparent 100%)}
+.door .mark{width:56px;height:56px;margin:0 auto 20px}
+.door .eyebrow{margin-bottom:22px}
+.door .headline{font-size:clamp(38px,7vw,104px);max-width:10em}
+.door .lead{margin:26px auto 0;max-width:34ch;font-size:clamp(18px,1.9vw,24px)}
+.door .more{margin:14px auto 0}
+.door .more summary{justify-content:center}
+.door .cta-row{margin-top:30px;justify-content:center}
+.door .btn.primary{min-height:58px;padding:15px 30px;font-size:18px}
+.door .btn:not(.primary){min-height:46px;border-color:var(--ink-3);font-weight:500}
+.door .btn:not(.primary):hover{border-color:var(--ink)}
+/* the facts line */
+.hero-cap{margin:24px 0 0;font-family:var(--mono);font-size:12px;line-height:1.6;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
 
-/* ---------- three example offers, in a white band before the board (static, no motion; never article.job) ---------- */
-.examples{padding:48px 0 56px}
-.hero-sample{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+/* the wall: rows across the screen, a department apiece, each holding its run twice so -50% lands on the second run */
+.wall{position:absolute;z-index:0;inset:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-around;
+  --fs:clamp(40px,6.4vw,92px);--rank:var(--line);--dept:color-mix(in srgb,var(--ink-3) 55%,var(--paper))}
+.rank{flex:none;display:flex;width:max-content;font-family:var(--sans);font-weight:800;font-stretch:85%;font-size:var(--fs);line-height:1.08;
+  letter-spacing:-.02em;white-space:nowrap;color:var(--rank);will-change:transform;
+  transform:translateX(var(--off,0%));animation:slide var(--dur,120s) linear infinite}
+.rank.back{animation-direction:reverse}
+.rank > span{flex:none;display:flex;align-items:center}
+.rank > span:first-child{color:var(--dept)}
+/* the rail's ball between two names, after every name so both runs have the same width */
+.rank > span::after{content:"";flex:none;width:.22em;height:.22em;margin:0 .6em;border-radius:50%;background:currentColor}
+/* the offset also stands without the drift, so the still rows keep their stagger */
+@keyframes slide{from{transform:translateX(var(--off,0%))}to{transform:translateX(calc(var(--off,0%) - 50%))}}
+@media (hover:hover){.rank:hover{animation-play-state:paused}}
+@media (hover:none){.wall{pointer-events:none}}
+@media (prefers-reduced-motion:reduce){.rank{animation:none}}
+
+/* ---------- three example offers: a compact band under the door (static, no motion; never article.job) ---------- */
+.examples{padding:44px 0 48px;border-bottom:1px solid var(--line)}
+.hero-sample{display:grid;gap:16px;min-width:0;grid-template-columns:minmax(0,1fr)}
 .sample{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;padding:20px 22px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
 .sample .tag{margin-bottom:8px}
 .sample-role{margin:0;font-size:22px;line-height:1.15;font-weight:700;letter-spacing:-.015em}
@@ -212,11 +152,8 @@ p,li{text-wrap:pretty}   /* no last word left alone on its line */
 @media (min-width:960px){
   .hero-sample{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media (max-width:959px){
-  .sample:nth-child(3){display:none}   /* two cards side by side, or two stacked: never one alone on a row */
-}
 @media (max-width:599px){
-  .examples{padding:36px 0 40px}
+  .sample:nth-child(3){display:none}
 }
 
 /* ---------- the head of every other page ---------- */
@@ -588,4 +525,37 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .pledges li{padding:16px 0 18px 26px}
   .pledges li::before{top:24px}
   .pledges-note{margin-bottom:36px}
+}
+
+/* ---------- the door on a phone, and on a short screen ---------- */
+@media (max-width:720px){
+  /* the door is only as tall as its text and sits at the bottom of the screen; the mark stands beside the eyebrow to save a line */
+  .door-body{flex:none;margin-top:auto;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;align-content:flex-end;
+    column-gap:10px;padding:16px 20px calc(24px + env(safe-area-inset-bottom))}
+  .door-body > *{flex:0 0 100%}
+  .door-body > .mark,.door-body > .eyebrow{flex:none;width:auto}
+  .door .mark{width:36px;height:36px;margin:0}
+  .door .eyebrow{margin:0}
+  .door .headline{font-size:clamp(34px,9.5vw,56px);margin-top:12px}
+  .door .lead{margin-top:12px;font-size:16.5px}
+  .door .more{margin-top:10px}
+  .door .cta-row{flex-direction:column;align-items:stretch;width:100%;max-width:420px;margin:16px auto 0;gap:8px}
+  .door .btn.primary{min-height:56px;padding:13px 26px}
+  .door .btn:not(.primary){min-height:46px}
+  .hero-cap{margin-top:12px}
+  /* the rows fill the top of the screen; the fade is anchored to the text, as in Copius: it runs over the 80px above the text and is solid paper where the text starts */
+  .wall{justify-content:flex-start;gap:clamp(12px,2.6svh,24px);padding-top:56px}
+  .rank:nth-child(n+6){display:none}
+  .door-body::before{left:0;top:-80px;bottom:0;width:100%;height:auto;transform:none;
+    background:linear-gradient(transparent,var(--paper) 96px)}
+}
+@media (max-height:480px){
+  .door .mark,.door .eyebrow{display:none}
+  .door-body{padding:52px max(24px,env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+  .door .headline{font-size:clamp(30px,10vh,56px)}
+  .door .lead{margin-top:12px;font-size:17px}
+  .door .cta-row{margin-top:16px}
+  .hero-cap{margin-top:14px}
+  .wall{--fs:clamp(28px,11vh,48px)}
+  .rank:nth-child(n+5){display:none}
 }

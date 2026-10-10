@@ -203,5 +203,10 @@ window.NOKIME_I18N = {
     rq_revenir: "I would go back", rq_revenir_oui: "Yes", rq_revenir_non: "No",
     rMois1: "January", rMois2: "February", rMois3: "March", rMois4: "April", rMois5: "May", rMois6: "June", rMois7: "July", rMois8: "August", rMois9: "September", rMois10: "October", rMois11: "November", rMois12: "December",
     /* questions:end */
+    /* the door's wall, 10 Oct 2026: the job names on its rows */
+    doorCommis: "Kitchen commis", doorPartie: "Chef de partie", doorSecond: "Sous-chef", doorPatissier: "Pastry cook", doorCuisinier: "Cook", doorPlongeur: "Kitchen porter",
+    doorRang: "Chef de rang", doorCommisSalle: "Commis waiter", doorServeur: "Waiter", doorSommelier: "Sommelier", doorBarman: "Bartender", doorMaitre: "Maître d’",
+    doorReception: "Receptionist", doorConcierge: "Concierge", doorVeilleur: "Night porter", doorGouvernant: "Housekeeper", doorEtage: "Room attendant", doorBagagiste: "Porter",
+    doorPraticien: "Spa therapist", doorEstheticien: "Beauty therapist", doorAccueilSpa: "Spa receptionist", doorRespSpa: "Spa manager",
   }
 };

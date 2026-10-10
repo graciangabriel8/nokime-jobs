@@ -104,7 +104,7 @@
     try { navigator.sendBeacon("/api/postuler.php", new URLSearchParams({ o: id })); } catch (err) {}
   });
 
-  $$("#langBtn,[data-lang-switch]").forEach(function (lb) { lb.addEventListener("click", function () { setLang(lang === "fr" ? "en" : "fr"); }); });   /* the masthead's button, and the door's on the home page */
+  $$("#langBtn,[data-lang-switch]").forEach(function (lb) { lb.addEventListener("click", function () { setLang(lang === "fr" ? "en" : "fr"); }); });
   var mb = $("#menuBtn"), nav = $("#nav");
   if (mb && nav) {
     mb.addEventListener("click", function () {
