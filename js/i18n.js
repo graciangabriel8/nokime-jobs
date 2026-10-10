@@ -192,7 +192,7 @@ window.NOKIME_I18N = {
     jf3: "The region filter comes from the offer’s département; the “lodged” filter only concerns seasons.",
     jf4: "Every offer has a place for the distinction; it stays empty until it is earned.",
     descHome: "Nokime Jobs: internships, apprenticeships and seasons in the kitchen, the dining room, the rooms division and the spa. Free for candidates; hotels and restaurants post and answer direct.",
-    footTag: "Internships, apprenticeships and seasons in hotels and restaurants. A Nokime site.",
+    footTag: "Internships, apprenticeships and seasons in hotels and restaurants. Staff wellbeing matters. A Nokime site.",
     /* questions:start — written by tools/build.py from tools/questionnaire_questions.py */
     rq_heures: "The hours worked, compared with the agreement or the contract", rq_heures_prevu: "As planned", rq_heures_plus: "A little more (up to 5 h a week)", rq_heures_beaucoup_plus: "Much more (over 5 h a week)", rq_heures_moins: "Less",
     rq_pauses: "The breaks", rq_pauses_oui: "Yes", rq_pauses_souvent: "Most of the time", rq_pauses_non: "No",
@@ -207,6 +207,10 @@ window.NOKIME_I18N = {
     doorCommis: "Kitchen commis", doorPartie: "Chef de partie", doorSecond: "Sous-chef", doorPatissier: "Pastry cook", doorCuisinier: "Cook", doorPlongeur: "Kitchen porter",
     doorRang: "Chef de rang", doorCommisSalle: "Commis waiter", doorServeur: "Waiter", doorSommelier: "Sommelier", doorBarman: "Bartender", doorMaitre: "Maître d’",
     doorReception: "Receptionist", doorConcierge: "Concierge", doorVeilleur: "Night porter", doorGouvernant: "Housekeeper", doorEtage: "Room attendant", doorBagagiste: "Porter",
+    careKicker: "Staff wellbeing matters to us.",
+    care1t: "A welcome charter", care1p: "Hours respected, breaks, pay on the agreed date, a named tutor, respect, the housing as announced.",
+    care2t: "Your say at the end", care2p: "After the internship or the season, you tell us how it went. Nothing is published.",
+    care3t: "We listen", care3p: "A problem on the job? We call you first. If it’s confirmed, the establishment leaves Nokime Jobs, even if it pays.",
     doorPraticien: "Spa therapist", doorEstheticien: "Beauty therapist", doorAccueilSpa: "Spa receptionist", doorRespSpa: "Spa manager",
   }
 };

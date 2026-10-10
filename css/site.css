@@ -278,6 +278,13 @@ html:not([lang="en"]) .only-en{display:none}
   background:radial-gradient(circle at 35% 32%,#FFFFFF 0,#E3E6EA 34%,#A9B0B8 100%);box-shadow:0 0 0 1.5px var(--ink)}
 .step h3{margin:0 0 8px}
 .step p{color:var(--ink-2);margin:0;font-size:16px;max-width:34ch}
+/* staff wellbeing: three points side by side, each under the charter's 1.5px ink rule; no rail, no balls, it is not a sequence */
+.care{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 44px}
+.care li{border-top:1.5px solid var(--ink);padding-top:18px}
+.care h3{margin:0 0 8px}
+.care p{color:var(--ink-2);margin:0;font-size:16px;max-width:34ch}
+.care .link{display:inline-block;margin-top:12px}
+@media (max-width:960px){.care{grid-template-columns:1fr}}
 
 /* ---------- what an offer says: four folds ---------- */
 .facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
