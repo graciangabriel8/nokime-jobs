@@ -31,7 +31,8 @@ for o in live:
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
 
 home = (root / "index.html").read_text(encoding="utf-8")
-head = home[:home.index("<header")]; header = home[home.index("<header"):home.index("<main>")]
+# the head ends with the <body> tag (and the blank line after it); the header is the masthead alone: the home page's door, between them, is never copied
+head = home[:re.search(r"<body[^>]*>\s*", home).end()]; header = home[home.index('<header class="site-head"'):home.index("<main>")]
 footer = home[home.index("<footer"):home.index('<script src="js/i18n.js')]; scripts = home[home.index('<script src="js/i18n.js'):home.index('<script src="js/offers.js')]
 KIND = {"stage": "Stage", "alternance": "Alternance", "saison": "Saison"}
 EMP = {"stage": "INTERN", "alternance": "FULL_TIME", "saison": "TEMPORARY"}

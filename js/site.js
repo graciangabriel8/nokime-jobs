@@ -71,8 +71,7 @@
     var tk = document.body.getAttribute("data-title"); if (tk && t[tk]) document.title = t[tk];
     var dk = document.body.getAttribute("data-desc"), md = $('meta[name="description"]');
     if (dk && t[dk] && md) md.setAttribute("content", t[dk]);
-    var lb = $("#langBtn");
-    if (lb) { lb.textContent = lang === "fr" ? "EN" : "FR"; lb.setAttribute("lang", lang === "fr" ? "en" : "fr"); lb.setAttribute("aria-label", t.langSwitch || ""); }
+    $$("#langBtn,[data-lang-switch]").forEach(function (lb) { lb.textContent = lang === "fr" ? "EN" : "FR"; lb.setAttribute("lang", lang === "fr" ? "en" : "fr"); lb.setAttribute("aria-label", t.langSwitch || ""); });
     var mb = $("#menuBtn"); if (mb && t.menuLabel) mb.setAttribute("aria-label", t.menuLabel);
   }
   function setLang(l) { lang = l; try { localStorage.setItem(LS_LANG, l); } catch (e) {} applyLang(); }
@@ -105,7 +104,7 @@
     try { navigator.sendBeacon("/api/postuler.php", new URLSearchParams({ o: id })); } catch (err) {}
   });
 
-  var lb = $("#langBtn"); if (lb) lb.addEventListener("click", function () { setLang(lang === "fr" ? "en" : "fr"); });
+  $$("#langBtn,[data-lang-switch]").forEach(function (lb) { lb.addEventListener("click", function () { setLang(lang === "fr" ? "en" : "fr"); }); });   /* the masthead's button, and the door's on the home page */
   var mb = $("#menuBtn"), nav = $("#nav");
   if (mb && nav) {
     mb.addEventListener("click", function () {

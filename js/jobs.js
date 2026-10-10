@@ -255,5 +255,5 @@
 
   function renderAll() { renderFilters(); renderList(); }
   renderAll();
-  var lb = $("#langBtn"); if (lb) lb.addEventListener("click", function () { setTimeout(renderAll, 0); });
+  $$("#langBtn,[data-lang-switch]").forEach(function (lb) { lb.addEventListener("click", function () { setTimeout(renderAll, 0); }); });
 })();
