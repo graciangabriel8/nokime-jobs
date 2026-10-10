@@ -1,7 +1,7 @@
 /* Nokime Jobs — the offers. Written in French, as the law wants job offers in France (Code du travail L5331-4).
    One object per offer; the list page renders them, newest first, until `expires`.
    Live offers are strict JSON: every key in double quotes ("id": "…"), unlike the demo list below; tools/build.py stops otherwise.
-   Add an offer here after the restaurant's mail has been checked (and, after its free period — six months for the ten launch houses, otherwise three months then the paid half season — the next plan paid, unless it stops).
+   Add an offer here after the restaurant's mail has been checked (and, after its free period — until its first hire through Nokime Jobs, six months at most from its first offer — the plan it chose paid, unless it stops).
 
    kind: "stage" | "alternance" | "saison"
    metier: "cuisine" | "salle" | "hebergement" | "spa", the department (Cuisine / Salle / Hébergement / Spa; in English Kitchen / Dining room /

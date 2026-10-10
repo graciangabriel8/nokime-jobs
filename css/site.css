@@ -245,8 +245,8 @@ html:not([lang="en"]) .only-en{display:none}
 .facts-grid .more{margin:0;max-width:none;border-top:1px solid var(--line);padding:16px 0 20px}
 .facts-grid .more summary{font-size:19px;letter-spacing:-.01em}
 
-/* ---------- for restaurants: the free-season panel, then four pricing cards ---------- */
-.free-banner{margin:0 0 32px;padding:18px 24px;background:var(--steel);color:var(--ink);border-radius:12px;font-size:clamp(18px,1.7vw,20px);line-height:1.4;font-weight:600;letter-spacing:-.008em}   /* the first season at half price: ink on the steel panel, never the blue */
+/* ---------- for restaurants: the free-start panel, then four pricing cards ---------- */
+.free-banner{margin:0 0 32px;padding:18px 24px;background:var(--steel);color:var(--ink);border-radius:12px;font-size:clamp(18px,1.7vw,20px);line-height:1.4;font-weight:600;letter-spacing:-.008em}   /* free until the first hire: ink on the steel panel, never the blue */
 /* the pricing cards, on paper (the steel band stays the offers' pass): four equal white cards, 12px, a 1px line, no shadow.
    Each card is name, who it is for, the price with its condition, the button, a hairline, « Inclus » and a short checked list.
    With subgrid the rows line up across the cards; without it each card is a plain column. Blue stays on the primary button only. */

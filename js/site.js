@@ -50,8 +50,8 @@
   }
 
   var MAIL = {
-    fr: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — une école", body: "Établissement :\nCe que j’en pense :\nCe qui manque pour la classe :\n" }, filled: { subject: "Poste pourvu — Nokime Jobs", body: "Offre : [poste, établissement]\nPourvu le : \nPourvu grâce à Nokime Jobs : oui / non\n" } },
-    en: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — a school", body: "School:\nWhat I think of it:\nWhat is missing for the classroom:\n" }, filled: { subject: "Position filled — Nokime Jobs", body: "Offer: [position, establishment]\nFilled on: \nFilled thanks to Nokime Jobs: yes / no\n" } }
+    fr: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — une école", body: "Établissement :\nCe que j’en pense :\nCe qui manque pour la classe :\n" }, filled: { subject: "Poste pourvu — Nokime Jobs", body: "Offre : [poste, établissement]\nPourvu le : \nPremier jour de la personne : \nPourvu grâce à Nokime Jobs : oui / non\n" } },
+    en: { general: { subject: "Nokime Jobs — contact", body: "" }, schools: { subject: "Nokime Jobs — a school", body: "School:\nWhat I think of it:\nWhat is missing for the classroom:\n" }, filled: { subject: "Position filled — Nokime Jobs", body: "Offer: [position, establishment]\nFilled on: \nPerson’s first day: \nFilled thanks to Nokime Jobs: yes / no\n" } }
   };
 
   function applyLang() {
