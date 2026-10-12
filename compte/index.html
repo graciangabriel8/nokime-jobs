@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Votre compte — Nokime Jobs</title>
+<meta name="description" content="Votre compte Nokime Jobs : se connecter, créer un compte, le gérer.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/fonts.css?v=62">
+<link rel="stylesheet" href="../css/site.css?v=62">
+<script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
+</head>
+<body data-title="titleAccount" data-desc="descAccount">
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="../">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="mk-t" d="M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><path class="mk-b" d="M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><rect class="mk-rail" x="1.5" y="4" width="29" height="6" rx="3"/></svg>
+      <span><span class="wordmark">nokime</span> <span class="brandword">Jobs</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigation">
+      <a href="../#offres" data-t="navOffers">Les offres</a>
+      <a href="../publier/" data-t="navPost">Publier</a>
+      <a href="../ecoles/" data-t="navSchools">Écoles</a>
+      <a href="../contact/" data-t="navContact">Contact</a>
+    </nav>
+    <div class="head-tools">
+      <button class="tbtn" id="langBtn" type="button" aria-label="Switch to English">EN</button>
+      <a class="btn small" href="../publier/" data-t="navCta">Publier une offre</a>
+      <button class="tbtn menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow"><a class="link" href="../" data-t="jobsEyebrowLink">Nokime Jobs</a></p>
+      <h1 class="display" data-t="cTitle">Votre compte.</h1>
+      <p class="lead" data-t="cLead">Pour les candidats et les établissements. Les offres restent ouvertes à tous, sans compte.</p>
+      <p class="note ok" id="cFlashOk" role="status" hidden></p>
+      <p class="note err" id="cFlashErr" role="alert" hidden></p>
+    </div>
+  </section>
+
+  <section class="pass pass-form" id="cOut" hidden>
+    <div class="wrap">
+      <div class="form-card">
+      <form class="jobs-form" id="loginForm" novalidate>
+        <div class="f-sec" role="group" aria-labelledby="loginLabel">
+          <h2 class="f-label" id="loginLabel" data-t="cLogin">Se connecter</h2>
+          <div>
+            <div class="f-grid">
+              <div class="f-field"><label><span data-t="cEmail">Courriel</span><input name="email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="cLoginBtn">Me connecter</span><span class="arrow" aria-hidden="true">→</span></button>
+              <a class="link" href="mot-de-passe/" data-t="cForgotLink">Mot de passe oublié ?</a>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </div>
+      </form>
+      </div>
+      <div class="form-card">
+      <form class="jobs-form" id="signupForm" novalidate>
+        <div class="f-sec" role="group" aria-labelledby="signupLabel">
+          <h2 class="f-label" id="signupLabel" data-t="cSignup">Créer un compte</h2>
+          <div>
+            <div class="f-grid">
+              <div class="f-field f-full" role="radiogroup" aria-labelledby="kindLabel">
+                <p class="f-label" id="kindLabel" data-t="cKindQ">Vous êtes</p>
+                <div class="chips">
+                  <label class="chip"><input type="radio" name="kind" value="candidate" required><span data-t="cKind_candidate">Candidat</span></label>
+                  <label class="chip"><input type="radio" name="kind" value="establishment"><span data-t="cKind_establishment">Établissement</span></label>
+                </div>
+                <p class="f-err" hidden></p>
+              </div>
+              <p class="small f-hint f-full" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p>
+              <div class="f-field"><label><span data-t="cEmail">Courriel</span><input name="email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="f-err" hidden></p></div>
+              <div class="f-field f-full" id="ageRow" hidden>
+                <label class="f-check"><input type="checkbox" name="age15"><span data-t="cAge15">J’ai 15 ans ou plus</span></label>
+                <p class="f-err" hidden></p>
+              </div>
+              <div class="f-field f-full">
+                <label class="f-check"><input type="checkbox" name="terms"><span data-t="cTerms">J’accepte les conditions d’utilisation des comptes.</span></label>
+                <p class="small f-terms"><a class="link" href="../mentions-legales/#comptes" data-t="cTermsLink">Lire les conditions</a></p>
+                <p class="f-err" hidden></p>
+              </div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="cSignupBtn">Créer mon compte</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="pass pass-form" id="cIn" hidden>
+    <div class="wrap">
+      <div class="form-card">
+      <div class="jobs-form">
+        <div class="f-sec" role="group" aria-labelledby="mineLabel">
+          <h2 class="f-label" id="mineLabel" tabindex="-1" data-t="cMine">Mon compte</h2>
+          <dl class="c-facts">
+            <dt data-t="cEmail">Courriel</dt><dd id="cMeEmail"></dd>
+            <dt data-t="cKindLabel">Compte</dt><dd id="cMeKind"></dd>
+          </dl>
+        </div>
+        <form class="f-sec" id="passwordForm" aria-labelledby="pwLabel" novalidate>
+          <h2 class="f-label" id="pwLabel" data-t="cPwTitle">Changer de mot de passe</h2>
+          <div>
+            <div class="f-grid">
+              <p class="small f-hint f-full" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p>
+              <div class="f-field"><label><span data-t="cCurrent">Mot de passe actuel</span><input name="current" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cNewPassword">Nouveau mot de passe</span><input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="cPwBtn">Changer le mot de passe</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </form>
+        <form class="f-sec" id="emailForm" aria-labelledby="emLabel" novalidate>
+          <h2 class="f-label" id="emLabel" data-t="cEmailTitle">Changer d’adresse</h2>
+          <div>
+            <div class="f-grid">
+              <div class="f-field"><label><span data-t="cNewEmail">Nouvelle adresse</span><input name="new_email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="cEmailBtn">Recevoir le lien</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </form>
+        <form class="f-sec" id="logoutForm" aria-labelledby="outLabel" novalidate>
+          <h2 class="f-label" id="outLabel" data-t="cLogoutTitle">Se déconnecter</h2>
+          <div>
+            <div class="cta-row">
+              <button class="btn" type="submit"><span data-t="cLogoutBtn">Me déconnecter</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </form>
+        <form class="f-sec" id="deleteForm" aria-labelledby="delLabel" novalidate>
+          <h2 class="f-label" id="delLabel" data-t="cDeleteTitle">Supprimer le compte</h2>
+          <div>
+            <p class="f-hint" data-t="cDeleteNote">C’est définitif : le compte part tout de suite, avec tout ce qui s’y rattache.</p>
+            <div class="f-grid">
+              <div class="f-field"><label><span data-t="cDeleteType">Pour confirmer, tapez SUPPRIMER</span><input name="confirm" type="text" autocomplete="off" required autocapitalize="characters" spellcheck="false"></label><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn" type="submit"><span data-t="cDeleteBtn">Supprimer mon compte</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </form>
+      </div>
+      </div>
+    </div>
+  </section>
+
+<div hidden>
+  <span data-t="cOkConfirm">Adresse confirmée, merci.</span>
+  <span data-t="cOkSignup">C’est presque fini : regardez vos courriels, on vient de vous écrire.</span>
+  <span data-t="cOkPassword">Mot de passe changé. Vos autres sessions sont fermées.</span>
+  <span data-t="cOkEmail">Regardez la nouvelle adresse : le lien pour confirmer y est. Rien ne change avant.</span>
+  <span data-t="cOkDeleted">Votre compte est supprimé. Un dernier courriel part pour le confirmer.</span>
+  <span data-t="cOkLoggedOut">C’est fait : session fermée.</span>
+  <span data-t="cOkForgot">Si un compte existe avec cette adresse, un lien vient de partir. Il marche une heure.</span>
+  <span data-t="cOkReset">C’est fait. Connectez-vous avec le nouveau mot de passe.</span>
+  <span data-t="cErr_required">À remplir.</span>
+  <span data-t="cErr_email_invalid">Vérifiez l’adresse : elle ne semble pas complète.</span>
+  <span data-t="cErr_password_missing">Tapez votre mot de passe.</span>
+  <span data-t="cErr_password_short">12 caractères au moins.</span>
+  <span data-t="cErr_password_long">128 caractères au plus.</span>
+  <span data-t="cErr_password_classes">Il manque une majuscule, une minuscule, un chiffre ou un symbole.</span>
+  <span data-t="cErr_password_email">Le mot de passe ne doit pas contenir votre adresse.</span>
+  <span data-t="cErr_password_common">Trop facile à deviner. Essayez autre chose.</span>
+  <span data-t="cErr_password_invalid">Ce mot de passe contient un caractère qui ne passe pas.</span>
+  <span data-t="cErr_kind_missing">Choisissez : candidat ou établissement.</span>
+  <span data-t="cErr_age_required">Les comptes sont pour les 15 ans et plus. Sans compte, vous pouvez toujours postuler.</span>
+  <span data-t="cErr_terms_required">Cochez la case pour accepter les conditions.</span>
+  <span data-t="cErr_bad_credentials">Adresse ou mot de passe incorrect.</span>
+  <span data-t="cErr_confirm_first">Confirmez d’abord votre adresse : le lien est dans vos courriels (pensez aux indésirables).</span>
+  <span data-t="cErr_wait">Trop d’essais. Réessayez dans {n} min.</span>
+  <span data-t="cErr_locked">Trop d’essais : le compte est bloqué. Choisissez un nouveau mot de passe pour le débloquer.</span>
+  <span data-t="cErr_too_many">Trop de demandes d’un coup. Réessayez dans un quart d’heure.</span>
+  <span data-t="cErr_bad_password">Ce n’est pas le bon mot de passe.</span>
+  <span data-t="cErr_email_same">C’est déjà votre adresse.</span>
+  <span data-t="cErr_signed_out">Votre session est fermée. Connectez-vous à nouveau.</span>
+  <span data-t="cErr_link">Ce lien ne marche plus : il a déjà servi, ou il a expiré.</span>
+  <span data-t="cErr_server">Ça n’a pas marché. Réessayez dans un instant.</span>
+  <span data-t="cErr_confirm_word">Tapez le mot demandé pour confirmer.</span>
+  <span data-t="cDeleteWord">SUPPRIMER</span>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="../"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="mk-t" d="M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><path class="mk-b" d="M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><rect class="mk-rail" x="1.5" y="4" width="29" height="6" rx="3"/></svg><span><span class="wordmark">nokime</span> <span class="brandword">Jobs</span></span></a>
+        <p class="small" data-t="footTag">Stages, alternances et saisons en hôtellerie-restauration. Le bien-être des équipes compte. Un site Nokime.</p>
+      </div>
+      <nav aria-label="Pied de page" data-t-attr="aria-label:footNav">
+        <a href="../#offres" data-t="navOffers">Les offres</a>
+        <a href="../publier/" data-t="navPost">Publier</a>
+        <a href="../ecoles/" data-t="navSchools">Écoles</a>
+        <a href="../contact/" data-t="navContact">Contact</a>
+        <a href="../questionnaire/" data-t="footQuestionnaire">Le questionnaire</a>
+        <a href="../charte/" data-t="footCharter">La charte d’accueil</a>
+      </nav>
+      <div class="foot-links">
+        <a href="mailto:contact@nokime.fr">contact@nokime.fr</a>
+        <a href="https://nokime.fr/" rel="noopener" data-t="footNokime">Nokime, le groupe</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> Nokime</span>
+      <a href="../mentions-legales/" data-t="footLegal">Mentions légales</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/i18n.js?v=62"></script>
+<script src="../js/site.js?v=62"></script>
+<script src="../js/compte.js?v=62"></script>
+</body>
+</html>
