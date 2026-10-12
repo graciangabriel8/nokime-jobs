@@ -81,8 +81,14 @@
     var d = new Date(iso + "T12:00:00");
     return d.toLocaleDateString(lang() === "fr" ? "fr-FR" : "en-GB", { day: "numeric", month: "short", year: d.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined });
   }
-  /* the distinction, once earned: a blue rosette (the same drawing as tools/build.py and the home page) */
-  var SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg>';
+  /* l’hirondelle de Nokime Jobs, once earned: the swallow and « Hirondelle depuis YYYY » under the establishment’s name (the same
+     drawing as tools/build.py and kairos/distinction/marque). `hirondelle` is the year of the decision; a demo offer never
+     shows it, and where it is not earned nothing is drawn, not even an empty place */
+  var SWALLOW = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path fill="currentColor" d="M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z"/></svg>';
+  function hirondelle(o) {
+    if (o.demo || !/^\d{4}$/.test(String(o.hirondelle == null ? "" : o.hirondelle))) return "";
+    return '<span class="hd" title="' + esc(t("hdTitle")) + '">' + SWALLOW + '<span class="hd-since">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></span>";
+  }
   /* the facts a candidate decides on: a small label above each value */
   function fact(cls, label, value, note) { return '<div class="fact ' + cls + (note ? " noted" : "") + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd>" + (note ? '<dd class="fact-note">' + esc(note) + "</dd>" : "") + "</div>"; }
   /* the pay is always a fact: the restaurant's words, or "not disclosed" and, where the law sets a floor, one line saying so
@@ -133,7 +139,7 @@
           '<p class="job-where">' + esc(o.city) + (regionOf(o) ? '<span class="muted"> · ' + esc(regionOf(o)) + "</span>" : "") + "</p>" +
           (o.published ? '<p class="job-pub">' + esc(t("jobsPublished", { d: fmtDate(o.published) })) + "</p>" : "") + "</div>" +
         "<h3>" + (o.demo || !base ? esc(tx(o, "role")) : '<a class="job-link" href="' + esc(base + o.id + "/") + '">' + esc(tx(o, "role")) + "</a>") + "</h3>" +
-        '<p class="job-rest">' + esc(tx(o, "restaurant")) + (o.distinction ? '<span class="distinction" role="img" aria-label="' + esc(t("distinctionTitle")) + '" title="' + esc(t("distinctionTitle")) + '">' + SEAL + "</span>" : '<span class="distinction empty" aria-hidden="true"></span>') + "</p></div>" +
+        '<p class="job-rest">' + esc(tx(o, "restaurant")) + hirondelle(o) + "</p></div>" +
         facts(o) +
         (o.text || tr(o) ? '<details class="more"><summary>' + esc(t("more")) + "</summary>" + (o.text ? "<p>" + esc(tx(o, "text")) + "</p>" : "") + original(o) + "</details>" : "") +
         '<div class="job-act"><a class="btn primary"' + (o.demo ? "" : ' data-offer="' + esc(o.id) + '"') + ' href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
