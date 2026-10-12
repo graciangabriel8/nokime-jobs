@@ -232,7 +232,7 @@ window.NOKIME_I18N = {
     cErr_password_short: "12 characters at least.", cErr_password_long: "128 characters at most.", cErr_password_classes: "A capital, a small letter, a digit or a symbol is missing.",
     cErr_password_email: "The password must not contain your address.", cErr_password_common: "Too easy to guess. Try something else.", cErr_password_invalid: "This password holds a character that doesn’t work.",
     cErr_kind_missing: "Choose: candidate or establishment.", cErr_age_required: "Accounts are for people aged 15 and over. Without one, you can still apply.", cErr_terms_required: "Tick the box to accept the terms.",
-    cErr_bad_credentials: "Wrong address or password.", cErr_confirm_first: "Confirm your address first: the link is in your email (check the spam folder too).", cErr_wait: "Too many tries. Try again in {n} min.",
+    cErr_bad_credentials: "Wrong address or password. Just created your account? Confirm your address first: the link is in your email (check the spam folder too).", cErr_wait: "Too many tries. Try again in {n} min.",
     cErr_locked: "Too many tries: the account is locked. Choose a new password to unlock it.", cErr_too_many: "Too many requests at once. Try again in a quarter of an hour.", cErr_bad_password: "That’s not the right password.",
     cErr_email_same: "That’s already your address.", cErr_signed_out: "Your session has ended. Sign in again.", cErr_link: "This link no longer works: it has been used already, or it has expired.",
     cErr_server: "That didn’t work. Try again in a moment.", cErr_confirm_word: "Type the word shown to confirm.", mpForgotTitle: "Forgot your password",

@@ -1,7 +1,9 @@
 <?php
-/* POST {t, password}: sets the new password, spends the link, ends every session of the account and clears
-   its failed attempts, in one transaction. 410 link for a link unknown, used or expired. It never signs anyone
-   in. */
+/* POST {t, password}: sets the new password, spends the link, ends every session of the account, cancels its
+   other links not yet used (a pending email change included) and clears its address's failed attempts, in one
+   transaction. Using the link proves the mailbox, so an account not yet confirmed is confirmed by it: whoever
+   holds the address can always take it back from a sign-up made in their name. 410 link for a link unknown,
+   used or expired. It never signs anyone in. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 
@@ -21,9 +23,10 @@ $id = atomic(function () use ($t, $hash) {
     $tok = spend_token($t, ['reset']);
     if (!$tok) return null;
     $id = (int)$tok['account_id'];
-    q('UPDATE accounts SET password_hash = ? WHERE id = ?', [$hash, $id]);
+    q('UPDATE accounts SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, ?) WHERE id = ?', [$hash, now(), $id]);
     q('DELETE FROM sessions WHERE account_id = ?', [$id]);
-    q('DELETE FROM login_failures WHERE account_id = ?', [$id]);
+    q('DELETE FROM tokens WHERE account_id = ? AND used_at IS NULL', [$id]);
+    clear_failures(fail_key((string)q('SELECT email FROM accounts WHERE id = ?', [$id])->fetchColumn()));
     return $id;
 });
 if ($id === null) fail(410, 'link');

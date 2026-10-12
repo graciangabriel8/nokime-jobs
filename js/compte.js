@@ -142,7 +142,7 @@
     bind($("#emailForm"), "email.php", function (f) { return { password: val(f, "password"), new_email: val(f, "new_email") }; },
       function (j, f) { ok(f, "cOkEmail"); });
     bind($("#logoutForm"), "logout.php", function () { return {}; }, function () {
-      showOut(); say($("#cFlashOk"), "cOkLoggedOut");
+      showOut(); say($("#cFlashOk"), "cOkLoggedOut"); $("#loginLabel").focus();
     });
     bind($("#deleteForm"), "delete.php", function (f) {
       var typed = val(f, "confirm").trim().toUpperCase();
@@ -151,7 +151,7 @@
         return null;
       }
       return { password: val(f, "password") };
-    }, function (j, f) { f.reset(); showOut(); say($("#cFlashOk"), "cOkDeleted"); });
+    }, function (j, f) { f.reset(); showOut(); say($("#cFlashOk"), "cOkDeleted"); $("#loginLabel").focus(); });
   }
 
   /* ---------- /compte/mot-de-passe/ ---------- */

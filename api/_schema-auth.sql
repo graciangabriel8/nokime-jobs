@@ -37,14 +37,19 @@ CREATE TABLE tokens (
   KEY (account_id)
 ) ENGINE=InnoDB;
 
+-- id lets a request take back the one event it recorded over a limit (_auth.php take()).
 CREATE TABLE rate_events (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   k  CHAR(32) CHARACTER SET ascii NOT NULL,
   at INT NOT NULL,
   KEY (k, at)
 ) ENGINE=InnoDB;
 
+-- One row per address tried, with an account or not, keyed on the address's HMAC (as rate_events), so the
+-- attempt limits answer the same either way. locked_until is the end of the current wait, or 2147483647 for
+-- "until a password reset".
 CREATE TABLE login_failures (
-  account_id   INT NOT NULL PRIMARY KEY,
+  k            CHAR(32) CHARACTER SET ascii NOT NULL PRIMARY KEY,
   count        INT NOT NULL,
   first_at     INT NOT NULL,
   last_at      INT NOT NULL,
@@ -55,6 +60,6 @@ CREATE TABLE login_failures (
 --   SELECT id FROM accounts WHERE email = 'someone@example.com';
 --   DELETE FROM sessions WHERE account_id = <id>;
 --   DELETE FROM tokens WHERE account_id = <id>;
---   DELETE FROM login_failures WHERE account_id = <id>;
 --   DELETE FROM accounts WHERE id = <id>;
--- Rate-limit fingerprints hold no address and go by themselves within 24 hours.
+-- Rate-limit fingerprints and failure counters hold no address; they go by themselves within 24 hours, except a
+-- counter locked until a reset, which stays so that a deleted account answers like an address that never had one.

@@ -123,6 +123,15 @@ const MAIL_TEXT = [
     ],
 ];
 
+/* An English account's links carry lang=en, so the page opens in the language of the mail it came from
+   (site.js reads it; confirm.php passes it on to its redirect). */
+function with_lang(string $url, string $lang): string {
+    if ($lang !== 'en') return $url;
+    $hash = strpos($url, '#');
+    $base = $hash === false ? $url : substr($url, 0, $hash);
+    return $base . (strpos($base, '?') === false ? '?' : '&') . 'lang=en' . ($hash === false ? '' : substr($url, $hash));
+}
+
 function header_safe(string ...$values): bool {
     foreach ($values as $v) if (preg_match('/[\r\n\0]/', $v)) return false;
     return true;
@@ -274,11 +283,12 @@ function mail_to_file(array $m): bool {
 
 /* Build and send one mail, inside the per-address and site limits; the outcome is a word for the log. SMTP; on
    a refusal, one retry after about 60 s unless 60 s have already gone by, inside the 165 s execution limit.
-   No other route: PHP's mail() would likely fail DMARC. Call after the answer has left. */
-function send_mail(string $kind, string $to, string $lang, string $link, ?string $second = null): string {
+   No other route: PHP's mail() would likely fail DMARC. Call after the answer has left. $reserved false for the
+   mails a sign-up sends, which stop short of the site's cap (mail_allowed). */
+function send_mail(string $kind, string $to, string $lang, string $link, ?string $second = null, bool $reserved = true): string {
     global $T0;
-    if (!mail_allowed($to)) return 'mail_limit';
-    $m = mail_message($kind, $to, $lang, $link, $second);
+    if (!mail_allowed($to, $reserved)) return 'mail_limit';
+    $m = mail_message($kind, $to, $lang, with_lang($link, $lang), $second === null ? null : with_lang($second, $lang));
     if ($m === null) return 'header_refused';
     if (cfg('transport') === 'file') return mail_to_file($m) ? 'sent_file' : 'file_failed';
     db_release();

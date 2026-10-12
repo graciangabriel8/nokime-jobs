@@ -15,7 +15,10 @@ const RESET_LIFE = 3600;             // reset links: 1 hour
 const MAX_BODY = 8192;               // a POST body is under 8 KB
 const FREE_FAILURES = 5;             // consecutive failures before the growing delay
 const LOCK_FAILURES = 25;            // failures in 24 h that lock the account until a reset
+const MAX_WAIT = 3600;               // the growing delay stops at 60 min, so 25 failures fit in about 15 h (ASSUMED)
 const LOCKED_FOR_GOOD = 2147483647;  // locked_until for "until a password reset"
+const MAIL_SITE_CAP = 150;           // mails an hour for the whole site, under the mailbox's SMTP quota (ASSUMED)
+const MAIL_RESERVE = 50;             // of those, kept for mails no sign-up can trigger: reset, link again, changes (ASSUMED)
 
 $T0 = microtime(true);
 /* jobs-private sits beside the site folder (<home>/jobs-private), as api/_offres.php finds it. */
@@ -64,7 +67,13 @@ function cfg(string $k) { global $CFG; return $CFG[$k] ?? null; }
 /* The site's own address, for the Origin check and the links in mails: jobs.nokime.fr, or the rig's address
    while probe_mode is on. Never the Host header. */
 function site_origin(): string {
-    return cfg('probe_mode') && is_string(cfg('probe_origin')) ? cfg('probe_origin') : ORIGIN;
+    return rig() ? cfg('probe_origin') : ORIGIN;
+}
+
+/* The local rig: probe_mode on and another origin set. probe_mode alone (the dark test on OVH) only opens
+   probe.php and marks the log lines; it never raises a limit on the real host. */
+function rig(): bool {
+    return cfg('probe_mode') && is_string(cfg('probe_origin')) && cfg('probe_origin') !== ORIGIN;
 }
 
 /* ---------- answers ---------- */
@@ -211,58 +220,62 @@ function hash_password(string $p): string {
 
 /* ---------- attempt limits (per account) ---------- */
 
-/* Each failure is counted; after five in a row each further attempt waits 1, 2, 4, 8… minutes from the last
-   failure; 25 failures within 24 h lock the account until a password reset. An address with no account gets
-   the same answers from its own counter (rate events keyed on the address), so the answers never tell whether
-   an account exists. Returns null, or [status, error, seconds to wait]. */
-function attempt_gate(?int $account, string $addr): ?array {
-    if ($account !== null) {
-        $f = q('SELECT count, first_at, last_at, locked_until FROM login_failures WHERE account_id = ?', [$account])->fetch();
-        if (!$f) return null;
-        $count = (int)$f['count']; $last = (int)$f['last_at'];
-        if ($f['locked_until'] !== null && (int)$f['locked_until'] > now()) return [423, 'locked', 0];
-    } else {
-        $k = rk('lf:' . $addr);
-        $count = hits($k, 86400);
-        if ($count >= LOCK_FAILURES) return [423, 'locked', 0];
-        $last = (int)q('SELECT MAX(at) FROM rate_events WHERE k = ?', [$k])->fetchColumn();
+/* One counter per address, whether an account has it or not, so the answers never tell whether one exists:
+   the row is keyed on the address's HMAC, survives the account's deletion, and is cleared only by the right
+   password or a reset. Every attempt is counted before the password is checked, in one statement that also
+   refuses it while the address waits, so parallel guesses cannot all slip through on one stale count.
+   After five failures each further attempt waits 1, 2, 4… minutes, at most MAX_WAIT; 25 in a streak lock the
+   address until a reset. A streak whose first failure is over 24 h old starts again. */
+function fail_key(string $addr): string { return rk('lf:' . $addr); }
+
+/* Counts this attempt and answers null, or refuses it: [423, 'locked', 0] or [429, 'wait', seconds]. */
+function claim_attempt(string $k): ?array {
+    for ($try = 0; $try < 3; $try++) {
+        $claimed = atomic(function () use ($k) {
+            $n = now();
+            /* count is assigned before first_at: MySQL evaluates the SET list left to right with the new values,
+               SQLite with the old ones, and this order gives both engines the same result. */
+            if (q('UPDATE login_failures SET count = CASE WHEN first_at < ? THEN 1 ELSE count + 1 END,
+                   first_at = CASE WHEN first_at < ? THEN ? ELSE first_at END, last_at = ?
+                   WHERE k = ? AND (locked_until IS NULL OR locked_until <= ?)',
+                  [$n - 86400, $n - 86400, $n, $n, $k, $n])->rowCount() !== 1) return false;
+            $c = (int)q('SELECT count FROM login_failures WHERE k = ?', [$k])->fetchColumn();
+            $until = $c >= LOCK_FAILURES ? LOCKED_FOR_GOOD
+                   : ($c >= FREE_FAILURES ? $n + min(MAX_WAIT, 60 * 2 ** ($c - FREE_FAILURES)) : null);
+            q('UPDATE login_failures SET locked_until = ? WHERE k = ?', [$until, $k]);
+            return true;
+        });
+        if ($claimed) return null;
+        $f = q('SELECT locked_until FROM login_failures WHERE k = ?', [$k])->fetch();
+        if ($f) {
+            $until = (int)$f['locked_until'];
+            if ($until === LOCKED_FOR_GOOD) return [423, 'locked', 0];
+            if ($until > now()) return [429, 'wait', $until - now()];
+            continue;   // the wait ended in between: claim again
+        }
+        try {
+            q('INSERT INTO login_failures (k, count, first_at, last_at, locked_until) VALUES (?, 0, ?, ?, NULL)', [$k, now(), now()]);
+        } catch (PDOException $e) {
+            if ($e->getCode() !== '23000') throw $e;   // a parallel attempt made the row first: claim it
+        }
     }
-    if ($count < FREE_FAILURES) return null;
-    $wait = 60 * (2 ** min(20, $count - FREE_FAILURES)) - (now() - $last);
-    return $wait > 0 ? [429, 'wait', $wait] : null;
+    throw new RuntimeException('login_failures: the attempt could not be counted');
 }
 
-function gate_or_fail(?int $account, string $addr): void {
-    $g = attempt_gate($account, $addr);
+function gate_or_fail(string $k): void {
+    $g = claim_attempt($k);
     if ($g) fail($g[0], $g[1], null, $g[1] === 'wait' ? ['retry_after' => $g[2]] : []);
 }
 
-function record_failure(?int $account, string $addr): void {
-    if ($account === null) { hit(rk('lf:' . $addr)); return; }
-    atomic(function () use ($account) {
-        $n = now();
-        $f = q('SELECT count, first_at FROM login_failures WHERE account_id = ?', [$account])->fetch();
-        if (!$f) {
-            q('INSERT INTO login_failures (account_id, count, first_at, last_at, locked_until) VALUES (?, 1, ?, ?, NULL)', [$account, $n, $n]);
-            return;
-        }
-        /* first_at is the streak's first failure: 25 of them within 24 h of it lock the account. */
-        $count = (int)$f['count'] + 1;
-        $lock = $count >= LOCK_FAILURES && $n - (int)$f['first_at'] <= 86400 ? LOCKED_FOR_GOOD : null;
-        q('UPDATE login_failures SET count = ?, last_at = ?, locked_until = ? WHERE account_id = ?', [$count, $n, $lock, $account]);
-    });
-}
+function clear_failures(string $k): void { q('DELETE FROM login_failures WHERE k = ?', [$k]); }
 
-function clear_failures(int $account): void { q('DELETE FROM login_failures WHERE account_id = ?', [$account]); }
-
-/* A signed-in person's password, checked inside the same attempt limits as login: a wrong one is counted and
+/* A signed-in person's password, inside the same attempt limits as login: a wrong one stays counted and is
    answered 403 bad_password on $field, so a stolen session cannot try passwords any faster than login. */
 function check_password(array $acc, string $p, string $field): void {
-    gate_or_fail((int)$acc['id'], (string)$acc['email']);
-    if (!password_verify($p, (string)$acc['password_hash'])) {
-        record_failure((int)$acc['id'], (string)$acc['email']);
-        fail(403, 'bad_password', $field);
-    }
+    $k = fail_key((string)$acc['email']);
+    gate_or_fail($k);
+    if (!password_verify($p, (string)$acc['password_hash'])) fail(403, 'bad_password', $field);
+    clear_failures($k);
 }
 
 /* ---------- rate limits (as Copius) ---------- */
@@ -277,36 +290,42 @@ function ip_key(): string {
 
 function rk(string $s): string { global $KEY; return substr(hash_hmac('sha256', $s, $KEY), 0, 32); }
 
-function lim(int $n): int { return cfg('probe_mode') ? $n * 10 : $n; }
+/* Limits x10 on the rig only, where the probes run many requests from one address. */
+function lim(int $n): int { return rig() ? $n * 10 : $n; }
 
 function hits(string $k, int $window): int {
     return (int)q('SELECT COUNT(*) FROM rate_events WHERE k = ? AND at > ?', [$k, now() - $window])->fetchColumn();
 }
 
-function hit(string $k): void { q('INSERT INTO rate_events (k, at) VALUES (?, ?)', [$k, now()]); }
+function hit(string $k): int { q('INSERT INTO rate_events (k, at) VALUES (?, ?)', [$k, now()]); return (int)db()->lastInsertId(); }
 
-/* Over the limit the request is answered without being recorded, so the table grows only with what the
-   limits let through. */
-function under(string $k, int $per15, int $per24h = 0): bool {
-    return hits($k, 900) < lim($per15) && ($per24h === 0 || hits($k, 86400) < lim($per24h));
+function untake(int $id): void { q('DELETE FROM rate_events WHERE id = ?', [$id]); }
+
+/* One event under its limits ([window seconds => most events]): recorded first, then counted with every other,
+   so parallel requests cannot all pass on one count. The event's id, or null over a limit, where the event is
+   taken back so the table grows only with what the limits let through. */
+function take(string $k, array $limits): ?int {
+    $id = hit($k);
+    foreach ($limits as $window => $max) {
+        if (hits($k, $window) > $max) { untake($id); return null; }
+    }
+    return $id;
 }
 
 /* The per-IP limit of one endpoint: a 429 over it. Off when config.php says REMOTE_ADDR is the balancer. */
 function ip_limit(string $name, int $per15, int $per24h): void {
     if (!cfg('per_ip_limits')) return;
-    $k = rk($name . ':' . ip_key());
-    if (!under($k, $per15, $per24h)) fail(429, 'too_many');
-    hit($k);
+    if (take(rk($name . ':' . ip_key()), [900 => lim($per15), 86400 => lim($per24h)]) === null) fail(429, 'too_many');
 }
 
 /* Whether one more mail may go to this address: 3 an hour and 10 a day per address, for every endpoint, and
-   the site's hourly cap under the mailbox's SMTP quota. Recorded when it may. */
-function mail_allowed(string $addr): bool {
-    $k = rk('m:' . $addr);
-    if (hits($k, 3600) >= lim(3) || hits($k, 86400) >= lim(10)) return false;
-    if (hits(rk('mail'), 3600) >= (int)(cfg('mail_site_cap') ?? 40)) return false;
-    hit($k);
-    hit(rk('mail'));
+   the site's hourly cap under the mailbox's SMTP quota. The mails a sign-up sends ($reserved false) stop
+   MAIL_RESERVE short of that cap, so a flood of sign-ups never keeps a reset link from going out. */
+function mail_allowed(string $addr, bool $reserved): bool {
+    $a = take(rk('m:' . $addr), [3600 => lim(3), 86400 => lim(10)]);
+    if ($a === null) return false;
+    $cap = (int)(cfg('mail_site_cap') ?? MAIL_SITE_CAP);
+    if (take(rk('mail'), [3600 => $reserved ? $cap : $cap - MAIL_RESERVE]) === null) { untake($a); return false; }
     return true;
 }
 
@@ -409,30 +428,35 @@ function prune_logs(): void {
 
 /* ---------- clean-up ---------- */
 
-/* Everything an account owns, at once. */
+/* Everything an account owns, at once. Its address's failure counter stays (it belongs to the address, holds
+   no address, and goes by itself 24 h after its last failure unless locked): removing it would let a deleted
+   account answer unlike an address that never had one. */
 function delete_account(int $id): void {
     atomic(function () use ($id) {
         q('DELETE FROM sessions WHERE account_id = ?', [$id]);
         q('DELETE FROM tokens WHERE account_id = ?', [$id]);
-        q('DELETE FROM login_failures WHERE account_id = ?', [$id]);
         q('DELETE FROM accounts WHERE id = ?', [$id]);
     });
 }
 
-/* The deletions: rate events after 24 h, which the limits count; used or expired links 23 h after (so with
-   an hourly run none is kept past 24 h); expired sessions; accounts left unconfirmed for 7 days; accounts
-   unused for 24 months once their warning went out (_purge-auth.php sends it at 23). Run hourly by the OVH
-   task, and by the endpoints after their answer at most once an hour in between. */
+/* The deletions: rate events after 24 h, which the limits count; failure counters 24 h after their last
+   failure, unless locked (a streak that old starts again anyway, so nothing answers differently); used or
+   expired links 23 h after (so with an hourly run none is kept past 24 h); expired sessions; accounts left
+   unconfirmed for 7 days; accounts unused for 24 months once their warning went out 28 days before
+   (_purge-auth.php sends it at 23), or unused for 24 months and 30 days whether or not it could go. Run
+   hourly by the OVH task, and by the endpoints after their answer at most once an hour in between. */
 function purge(): bool {
     try {
         $n = now();
         q('DELETE FROM rate_events WHERE at < ?', [$n - 86400]);
+        q('DELETE FROM login_failures WHERE last_at < ? AND (locked_until IS NULL OR locked_until < ?)', [$n - 86400, LOCKED_FOR_GOOD]);
         q('DELETE FROM tokens WHERE (used_at IS NOT NULL AND used_at < ?) OR expires_at < ?', [$n - 23 * 3600, $n - 23 * 3600]);
         q('DELETE FROM sessions WHERE expires_at < ?', [$n]);
         $gone = q('SELECT id FROM accounts WHERE email_verified_at IS NULL AND created_at < ?', [$n - 7 * 86400])->fetchAll(PDO::FETCH_COLUMN);
         $cut = strtotime('-24 months', $n);
-        $gone = array_merge($gone, q('SELECT id FROM accounts WHERE last_seen_at < ? AND inactive_warned_at IS NOT NULL AND inactive_warned_at < ?',
-                                     [$cut, $n - 28 * 86400])->fetchAll(PDO::FETCH_COLUMN));
+        $gone = array_merge($gone, q('SELECT id FROM accounts WHERE last_seen_at < ?
+                                      AND ((inactive_warned_at IS NOT NULL AND inactive_warned_at < ?) OR last_seen_at < ?)',
+                                     [$cut, $n - 28 * 86400, $cut - 30 * 86400])->fetchAll(PDO::FETCH_COLUMN));
         foreach ($gone as $id) delete_account((int)$id);
         prune_logs();
         return true;

@@ -8,7 +8,7 @@ require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';
 
 $in = json_input(['email', 'password', 'kind', 'lang', 'age15', 'terms']);
-ip_limit('signup', 10, 50);
+ip_limit('signup', 5, 20);
 
 $addr = normal_address(text_field($in, 'email'));
 if ($addr === null) fail(400, 'email_invalid', 'email');
@@ -43,8 +43,8 @@ if (!$a) {
     }
     if ($made !== null) {
         [$account, $token] = $made;
-        log_api('created ' . send_mail('confirm', $addr, $lang, site_origin() . '/api/auth/confirm.php?t=' . $token), $account);
+        log_api('created ' . send_mail('confirm', $addr, $lang, site_origin() . '/api/auth/confirm.php?t=' . $token, null, false), $account);
         exit;
     }
 }
-if ($a) log_api('existing ' . send_mail('exists', $addr, (string)$a['lang'], site_origin() . '/compte/', site_origin() . '/compte/mot-de-passe/'));
+if ($a) log_api('existing ' . send_mail('exists', $addr, (string)$a['lang'], site_origin() . '/compte/', site_origin() . '/compte/mot-de-passe/', false));

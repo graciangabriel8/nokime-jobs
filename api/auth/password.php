@@ -1,6 +1,8 @@
 <?php
-/* POST {current, password}, signed in: changes the password and ends every other session of the account. The
-   current password is checked inside the same attempt limits as login. */
+/* POST {current, password}, signed in: changes the password, ends every other session of the account and
+   cancels every link not yet used, so a pending email change dies with the password it was asked under (the
+   change_old mail tells the owner to do exactly this). The current password is checked inside the same attempt
+   limits as login. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 
@@ -15,7 +17,7 @@ $hash = hash_password($password);
 atomic(function () use ($s, $hash) {
     q('UPDATE accounts SET password_hash = ? WHERE id = ?', [$hash, $s['account_id']]);
     q('DELETE FROM sessions WHERE account_id = ? AND id_hash <> ?', [$s['account_id'], $s['id_hash']]);
-    q('DELETE FROM login_failures WHERE account_id = ?', [$s['account_id']]);
+    q('DELETE FROM tokens WHERE account_id = ? AND used_at IS NULL', [$s['account_id']]);
 });
 json_out(200, ['ok' => true]);
 log_api('changed', (int)$s['account_id']);

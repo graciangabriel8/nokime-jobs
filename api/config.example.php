@@ -16,12 +16,14 @@ return [
     'transport' => 'smtp',
     'smtp' => ['host' => 'smtp.mail.ovh.net', 'port' => 465, 'user' => 'comptes@nokime.fr', 'pass' => 'MAILBOX-PASSWORD'],
     'from' => 'comptes@nokime.fr', 'from_name' => 'Nokime Jobs', 'reply_to' => 'contact@nokime.fr',
-    // Mails per hour for the whole site, under the mailbox's own SMTP quota (about 200 an hour).
-    'mail_site_cap' => 40,
+    // Mails per hour for the whole site, under the mailbox's own SMTP quota (about 200 an hour, to check with OVH).
+    // Sign-ups may use all but 50 of them; the rest stays for reset links and the other mails.
+    'mail_site_cap' => 150,
     // false if the dark test shows that PHP sees OVH's balancer in REMOTE_ADDR instead of the visitor.
     'per_ip_limits' => true,
-    // true only for the dark test: limits x10, log lines marked, /api/auth/probe.php answers. Then false again.
+    // true only for the dark test: /api/auth/probe.php answers and log lines are marked. Then false again.
+    // On OVH it changes no limit; the limits x10 apply only on the local rig, which also sets probe_origin.
     'probe_mode' => false,
-    // Accepted as Origin and used in links only while probe_mode is on (the local rig's address).
+    // The local rig's address only (accepted as Origin, used in links, limits x10). Always null on OVH.
     'probe_origin' => null,
 ];

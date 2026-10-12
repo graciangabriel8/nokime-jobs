@@ -10,7 +10,6 @@ $in = json_input(['password', 'new_email']);
 ip_limit('account', 20, 100);
 $s = require_session();
 check_password($s, text_field($in, 'password'), 'password');
-clear_failures((int)$s['account_id']);
 $new = normal_address(text_field($in, 'new_email'));
 if ($new === null) fail(400, 'email_invalid', 'new_email');
 if ($new === $s['email']) fail(400, 'email_same', 'new_email');
