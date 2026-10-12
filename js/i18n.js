@@ -114,7 +114,7 @@ window.NOKIME_I18N = {
     schKicker: "What it changes for you.",
     s1t: "Readable offers", s1p: "Kind, dates, hours, pay when the establishment states it, lodging: a student knows what they are answering before writing, and so do you.",
     s2t: "Nothing to manage", s2p: "No account for the student, no CV with us. The application goes from their mail to the establishment’s; the agreement follows your procedure.",
-    s3t: "Your students' feedback counts", s3p: "Your students can answer the end-of-placement questionnaire themselves: their answers, never published, prepare the Nokime Jobs hirondelle, the landmark for the places students want to come back to, never a ranking. Its questions will change before the first hirondelles.",
+    s3t: "Your students' feedback counts", s3p: "Your students can answer the end-of-placement questionnaire themselves: their answers, never published, prepare the Nokime Jobs hirondelle, the landmark for the places students want to come back to, never a ranking. The questionnaire will change before the first hirondelles.",
     schAskKicker: "What we ask.", schAskLead: "An opinion, and if the page serves you, a link to it in what you hand your students.",
     schAskMore: "Nokime is made by a BTS MHR student. Schools are best placed to say what an offer lacks to be useful in class, and to write the hirondelle’s questions with us. Write to us, we answer fast.",
     titleContact: "Contact — Nokime Jobs", descContact: "Write to Nokime Jobs: an offer to post, a question, a school that wants to know more.",
