@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mot de passe — Nokime Jobs</title>
+<meta name="description" content="Mot de passe oublié ? Recevez un lien pour en choisir un nouveau.">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="stylesheet" href="../../css/fonts.css?v=65">
+<link rel="stylesheet" href="../../css/site.css?v=65">
+<script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
+</head>
+<body data-title="titlePassword" data-desc="descPassword">
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="../../">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="mk-t" d="M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><path class="mk-b" d="M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><rect class="mk-rail" x="1.5" y="4" width="29" height="6" rx="3"/></svg>
+      <span><span class="wordmark">nokime</span> <span class="brandword">Jobs</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigation">
+      <a href="../../#offres" data-t="navOffers">Les offres</a>
+      <a href="../../publier/" data-t="navPost">Publier</a>
+      <a href="../../ecoles/" data-t="navSchools">Écoles</a>
+      <a href="../../contact/" data-t="navContact">Contact</a>
+    </nav>
+    <div class="head-tools">
+      <button class="tbtn" id="langBtn" type="button" aria-label="Switch to English">EN</button>
+      <a class="btn small" href="../../publier/" data-t="navCta">Publier une offre</a>
+      <button class="tbtn menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow"><a class="link" href="../" data-t="cEyebrow">Votre compte</a></p>
+      <h1 class="display" id="mpForgotTitle" data-t="mpForgotTitle">Mot de passe oublié</h1>
+      <h1 class="display" id="mpResetTitle" data-t="mpResetTitle" hidden>Choisir un nouveau mot de passe</h1>
+      <p class="lead" id="mpForgotLead" data-t="mpForgotLead">Donnez votre adresse : on vous envoie un lien pour en choisir un nouveau.</p>
+    </div>
+  </section>
+
+  <section class="pass pass-form">
+    <div class="wrap">
+      <div class="form-card">
+      <form class="jobs-form" id="forgotForm" novalidate>
+        <div class="f-sec" role="group" aria-labelledby="fgLabel">
+          <h2 class="f-label" id="fgLabel" data-t="mpForgotLabel">Le lien</h2>
+          <div>
+            <div class="f-grid">
+              <div class="f-field"><label><span data-t="cEmail">Courriel</span><input name="email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="mpForgotBtn">Recevoir le lien</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+          </div>
+        </div>
+      </form>
+      <form class="jobs-form" id="resetForm" hidden novalidate>
+        <div class="f-sec" role="group" aria-labelledby="rsLabel">
+          <h2 class="f-label" id="rsLabel" data-t="mpResetLabel">Le nouveau mot de passe</h2>
+          <div>
+            <div class="f-grid">
+              <div class="f-field"><label><span data-t="cNewPassword">Nouveau mot de passe</span><input name="password" aria-describedby="rsPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="small f-hint" id="rsPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p><p class="f-err" hidden></p></div>
+            </div>
+            <div class="cta-row f-send">
+              <button class="btn primary" type="submit"><span data-t="mpResetBtn">Enregistrer le mot de passe</span><span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+            <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
+            <p class="f-note" id="mpAgain" hidden><a class="link" href="./" data-t="mpAgain">Demander un nouveau lien</a></p>
+            <p class="f-note" id="mpSignIn" hidden><a class="link" href="../" data-t="mpSignIn">Se connecter</a></p>
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </section>
+
+<div hidden>
+  <span data-t="cOkConfirm">Adresse confirmée, merci.</span>
+  <span data-t="cOkSignup">C’est presque fini : regardez vos courriels, on vient de vous écrire.</span>
+  <span data-t="cOkPassword">Mot de passe changé. Vos autres sessions sont fermées.</span>
+  <span data-t="cOkEmail">Regardez la nouvelle adresse : le lien pour confirmer y est. Rien ne change avant.</span>
+  <span data-t="cOkDeleted">Votre compte est supprimé. Un dernier courriel part pour le confirmer.</span>
+  <span data-t="cOkLoggedOut">C’est fait : session fermée.</span>
+  <span data-t="cOkForgot">Si un compte existe avec cette adresse, un lien vient de partir. Il marche une heure.</span>
+  <span data-t="cOkReset">C’est fait. Connectez-vous avec le nouveau mot de passe.</span>
+  <span data-t="cErr_required">À remplir.</span>
+  <span data-t="cErr_email_invalid">Vérifiez l’adresse : elle ne semble pas complète.</span>
+  <span data-t="cErr_password_missing">Tapez votre mot de passe.</span>
+  <span data-t="cErr_password_short">12 caractères au moins.</span>
+  <span data-t="cErr_password_long">128 caractères au plus.</span>
+  <span data-t="cErr_password_classes">Il manque une majuscule, une minuscule, un chiffre ou un symbole.</span>
+  <span data-t="cErr_password_email">Le mot de passe ne doit pas contenir votre adresse.</span>
+  <span data-t="cErr_password_common">Trop facile à deviner. Essayez autre chose.</span>
+  <span data-t="cErr_password_invalid">Ce mot de passe contient un caractère qui ne passe pas.</span>
+  <span data-t="cErr_kind_missing">Choisissez : candidat ou établissement.</span>
+  <span data-t="cErr_age_required">Les comptes sont pour les 15 ans et plus. Sans compte, vous pouvez toujours postuler.</span>
+  <span data-t="cErr_terms_required">Cochez la case pour accepter les conditions.</span>
+  <span data-t="cErr_bad_credentials">Adresse ou mot de passe incorrect. Vous venez de créer votre compte ? Confirmez d’abord votre adresse : le lien est dans vos courriels (pensez aux indésirables).</span>
+  <span data-t="cErr_wait">Trop d’essais. Réessayez dans {n} min.</span>
+  <span data-t="cErr_too_many">Trop de demandes d’un coup. Réessayez dans un quart d’heure.</span>
+  <span data-t="cErr_bad_password">Ce n’est pas le bon mot de passe.</span>
+  <span data-t="cErr_email_same">C’est déjà votre adresse.</span>
+  <span data-t="cErr_signed_out">Votre session est fermée. Connectez-vous à nouveau.</span>
+  <span data-t="cErr_link">Ce lien ne marche plus : il a déjà servi, ou il a expiré.</span>
+  <span data-t="cErr_server">Ça n’a pas marché. Réessayez dans un instant.</span>
+  <span data-t="cErr_confirm_word">Tapez le mot demandé pour confirmer.</span>
+  <span data-t="cDeleteWord">SUPPRIMER</span>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="../../"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path class="mk-t" d="M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><path class="mk-b" d="M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z"/><rect class="mk-rail" x="1.5" y="4" width="29" height="6" rx="3"/></svg><span><span class="wordmark">nokime</span> <span class="brandword">Jobs</span></span></a>
+        <p class="small" data-t="footTag">Stages, alternances et saisons en hôtellerie-restauration. Le bien-être des équipes compte. Un site Nokime.</p>
+      </div>
+      <nav aria-label="Pied de page" data-t-attr="aria-label:footNav">
+        <a href="../../#offres" data-t="navOffers">Les offres</a>
+        <a href="../../publier/" data-t="navPost">Publier</a>
+        <a href="../../ecoles/" data-t="navSchools">Écoles</a>
+        <a href="../../contact/" data-t="navContact">Contact</a>
+        <a href="../../questionnaire/" data-t="footQuestionnaire">Le questionnaire</a>
+        <a href="../../charte/" data-t="footCharter">La charte d’accueil</a>
+      </nav>
+      <div class="foot-links">
+        <a href="mailto:contact@nokime.fr">contact@nokime.fr</a>
+        <a href="https://nokime.fr/" rel="noopener" data-t="footNokime">Nokime, le groupe</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> Nokime</span>
+      <a href="../../mentions-legales/" data-t="footLegal">Mentions légales</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../../js/i18n.js?v=65"></script>
+<script src="../../js/site.js?v=65"></script>
+<script src="../../js/compte.js?v=65"></script>
+</body>
+</html>

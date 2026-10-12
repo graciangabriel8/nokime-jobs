@@ -15,7 +15,8 @@ Prints one line per failure and exits 1 on any.
 6. offers: tools/build.py runs clean on a copy of the repo (js/offers.js well formed, every offer complete), and
    what it writes matches what is committed: a live offer without its page, or a questionnaire not rebuilt, fails;
    a page or sitemap line left by an offer that expired since the last build is only noted
-7. PHP: php -l on api/*.php (required on GitHub; skipped with a note where php is missing)
+7. PHP: php -l on every tracked .php under api/, api/auth/ included (required on GitHub; skipped with a note where
+   php is missing)
 """
 import hashlib, json, os, pathlib, re, shutil, subprocess, sys, tempfile
 
@@ -146,12 +147,12 @@ with tempfile.TemporaryDirectory() as tmp:
 # 7. PHP
 php = shutil.which("php")
 if php:
-    for f in tracked("api/*.php"):
+    for f in tracked(":(glob)api/**/*.php"):   # glob magic: the same files whatever the pathspec mode
         r = subprocess.run([php, "-l", str(f)], capture_output=True, text=True)
         out = (r.stdout + r.stderr).strip().splitlines() or ["?"]   # "Errors parsing" alone says nothing: show the parse error
         if r.returncode != 0: fail("PHP %s: %s" % (f.relative_to(root), next((l for l in out if "error:" in l.lower()), out[0]).strip()))
 elif CI: fail("PHP: php is missing on the runner")
-else: print("note: php missing here, api/*.php not linted (GitHub does it)")
+else: print("note: php missing here, api/**/*.php not linted (GitHub does it)")
 
 for f in failures: print("FAIL " + f)
 print("%d page(s) checked: %s" % (len(pages), "all good" if not failures else "%d failure(s)" % len(failures)))

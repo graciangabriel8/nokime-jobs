@@ -28,6 +28,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);f
 html[lang="en"] [data-lang="fr"],html[lang="fr"] [data-lang="en"]{display:none}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2.5px solid var(--bleu);outline-offset:3px;border-radius:2px}
+h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus,h3[tabindex="-1"]:focus{outline:none}   /* a heading the script moves focus to: no box */
 img,svg{display:block;max-width:100%}
 .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
 p{margin:0 0 1em}
@@ -376,6 +377,18 @@ html:not([lang="en"]) .only-en{display:none}
 .note.err{color:var(--ink);margin-top:20px}
 .hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}   /* the field only a robot fills */
 .note.ok::before{content:"";position:absolute;left:0;top:6px;width:11px;height:11px;border-radius:50%;background:var(--ink)}
+
+/* ---------- accounts (/compte/): the posting form's panel and parts; an error is ink beside its field, never red ---------- */
+.form-card + .form-card{margin-top:24px}
+.jobs-form .f-full{grid-column:1/-1}
+.f-field > .f-hint{margin:8px 0 0;font-size:14px}   /* the password rule, under the field it describes */
+.f-terms{margin:8px 0 0 32px}
+.f-err{margin:8px 0 0;font-size:14px;font-weight:600;line-height:1.4;color:var(--ink)}
+.jobs-form .f-field input[aria-invalid="true"]{border-color:var(--ink)}
+.c-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 24px;margin:8px 0 0}
+.c-facts dt{font-size:14px;font-weight:600;color:var(--ink-2)}
+.c-facts dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+@media (max-width:720px){.c-facts{grid-template-columns:minmax(0,1fr);gap:2px}.c-facts dd + dt{margin-top:10px}}
 
 /* ---------- contact: the address is the object ---------- */
 .address{margin:32px 0 0}
