@@ -1,6 +1,7 @@
 <?php
-/* POST {password}, signed in: the account, its sessions, its links and its failed attempts go at once; the
-   cookie is cleared; a goodbye note goes to the address once the answer has left. */
+/* POST {password}, signed in: the account, its sessions and its links go at once; the address's failure counter
+   stays until 24 h after its last failure (see delete_account); the cookie is cleared; a goodbye note goes to the
+   address once the answer has left. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';

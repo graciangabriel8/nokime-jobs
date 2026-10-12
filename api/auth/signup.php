@@ -4,7 +4,8 @@
    and a confirmation link valid 24 hours; an existing one gets a mail saying someone tried, with links to sign
    in and to reset. Over the new address's mail limit the account is made without a link, so a refused mail does
    not hold back the fresh link login sends within the hour. A malformed field answers 400 naming it, which says
-   nothing about any account. */
+   nothing about any account. A new account records the terms version it accepted (TERMS_VERSION) and when:
+   the same second as its creation. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';
@@ -32,8 +33,10 @@ register_shutdown_function('purge_soon');
 $a = q('SELECT id, lang FROM accounts WHERE email = ?', [$addr])->fetch();
 if (!$a) {
     try {
-        q('INSERT INTO accounts (email, kind, lang, password_hash, email_verified_at, created_at, last_seen_at, inactive_warned_at)
-           VALUES (?, ?, ?, ?, NULL, ?, ?, NULL)', [$addr, $kind, $lang, $hash, now(), now()]);
+        $t = now();
+        q('INSERT INTO accounts (email, kind, lang, password_hash, email_verified_at, created_at, last_seen_at, inactive_warned_at,
+                                 terms_version, terms_accepted_at)
+           VALUES (?, ?, ?, ?, NULL, ?, ?, NULL, ?, ?)', [$addr, $kind, $lang, $hash, $t, $t, TERMS_VERSION, $t]);
         $account = (int)db()->lastInsertId();
     } catch (PDOException $e) {
         if ($e->getCode() !== '23000') throw $e;   // two sign-ups of one address at once: the second is "existing"

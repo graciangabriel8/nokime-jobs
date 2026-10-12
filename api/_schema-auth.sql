@@ -14,8 +14,15 @@ CREATE TABLE accounts (
   email_verified_at  INT NULL DEFAULT NULL,
   created_at         INT NOT NULL,
   last_seen_at       INT NOT NULL,
-  inactive_warned_at INT NULL DEFAULT NULL
+  inactive_warned_at INT NULL DEFAULT NULL,
+  terms_version      SMALLINT NOT NULL,
+  terms_accepted_at  INT NOT NULL
 ) ENGINE=InnoDB;
+-- terms_version is the account terms version accepted at sign-up (TERMS_VERSION in _auth.php), terms_accepted_at
+-- when. A database imported before these two columns existed (12 Oct 2026) takes, once:
+--   ALTER TABLE accounts ADD COLUMN terms_version SMALLINT NOT NULL DEFAULT 1, ADD COLUMN terms_accepted_at INT NOT NULL DEFAULT 0;
+--   UPDATE accounts SET terms_accepted_at = created_at;
+--   ALTER TABLE accounts ALTER COLUMN terms_version DROP DEFAULT, ALTER COLUMN terms_accepted_at DROP DEFAULT;
 
 CREATE TABLE sessions (
   id_hash      CHAR(64) CHARACTER SET ascii NOT NULL PRIMARY KEY,
@@ -56,9 +63,12 @@ CREATE TABLE login_failures (
   locked_until INT NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
--- An erasure request by hand: the account's id first, then everything it owns, in this order.
+-- An erasure request by hand: the account's id first, then everything it owns, in this order. The same for a
+-- parent's request to delete their minor child's account, and for an account opened under 15; then delete the mail
+-- that carried any proof of parenthood.
 --   SELECT id FROM accounts WHERE email = 'someone@example.com';
 --   DELETE FROM sessions WHERE account_id = <id>;
 --   DELETE FROM tokens WHERE account_id = <id>;
 --   DELETE FROM accounts WHERE id = <id>;
--- Rate-limit fingerprints and failure counters hold no address; they go by themselves within 24 hours.
+-- Rate-limit fingerprints and failure counters hold no address; they go by themselves 24 hours after the last
+-- request.

@@ -52,7 +52,7 @@ const MAIL_TEXT = [
         ],
         'goodbye' => [
             'subject' => "Votre compte Nokime Jobs est supprimé",
-            'lead' => ["C’est fait\u{202F}: votre compte est supprimé, avec tout ce qui s’y rattachait.",
+            'lead' => ["C’est fait\u{202F}: votre compte est supprimé, avec ses sessions et ses liens.",
                        "Les offres restent ouvertes à tous, sans compte. Merci, et bonne route."],
             'button' => "Voir les offres",
             'notes' => ["Vous n’avez rien demandé\u{202F}? Écrivez-nous à contact@nokime.fr."],
@@ -106,7 +106,7 @@ const MAIL_TEXT = [
         ],
         'goodbye' => [
             'subject' => "Your Nokime Jobs account is deleted",
-            'lead' => ["Done: your account is deleted, with everything that came with it.",
+            'lead' => ["Done: your account is deleted, with its sessions and its links.",
                        "The offers stay open to everyone, no account needed. Thank you, and all the best."],
             'button' => "See the offers",
             'notes' => ["Didn’t ask for this? Write to us at contact@nokime.fr."],

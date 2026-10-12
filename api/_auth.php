@@ -17,6 +17,8 @@ const FREE_FAILURES = 5;             // consecutive failures before the growing 
 const MAX_WAIT = 3600;               // the growing delay stops at 60 min (ASSUMED)
 const MAIL_SITE_CAP = 150;           // mails an hour for the whole site, under the mailbox's SMTP quota (ASSUMED)
 const MAIL_RESERVE = 50;             // of those, kept for mails no sign-up can trigger: reset, link again, changes (ASSUMED)
+const TERMS_VERSION = 1;             // the account terms a sign-up accepts: /conditions-comptes/, Version 1 of 12 Oct 2026. A new
+                                     // version keeps the old one online and ships with its re-acceptance prompt (terms §8)
 
 $T0 = microtime(true);
 /* jobs-private sits beside the site folder (<home>/jobs-private), as api/_offres.php finds it. */
@@ -440,7 +442,8 @@ function delete_account(int $id): void {
 /* The deletions: rate events after 24 h, which the limits count; failure counters 24 h after their last
    failure (a streak that old starts again anyway, so nothing answers differently); used or
    expired links 23 h after (so with an hourly run none is kept past 24 h); expired sessions; accounts left
-   unconfirmed for 7 days; accounts unused for 24 months once their warning went out 28 days before
+   unconfirmed for 7 days; accounts unused for 24 months once their warning went out 31 days before (the mail says
+   « d’ici un mois »)
    (_purge-auth.php sends it at 23), or unused for 24 months and 30 days whether or not it could go. Run
    hourly by the OVH task, and by the endpoints after their answer at most once an hour in between. */
 function purge(): bool {
@@ -454,7 +457,7 @@ function purge(): bool {
         $cut = strtotime('-24 months', $n);
         $gone = array_merge($gone, q('SELECT id FROM accounts WHERE last_seen_at < ?
                                       AND ((inactive_warned_at IS NOT NULL AND inactive_warned_at < ?) OR last_seen_at < ?)',
-                                     [$cut, $n - 28 * 86400, $cut - 30 * 86400])->fetchAll(PDO::FETCH_COLUMN));
+                                     [$cut, $n - 31 * 86400, $cut - 30 * 86400])->fetchAll(PDO::FETCH_COLUMN));
         foreach ($gone as $id) delete_account((int)$id);
         prune_logs();
         return true;

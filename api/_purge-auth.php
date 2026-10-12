@@ -3,9 +3,10 @@
    creates: the deletions of _auth.php's purge(), whatever the traffic; then the warning mail to accounts unused
    for 23 months, at most 20 tries a run, each marked once sent so it goes once. A warning that could not go is
    tried again a day later, and the accounts behind it are served meanwhile, so no address that keeps failing
-   holds up the queue. An account still unused at 24 months, warned at least 28 days before, goes in a later
-   purge; one whose warning never went goes at 24 months and 30 days. Command line only; .htaccess also answers 404 to
-   /api/_*. A failure exits 1 with a line on stderr, which OVH mails to the address set on the task. */
+   holds up the queue. An account still unused at 24 months, warned at least 31 days before (the mail says « d’ici
+   un mois »), goes in a later purge; one whose warning never went goes at 24 months and 30 days. Command line only;
+   .htaccess also answers 404 to /api/_*. A failure exits 1 with a line on stderr. OVH disables a task after 10
+   failed runs and sends one report a day after that; check the cron log. */
 declare(strict_types=1);
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 require __DIR__ . '/_auth.php';
