@@ -26,9 +26,9 @@ Every colour is a token on `:root` in `css/site.css`. Ratios are WCAG 2 contrast
 | `--steel` | `#E7EAED` | the pass: behind the board and the posting form | ground |
 | `--bleu` | `#2038D5` | the one colour, see below | 8.1:1 on paper, 6.7:1 on steel; white on blue 8.1:1 |
 
-The blue appears in exactly six places: the promise clause of the headline, the primary buttons (white on blue), the pressed filter chip, the ball under the current page in the menu, the earned distinction, and the focus rings (2.5px, 8.1:1 on paper, 6.7:1 on steel). In the rail drawing and in the mark, one ticket carries it. Everything else is ink, greys, white and steel.
+The blue appears in exactly seven places (the seventh is the hirondelle, below): the promise clause of the headline, the primary buttons (white on blue), the pressed filter chip, the ball under the current page in the menu, the earned distinction, and the focus rings (2.5px, 8.1:1 on paper, 6.7:1 on steel). In the rail drawing and in the mark, one ticket carries it. Everything else is ink, greys, white and steel.
 
-Decorative only, no text: `--line #D9DDE2`, the hairlines and the 1px border of a card, and the words of the door’s wall (which are decoration, aria-hidden); the wall’s department names take a tint of `--ink-3` and `--paper` (55 %), a decorative mass, not body text. The wall uses no blue. Light only, one theme; `body` has an explicit white ground.
+Decorative only, no text: `--line #D9DDE2`, the hairlines and the 1px border of a card, and the words of the door’s wall (which are decoration, aria-hidden); the wall’s department names take a tint of `--ink-3` and `--paper` (55 %), a decorative mass, not body text. The wall's names use no blue; only the swallows that cross it do (see The hirondelle). Light only, one theme; `body` has an explicit white ground.
 
 ## Type
 
@@ -57,7 +57,11 @@ An offer is a white card: a 1px `--line` border, radius 12px, no shadow. On a ph
 - **« Mise en avant ».** A featured offer carries one small label beside its kind: ink text and a 1px ink border, radius 4px, uppercase at 12px, never blue, with its reason spelled out for screen readers. At most three (`MAX_BOOST` in `js/jobs.js`), only from offers stating their pay, hours and housing, from establishments with `charter: true`, and not `boostPaused`. The rule is told under the board, folded behind « Comment la liste est classée ».
 - **The charter.** `charte/` is a page title, then the six commitments as a plain list under a 1.5px ink rule, the rail's ball ringed before each (`.pledges`), then the two folded explanations in two columns (`.charter`). It uses no blue beyond the links and focus rings.
 
-## The distinction
+## The hirondelle (concept B, 13 Oct 2026)
+
+The distinction is « l'hirondelle de Nokime Jobs »: the tattoo swallow, one filled silhouette (`.swallow`, path from `kairos/distinction/marque/hirondelle-currentColor.svg`, filled with `--bleu`). One level only, shown as « Hirondelle depuis AAAA »; never sold, never a ranking, never on an offer or an establishment until earned (nobody holds it yet, so the page says so). Concept B keeps the door of sliding names and puts the swallow at its centre: it replaces the tickets mark above the eyebrow (88-120px; its own 64px row on a phone), the headline is about places people come back to, and three rows of the wall carry a small blue swallow after the department's name, facing the way the row drifts (decoration, aria-hidden, no new motion). A short section (`.hir`, `#hirondelle`) follows the masthead: the swallow large beside « Pourquoi une hirondelle ? », a labelled specimen (« Hirondelle depuis 20XX », tag « exemple »), three points in the `.care` pattern, and the rule folded behind « En savoir plus ». The old « En préparation » section is gone. Pricing follows the freemium sheet: Commis (free, the highlighted card with the badge), Brigade, Maison, Candidates; the paid buttons write to contact@nokime.fr.
+
+## The distinction (the old rosette)
 
 A blue rosette, awarded beside an establishment's name, never ranked; a dotted ring while empty. In its own section the rosette is a modest mark (56px, 40px on a phone) set beside the title and aligned with its first line.
 
