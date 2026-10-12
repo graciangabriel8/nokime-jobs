@@ -9,8 +9,8 @@
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../css/fonts.css?v=66">
-<link rel="stylesheet" href="../css/site.css?v=66">
+<link rel="stylesheet" href="../css/fonts.css?v=67">
+<link rel="stylesheet" href="../css/site.css?v=67">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titleAccount" data-desc="descAccount">
@@ -52,7 +52,7 @@
         <div class="f-sec" role="group" aria-labelledby="loginLabel">
           <h2 class="f-label" id="loginLabel" tabindex="-1" data-t="cLogin">Se connecter</h2>
           <div>
-            <div class="f-grid">
+            <div class="f-grid f-two">
               <div class="f-field"><label><span data-t="cEmail">Courriel</span><input name="email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
               <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
             </div>
@@ -70,9 +70,9 @@
         <div class="f-sec" role="group" aria-labelledby="signupLabel">
           <h2 class="f-label" id="signupLabel" data-t="cSignup">Créer un compte</h2>
           <div>
-            <div class="f-grid">
+            <div class="f-grid f-two">
               <div class="f-field f-full" role="radiogroup" aria-labelledby="kindLabel">
-                <p class="f-label" id="kindLabel" data-t="cKindQ">Vous êtes</p>
+                <p class="f-q" id="kindLabel" data-t="cKindQ">Vous êtes</p>
                 <div class="chips">
                   <label class="chip"><input type="radio" name="kind" value="candidate" required><span data-t="cKind_candidate">Candidat</span></label>
                   <label class="chip"><input type="radio" name="kind" value="establishment"><span data-t="cKind_establishment">Établissement</span></label>
@@ -116,7 +116,7 @@
         <form class="f-sec" id="passwordForm" aria-labelledby="pwLabel" novalidate>
           <h2 class="f-label" id="pwLabel" data-t="cPwTitle">Changer de mot de passe</h2>
           <div>
-            <div class="f-grid">
+            <div class="f-grid f-two">
               <div class="f-field"><label><span data-t="cCurrent">Mot de passe actuel</span><input name="current" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
               <div class="f-field"><label><span data-t="cNewPassword">Nouveau mot de passe</span><input name="password" aria-describedby="pwPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="small f-hint" id="pwPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p><p class="f-err" hidden></p></div>
             </div>
@@ -129,7 +129,7 @@
         <form class="f-sec" id="emailForm" aria-labelledby="emLabel" novalidate>
           <h2 class="f-label" id="emLabel" data-t="cEmailTitle">Changer d’adresse</h2>
           <div>
-            <div class="f-grid">
+            <div class="f-grid f-two">
               <div class="f-field"><label><span data-t="cNewEmail">Nouvelle adresse</span><input name="new_email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
               <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
             </div>
@@ -152,7 +152,7 @@
           <h2 class="f-label" id="delLabel" data-t="cDeleteTitle">Supprimer le compte</h2>
           <div>
             <p class="f-hint" data-t="cDeleteNote">C’est définitif : le compte part tout de suite, avec ses sessions et ses liens.</p>
-            <div class="f-grid">
+            <div class="f-grid f-two">
               <div class="f-field"><label><span data-t="cDeleteType">Pour confirmer, tapez SUPPRIMER</span><input name="confirm" type="text" autocomplete="off" required autocapitalize="characters" spellcheck="false"></label><p class="f-err" hidden></p></div>
               <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
             </div>
@@ -228,8 +228,8 @@
   </div>
 </footer>
 
-<script src="../js/i18n.js?v=66"></script>
-<script src="../js/site.js?v=66"></script>
-<script src="../js/compte.js?v=66"></script>
+<script src="../js/i18n.js?v=67"></script>
+<script src="../js/site.js?v=67"></script>
+<script src="../js/compte.js?v=67"></script>
 </body>
 </html>

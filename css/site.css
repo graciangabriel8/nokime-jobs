@@ -381,6 +381,9 @@ html:not([lang="en"]) .only-en{display:none}
 /* ---------- accounts (/compte/): the posting form's panel and parts; an error is ink beside its field, never red ---------- */
 .form-card + .form-card{margin-top:24px}
 .jobs-form .f-full{grid-column:1/-1}
+.f-grid.f-two{grid-template-columns:repeat(2,minmax(0,1fr))}   /* the account forms: two fields a row, so no empty third column */
+.jobs-form .f-q{margin:0 0 7px;font-size:14px;font-weight:600}   /* a question among the fields reads like their labels, not like the section's */
+@media (max-width:720px){.f-grid.f-two{grid-template-columns:1fr}}
 .f-field > .f-hint{margin:8px 0 0;font-size:14px}   /* the password rule, under the field it describes */
 .f-terms{margin:8px 0 0 32px}
 .f-err{margin:8px 0 0;font-size:14px;font-weight:600;line-height:1.4;color:var(--ink)}
