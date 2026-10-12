@@ -9,8 +9,8 @@
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' stroke='%2317191E' stroke-width='1.8' stroke-linejoin='round' d='M5 8.5h8.5v14l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Cpath fill='%232038D5' d='M18.5 8.5h8.5v19l-2.125-1.6-2.125 1.6-2.125-1.6-2.125 1.6z'/%3E%3Crect fill='%2317191E' x='1.5' y='4' width='29' height='6' rx='3'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../css/fonts.css?v=67">
-<link rel="stylesheet" href="../css/site.css?v=67">
+<link rel="stylesheet" href="../css/fonts.css?v=69">
+<link rel="stylesheet" href="../css/site.css?v=69">
 <script>(function(){try{var l=localStorage.getItem("nokime-lang");if(l==="fr"||l==="en")document.documentElement.setAttribute("lang",l);}catch(e){}})();</script>
 </head>
 <body data-title="titleAccount" data-desc="descAccount">
@@ -72,7 +72,7 @@
           <div>
             <div class="f-grid f-two">
               <div class="f-field f-full" role="radiogroup" aria-labelledby="kindLabel">
-                <p class="f-q" id="kindLabel" data-t="cKindQ">Vous êtes</p>
+                <p class="f-ask" id="kindLabel" data-t="cKindQ">Vous êtes</p>
                 <div class="chips">
                   <label class="chip"><input type="radio" name="kind" value="candidate" required><span data-t="cKind_candidate">Candidat</span></label>
                   <label class="chip"><input type="radio" name="kind" value="establishment"><span data-t="cKind_establishment">Établissement</span></label>
@@ -80,15 +80,15 @@
                 <p class="f-err" hidden></p>
               </div>
               <div class="f-field"><label><span data-t="cEmail">Courriel</span><input name="email" type="email" autocomplete="email" required></label><p class="f-err" hidden></p></div>
-              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" aria-describedby="suPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="small f-hint" id="suPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cPassword">Mot de passe</span><input name="password" aria-describedby="suPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="f-err" hidden></p><p class="small f-hint" id="suPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p></div>
               <div class="f-field f-full" id="ageRow" hidden>
                 <label class="f-check"><input type="checkbox" name="age15"><span data-t="cAge15">J’ai 15 ans ou plus</span></label>
                 <p class="f-err" hidden></p>
               </div>
               <div class="f-field f-full">
                 <label class="f-check"><input type="checkbox" name="terms"><span data-t="cTerms">J’accepte les conditions d’utilisation des comptes.</span></label>
-                <p class="small f-terms"><a class="link" href="../conditions-comptes/" data-t="cTermsLink">Lire les conditions</a> · <a class="link" href="../mentions-legales/#comptes" data-t="cDataLink">Vos données</a></p>
                 <p class="f-err" hidden></p>
+                <p class="small f-terms"><a class="link" href="../conditions-comptes/" data-t="cTermsLink">Lire les conditions</a> · <a class="link" href="../mentions-legales/#comptes" data-t="cDataLink">Vos données</a></p>
               </div>
             </div>
             <div class="cta-row f-send">
@@ -118,7 +118,7 @@
           <div>
             <div class="f-grid f-two">
               <div class="f-field"><label><span data-t="cCurrent">Mot de passe actuel</span><input name="current" type="password" autocomplete="current-password" required></label><p class="f-err" hidden></p></div>
-              <div class="f-field"><label><span data-t="cNewPassword">Nouveau mot de passe</span><input name="password" aria-describedby="pwPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="small f-hint" id="pwPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p><p class="f-err" hidden></p></div>
+              <div class="f-field"><label><span data-t="cNewPassword">Nouveau mot de passe</span><input name="password" aria-describedby="pwPwRule" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><p class="f-err" hidden></p><p class="small f-hint" id="pwPwRule" data-t="cPwRule">Au moins 12 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.</p></div>
             </div>
             <div class="cta-row f-send">
               <button class="btn primary" type="submit"><span data-t="cPwBtn">Changer le mot de passe</span><span class="arrow" aria-hidden="true">→</span></button>
@@ -142,7 +142,7 @@
         <form class="f-sec" id="logoutForm" aria-labelledby="outLabel" novalidate>
           <h2 class="f-label" id="outLabel" data-t="cLogoutTitle">Se déconnecter</h2>
           <div>
-            <div class="cta-row">
+            <div class="cta-row f-send">
               <button class="btn" type="submit"><span data-t="cLogoutBtn">Me déconnecter</span><span class="arrow" aria-hidden="true">→</span></button>
             </div>
             <p class="note err" data-form-err role="alert" hidden></p><p class="note ok" data-form-ok role="status" hidden></p>
@@ -228,8 +228,8 @@
   </div>
 </footer>
 
-<script src="../js/i18n.js?v=67"></script>
-<script src="../js/site.js?v=67"></script>
-<script src="../js/compte.js?v=67"></script>
+<script src="../js/i18n.js?v=69"></script>
+<script src="../js/site.js?v=69"></script>
+<script src="../js/compte.js?v=69"></script>
 </body>
 </html>
