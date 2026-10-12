@@ -17,7 +17,7 @@ const FREE_FAILURES = 5;             // consecutive failures before the growing 
 const MAX_WAIT = 3600;               // the growing delay stops at 60 min (ASSUMED)
 const MAIL_SITE_CAP = 150;           // mails an hour for the whole site, under the mailbox's SMTP quota (ASSUMED)
 const MAIL_RESERVE = 50;             // of those, kept for mails no sign-up can trigger: reset, link again, changes (ASSUMED)
-const TERMS_VERSION = 1;             // the account terms a sign-up accepts: /conditions-comptes/, Version 1 of 12 Oct 2026. A new
+const TERMS_VERSION = 1;             // the account terms a sign-up accepts: /conditions-comptes/, Version 1, from the day accounts open. A new
                                      // version keeps the old one online and ships with its re-acceptance prompt (terms §8)
 
 $T0 = microtime(true);
@@ -419,8 +419,10 @@ function log_api(string $outcome, ?int $account = null): void {
 
 function log_php(string $msg): void { log_line('php', $msg); }
 
+/* A day's file goes in the first run on the 30th day after it, so no line is kept past 30 days (and the hour
+   between runs): the legal notice says « effacé au bout de 30 jours ». */
 function prune_logs(): void {
-    $cut = date('Y-m-d', now() - 30 * 86400);
+    $cut = date('Y-m-d', now() - 29 * 86400);
     foreach (glob(PRIV . '/logs/*-????-??-??.log') ?: [] as $f) {
         if (preg_match('/-(\d{4}-\d{2}-\d{2})\.log$/', $f, $m) && $m[1] < $cut) @unlink($f);
     }
@@ -444,7 +446,8 @@ function delete_account(int $id): void {
    expired links 23 h after (so with an hourly run none is kept past 24 h); expired sessions; accounts left
    unconfirmed for 7 days; accounts unused for 24 months once their warning went out 31 days before (the mail says
    « d’ici un mois »)
-   (_purge-auth.php sends it at 23), or unused for 24 months and 30 days whether or not it could go. Run
+   (_purge-auth.php sends it at 23, and never later than 31 days before 24 months and 30 days), or unused for 24
+   months and 30 days whether or not it could go. Run
    hourly by the OVH task, and by the endpoints after their answer at most once an hour in between. */
 function purge(): bool {
     try {

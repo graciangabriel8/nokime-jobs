@@ -4,7 +4,8 @@
    for 23 months, at most 20 tries a run, each marked once sent so it goes once. A warning that could not go is
    tried again a day later, and the accounts behind it are served meanwhile, so no address that keeps failing
    holds up the queue. An account still unused at 24 months, warned at least 31 days before (the mail says « d’ici
-   un mois »), goes in a later purge; one whose warning never went goes at 24 months and 30 days. Command line only;
+   un mois »), goes in a later purge; one whose warning never went goes at 24 months and 30 days. So a warning
+   goes only while 31 days are left before that date: a late one would be followed by the deletion within days. Command line only;
    .htaccess also answers 404 to /api/_*. A failure exits 1 with a line on stderr. OVH disables a task after 10
    failed runs and sends one report a day after that; check the cron log. */
 declare(strict_types=1);
@@ -14,11 +15,13 @@ require __DIR__ . '/_auth-mail.php';
 
 const WARN_PER_RUN = 20;    // tries a run
 const WARN_SCAN = 200;      // accounts read a run to find them, past those that failed within the day
+const WARN_NOTICE = 31 * 86400;   // the least time a warning leaves before the deletion (« d’ici un mois »)
 $failed = [];
 if (!purge()) $failed[] = 'purge';
 try {
     $due = q('SELECT id, email, lang FROM accounts WHERE email_verified_at IS NOT NULL AND inactive_warned_at IS NULL AND last_seen_at < ?
-              ORDER BY last_seen_at LIMIT ' . WARN_SCAN, [strtotime('-23 months', now())])->fetchAll();
+              AND last_seen_at >= ? ORDER BY last_seen_at LIMIT ' . WARN_SCAN,
+            [strtotime('-23 months', now()), strtotime('-24 months', now() + WARN_NOTICE) - 30 * 86400])->fetchAll();
     $tries = 0;
     foreach ($due as $a) {
         if ($tries >= WARN_PER_RUN) break;
