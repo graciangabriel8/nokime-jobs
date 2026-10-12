@@ -250,6 +250,8 @@ html:not([lang="en"]) .only-en{display:none}
 .hd svg{width:20px;height:20px;flex:none}
 .offer-page .lead .hd{font-size:15px;margin-top:10px}
 .offer-page .lead .hd svg{width:24px;height:24px}
+a.hd{text-decoration:none;min-height:24px}   /* the mark links to what it means: a title tooltip never shows on a touch screen */
+a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text-underline-offset:3px}
 .sl-o{fill:var(--bleu)}
 .sl-i{fill:none;stroke:var(--paper);stroke-width:1.3}
 @media (min-width:721px) and (max-width:959px){
@@ -333,6 +335,12 @@ html:not([lang="en"]) .only-en{display:none}
 /* the 404's line: a small swallow before it */
 .nf-hd{display:flex;align-items:center;gap:12px;margin:22px 0 0;color:var(--ink-2);font-size:17px;line-height:1.45;max-width:46ch}
 .hd-mini{width:30px;height:30px;flex:none;color:var(--bleu)}
+/* the posting page's line under its opening text, and the questionnaire's « À quoi il sert » */
+.hd-top{display:flex;align-items:center;gap:10px;margin:18px 0 0;font-size:16px}
+.hd-top .hd-mini{width:24px;height:24px}
+.hd-for{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.hd-for .hd-mini{width:26px;height:26px}
+.charter .hd-for h2{margin:0}
 .dist .lead{margin-top:18px}
 
 /* ---------- in practice ---------- */
@@ -485,7 +493,7 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .page-hero{padding:44px 0 56px}
   .section{padding:60px 0 68px}
   .section > .wrap > .kicker{margin-bottom:30px}
-  .dist{gap:0 18px}
+  .dist{grid-template-columns:minmax(0,1fr);gap:14px 0}   /* the swallow above the text, as on the home page: a side column leaves the text too narrow */
   .seal-art{width:40px}
   .hd-art{width:44px}
   .pass{padding:44px 0 64px}

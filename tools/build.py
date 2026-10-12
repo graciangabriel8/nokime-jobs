@@ -31,6 +31,12 @@ for o in live:
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
     if "hirondelle" in o and o["hirondelle"] is not None and not (type(o["hirondelle"]) is int and 2026 <= o["hirondelle"] <= datetime.date.today().year):
         sys.exit("js/offers.js : l’offre « %s » : hirondelle doit être l’année de la décision (2026 au plus tôt, jamais une année à venir), ou absent." % o.get("id", "?"))
+seen_hd = {}   # l’hirondelle belongs to the establishment, not to one offer: every live offer of one establishment carries the same value
+for o in live:
+    k = re.sub(r"\s+", " ", str(o.get("restaurant", ""))).strip().lower() + " | " + str(o.get("city", "")).strip().lower()
+    if k in seen_hd and seen_hd[k][1] != o.get("hirondelle"):
+        sys.exit("js/offers.js : les offres « %s » et « %s » viennent du même établissement mais ne disent pas la même hirondelle : mettez la même année sur toutes ses offres, ou retirez-la de toutes." % (seen_hd[k][0], o.get("id", "?")))
+    seen_hd.setdefault(k, (o.get("id", "?"), o.get("hirondelle")))
 
 home = (root / "index.html").read_text(encoding="utf-8")
 body_end = re.search(r"<body[^>]*>", home).end()   # the home page's door sits between <body> and the masthead: an offer page gets neither the door nor its wall
@@ -125,7 +131,7 @@ for o in live:
 </main>
 
 ''' % ('<span data-t="kind_%s">%s</span>' % (o["kind"], e(KIND[o["kind"]])), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), t_("oRole"), e(o["role"]), t_("oRest"), e(o["restaurant"]),
-       ('<span class="hd" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></span>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
+       ('<a class="hd" href="/#hirondelle" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></a>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
        ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(o["id"]), e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(re.sub(r"\s", "", o["contact"]["phone"])), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     own = '<script>Object.assign(NOKIME_I18N.en,%s);</script>\n' % json.dumps(en, ensure_ascii=False).replace("<", "\\u003c")

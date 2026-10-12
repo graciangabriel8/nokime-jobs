@@ -16,6 +16,9 @@
    hirondelle: optional, the year l’hirondelle de Nokime Jobs was awarded to the establishment (2027): the offer then shows the swallow and
    « Hirondelle depuis 2027 » under the establishment’s name, on the board and on its own page. Set it only from a recorded decision under
    the criteria (kairos/distinction/criteres-hirondelle.md), never on a demo offer; absent, nothing is shown, not even an empty place.
+   Not before the lawyer has answered whether a mark Nokime awards itself is a « label de développement durable » that Directive (EU)
+   2024/825 bans without third-party certification (projet de loi n° 348, art. 20, L121-4), and whether L111-7-2 (online reviews) applies.
+   It belongs to the establishment: every live offer with the same restaurant and city carries the same value (tools/build.py stops otherwise).
    It changes nothing else: not the order, the featured offers, the filters, the search or the counts. tools/build.py stops on a value
    that is not a year from 2026 to the current one.
    boost: true when the restaurant paid for "Mise en avant"; honoured only when the offer states its pay (not payHidden), its hours
