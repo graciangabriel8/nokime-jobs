@@ -29,6 +29,14 @@ live = [o for o in offers if not o.get("demo") and re.fullmatch(r"\d{4}-\d{2}-\d
 for o in live:
     if not re.fullmatch(r"[a-z0-9-]{1,64}", str(o.get("id", ""))): sys.exit("js/offers.js : l’identifiant « %s » ne doit contenir que des minuscules sans accent, des chiffres et des tirets (64 au plus), sinon ses clics sur « Postuler » ne sont pas comptés." % o.get("id", "?"))
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
+    if "hirondelle" in o and o["hirondelle"] is not None and not (type(o["hirondelle"]) is int and 2026 <= o["hirondelle"] <= datetime.date.today().year):
+        sys.exit("js/offers.js : l’offre « %s » : hirondelle doit être l’année de la décision (2026 au plus tôt, jamais une année à venir), ou absent." % o.get("id", "?"))
+seen_hd = {}   # l’hirondelle belongs to the establishment, not to one offer: every live offer of one establishment carries the same value
+for o in live:
+    k = re.sub(r"\s+", " ", str(o.get("restaurant", ""))).strip().lower() + " | " + str(o.get("city", "")).strip().lower()
+    if k in seen_hd and seen_hd[k][1] != o.get("hirondelle"):
+        sys.exit("js/offers.js : les offres « %s » et « %s » viennent du même établissement mais ne disent pas la même hirondelle : mettez la même année sur toutes ses offres, ou retirez-la de toutes." % (seen_hd[k][0], o.get("id", "?")))
+    seen_hd.setdefault(k, (o.get("id", "?"), o.get("hirondelle")))
 
 home = (root / "index.html").read_text(encoding="utf-8")
 body_end = re.search(r"<body[^>]*>", home).end()   # the home page's door sits between <body> and the masthead: an offer page gets neither the door nor its wall
@@ -43,7 +51,7 @@ def fr_date(iso):
     d = datetime.date.fromisoformat(iso); return d.strftime("%-d ") + ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][d.month - 1] + d.strftime(" %Y")
 def en_date(iso):
     d = datetime.date.fromisoformat(iso); return "%d %s %d" % (d.day, ["January","February","March","April","May","June","July","August","September","October","November","December"][d.month - 1], d.year)
-SEAL = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="sl-o" d="M12 1.8A2.15 2.15 0 0 1 15.9 2.58A2.15 2.15 0 0 1 19.21 4.79A2.15 2.15 0 0 1 21.42 8.1A2.15 2.15 0 0 1 22.2 12A2.15 2.15 0 0 1 21.42 15.9A2.15 2.15 0 0 1 19.21 19.21A2.15 2.15 0 0 1 15.9 21.42A2.15 2.15 0 0 1 12 22.2A2.15 2.15 0 0 1 8.1 21.42A2.15 2.15 0 0 1 4.79 19.21A2.15 2.15 0 0 1 2.58 15.9A2.15 2.15 0 0 1 1.8 12A2.15 2.15 0 0 1 2.58 8.1A2.15 2.15 0 0 1 4.79 4.79A2.15 2.15 0 0 1 8.1 2.58A2.15 2.15 0 0 1 12 1.8Z"/><circle class="sl-i" cx="12" cy="12" r="6.6"/></svg>'   # the distinction's rosette, as js/jobs.js draws it
+SWALLOW = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path fill="currentColor" d="M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z"/></svg>'   # l’hirondelle de Nokime Jobs, as js/jobs.js draws it
 I18N_FR = (root / "js/i18n.js").read_text(encoding="utf-8").split("\n  en: {")[0]
 def fr_str(k): return re.search(r'\b%s: "([^"]*)"' % k, I18N_FR).group(1)   # the pay wording has one home, the fr block of js/i18n.js
 def past_two_months(a, b):   # as js/jobs.js: two calendar months, the day after the same date two months on
@@ -67,11 +75,12 @@ for old in odir.glob("*/"):
 for o in live:
     e = html.escape
     title = "%s — %s, %s · Nokime Jobs" % (o["role"], o["restaurant"], o["city"])
-    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "")
+    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdSince").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
     shown = {"role": True, "restaurant": True, "pay": bool(pay_of(o)), "text": bool(o.get("text"))}   # as js/jobs.js: a field's English counts only where its French is shown
     tr = {k: v for k, v in (o.get("en") or {}).items() if k in shown and v and shown[k]}   # Nokime's translation: the English view reads it, the French stays the original
     en = {"oDates": "%s to %s" % (en_date(o["start"]), en_date(o["end"]))}
     if o.get("hours"): en["oHours"] = "%s h a week" % o["hours"]
+    if o.get("hirondelle"): en["oHd"] = "Hirondelle since %d" % o["hirondelle"]
     en.update({"o" + k[0].upper() + k[1:]: tr[k] for k in ("role", "restaurant", "pay", "text") if tr.get(k)})
     en = {("oRest" if k == "oRestaurant" else k): v for k, v in en.items()}
     t_ = lambda k: ' data-t="%s"' % k if k in en else ""
@@ -122,7 +131,7 @@ for o in live:
 </main>
 
 ''' % ('<span data-t="kind_%s">%s</span>' % (o["kind"], e(KIND[o["kind"]])), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), t_("oRole"), e(o["role"]), t_("oRest"), e(o["restaurant"]),
-       '<span class="distinction" role="img" aria-label="Distinction Nokime" title="Distinction Nokime">%s</span>' % SEAL if o.get("distinction") else '<span class="distinction empty" aria-hidden="true"></span>', facts,
+       ('<a class="hd" href="/#hirondelle" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></a>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
        ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(o["id"]), e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(re.sub(r"\s", "", o["contact"]["phone"])), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     own = '<script>Object.assign(NOKIME_I18N.en,%s);</script>\n' % json.dumps(en, ensure_ascii=False).replace("<", "\\u003c")
