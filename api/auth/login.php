@@ -4,7 +4,8 @@
    hash for an unknown address), each counted by the same attempt limits. The unconfirmed account cannot answer
    otherwise: its password is whatever its sign-up chose, so a distinct answer would let anyone tell a new
    address from an existing account by signing up and then signing in. With the right password it gets a fresh
-   confirmation link, at most one an hour. */
+   confirmation link, at most one an hour; over the address's mail limit no link is made, so a refused mail
+   does not hold back the next one for that hour. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';
@@ -30,8 +31,9 @@ if ($a['email_verified_at'] === null) {
     answer_now(401, ['ok' => false, 'error' => 'bad_credentials']);
     $recent = q('SELECT COUNT(*) FROM tokens WHERE account_id = ? AND purpose = ? AND created_at > ?', [$id, 'confirm', now() - 3600])->fetchColumn();
     if ((int)$recent > 0) { log_api('unconfirmed recent_link', $id); exit; }
+    if (!mail_allowed($addr, true)) { log_api('unconfirmed mail_limit', $id); exit; }
     $token = new_token($id, 'confirm', CONFIRM_LIFE);
-    log_api('unconfirmed ' . send_mail('confirm', $addr, (string)$a['lang'], site_origin() . '/compte/confirmer/?t=' . $token), $id);
+    log_api('unconfirmed ' . deliver_mail('confirm', $addr, (string)$a['lang'], site_origin() . '/compte/confirmer/?t=' . $token), $id);
     exit;
 }
 clear_failures($k);

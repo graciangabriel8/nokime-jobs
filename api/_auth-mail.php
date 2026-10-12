@@ -16,7 +16,7 @@ const MAIL_TEXT = [
     'fr' => [
         'confirm' => [
             'subject' => "Confirmez votre adresse pour Nokime Jobs",
-            'lead' => ["Bienvenue sur Nokime Jobs. Un clic, et votre compte est prêt."],
+            'lead' => ["Bienvenue sur Nokime Jobs. Ouvrez le lien ci-dessous, puis confirmez sur la page qui s’ouvre\u{202F}: votre compte est prêt."],
             'button' => "Confirmer mon adresse",
             'notes' => ["Le lien marche pendant 24 heures.",
                         "Vous n’avez pas créé de compte\u{202F}? Ignorez ce message\u{202F}: sans confirmation, le compte est supprimé au bout de 7 jours."],
@@ -38,7 +38,7 @@ const MAIL_TEXT = [
         ],
         'change_new' => [
             'subject' => "Confirmez votre nouvelle adresse",
-            'lead' => ["Vous voulez utiliser cette adresse pour votre compte Nokime Jobs. Un clic pour confirmer."],
+            'lead' => ["Vous voulez utiliser cette adresse pour votre compte Nokime Jobs. Ouvrez le lien ci-dessous, puis confirmez sur la page qui s’ouvre."],
             'button' => "Confirmer cette adresse",
             'notes' => ["Le lien marche pendant 24 heures. Tant qu’il n’a pas servi, rien ne change.",
                         "Vous n’avez rien demandé\u{202F}? Ignorez ce message."],
@@ -70,7 +70,7 @@ const MAIL_TEXT = [
     'en' => [
         'confirm' => [
             'subject' => "Confirm your address for Nokime Jobs",
-            'lead' => ["Welcome to Nokime Jobs. One click, and your account is ready."],
+            'lead' => ["Welcome to Nokime Jobs. Open the link below, then confirm on the page that opens: your account is ready."],
             'button' => "Confirm my address",
             'notes' => ["The link works for 24 hours.",
                         "Didn’t create an account? Ignore this email: without confirmation, the account is deleted after 7 days."],
@@ -92,7 +92,7 @@ const MAIL_TEXT = [
         ],
         'change_new' => [
             'subject' => "Confirm your new address",
-            'lead' => ["You want to use this address for your Nokime Jobs account. One click to confirm."],
+            'lead' => ["You want to use this address for your Nokime Jobs account. Open the link below, then confirm on the page that opens."],
             'button' => "Confirm this address",
             'notes' => ["The link works for 24 hours. Until it is used, nothing changes.",
                         "Didn’t ask for this? Ignore this email."],
@@ -286,8 +286,15 @@ function mail_to_file(array $m): bool {
    No other route: PHP's mail() would likely fail DMARC. Call after the answer has left. $reserved false for the
    mails a sign-up sends, which stop short of the site's cap (mail_allowed). */
 function send_mail(string $kind, string $to, string $lang, string $link, ?string $second = null, bool $reserved = true): string {
-    global $T0;
     if (!mail_allowed($to, $reserved)) return 'mail_limit';
+    return deliver_mail($kind, $to, $lang, $link, $second);
+}
+
+/* send_mail without the limits, for an endpoint that took mail_allowed itself before making the link the mail
+   carries: a mail refused over a limit then makes no link, so it neither cancels the earlier links nor blocks
+   the next one. */
+function deliver_mail(string $kind, string $to, string $lang, string $link, ?string $second = null): string {
+    global $T0;
     $m = mail_message($kind, $to, $lang, with_lang($link, $lang), $second === null ? null : with_lang($second, $lang));
     if ($m === null) return 'header_refused';
     if (cfg('transport') === 'file') return mail_to_file($m) ? 'sent_file' : 'file_failed';
