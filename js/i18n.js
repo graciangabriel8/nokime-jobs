@@ -239,5 +239,7 @@ window.NOKIME_I18N = {
     mpResetTitle: "Choose a new password", mpForgotLead: "Give your address: we’ll send you a link to choose a new one.", mpForgotLabel: "The link",
     mpForgotBtn: "Get the link", mpResetLabel: "The new password", mpResetBtn: "Save the password",
     mpAgain: "Ask for a new link", mpSignIn: "Sign in",
+    titleConfirm: "Confirm your address — Nokime Jobs", descConfirm: "One click to confirm your address on Nokime Jobs.", cfTitle: "Confirm your address.",
+    cfLead: "One click on the button, and you’re done.", cfLabel: "The link", cfBtn: "Confirm my address",
   }
 };

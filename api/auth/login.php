@@ -31,7 +31,7 @@ if ($a['email_verified_at'] === null) {
     $recent = q('SELECT COUNT(*) FROM tokens WHERE account_id = ? AND purpose = ? AND created_at > ?', [$id, 'confirm', now() - 3600])->fetchColumn();
     if ((int)$recent > 0) { log_api('unconfirmed recent_link', $id); exit; }
     $token = new_token($id, 'confirm', CONFIRM_LIFE);
-    log_api('unconfirmed ' . send_mail('confirm', $addr, (string)$a['lang'], site_origin() . '/api/auth/confirm.php?t=' . $token), $id);
+    log_api('unconfirmed ' . send_mail('confirm', $addr, (string)$a['lang'], site_origin() . '/compte/confirmer/?t=' . $token), $id);
     exit;
 }
 clear_failures($k);

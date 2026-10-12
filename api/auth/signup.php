@@ -43,7 +43,7 @@ if (!$a) {
     }
     if ($made !== null) {
         [$account, $token] = $made;
-        log_api('created ' . send_mail('confirm', $addr, $lang, site_origin() . '/api/auth/confirm.php?t=' . $token, null, false), $account);
+        log_api('created ' . send_mail('confirm', $addr, $lang, site_origin() . '/compte/confirmer/?t=' . $token, null, false), $account);
         exit;
     }
 }

@@ -1,4 +1,5 @@
-/* Nokime Jobs — accounts: /compte/ and /compte/mot-de-passe/ (phase 1, dark launch: nothing links here yet).
+/* Nokime Jobs — accounts: /compte/, /compte/mot-de-passe/ and /compte/confirmer/ (phase 1, dark launch: nothing
+   links here yet).
    Calls api/auth/ with fetch, same-origin credentials; the session cookie is HttpOnly, so this script never sees
    it. Each error is shown next to its field; nothing moves. The words: French is read out of the page by
    site.js (the hidden list of messages included), English is in js/i18n.js. No dependencies. */
@@ -46,8 +47,16 @@
     var f = input && input.closest(".f-field");
     return f ? $(".f-err", f) : null;
   }
+  /* A field's own hint (the password rule) stays in its description, an error or not. */
+  function hintOf(input) {
+    var f = input && input.closest(".f-field"), h = f ? $(".f-hint", f) : null;
+    return h && h.id ? h.id : "";
+  }
   function clearErrors(form) {
-    $$("[aria-invalid]", form).forEach(function (i) { i.removeAttribute("aria-invalid"); i.removeAttribute("aria-describedby"); });
+    $$("[aria-invalid]", form).forEach(function (i) {
+      i.removeAttribute("aria-invalid");
+      if (hintOf(i)) i.setAttribute("aria-describedby", hintOf(i)); else i.removeAttribute("aria-describedby");
+    });
     $$(".f-err,[data-form-err],[data-form-ok]", form).forEach(hush);
   }
   function fieldError(form, name, key, vars) {
@@ -57,7 +66,7 @@
     if (!el) return false;
     if (!el.id) el.id = "cErr" + (++uid);
     input.setAttribute("aria-invalid", "true");
-    input.setAttribute("aria-describedby", el.id);
+    input.setAttribute("aria-describedby", (hintOf(input) ? hintOf(input) + " " : "") + el.id);
     say(el, key, vars);
     return input;
   }
@@ -168,5 +177,17 @@
     bind(reset, "reset.php", function (f) { return { t: token, password: val(f, "password") }; }, function (j, f) {
       ok(f, "cOkReset"); $("[type=submit]", f).disabled = true; $("#mpSignIn").hidden = false;
     }, function (j) { $("#mpAgain").hidden = j.error !== "link"; });   // a dead link: offer a new one
+  }
+
+  /* ---------- /compte/confirmer/ ---------- */
+  /* A mailed confirmation link opens this page; only its button spends the link (mail scanners open links
+     but press no button). Then /compte/ says how it went, as the old link did. */
+  var confirmForm = $("#confirmForm");
+  if (confirmForm) {
+    var cm = /[?&]t=([A-Za-z0-9_-]{43})(?:&|$)/.exec(location.search), ct = cm ? cm[1] : "";
+    if (location.search) { try { history.replaceState(history.state, "", location.pathname + location.hash); } catch (e) {} }
+    var go = function (q) { location.replace("../?" + q + (lang() === "en" ? "&lang=en" : "")); };
+    bind(confirmForm, "confirm.php", function () { return { t: ct }; }, function () { go("ok=confirm"); },
+      function (j) { if (j.error === "link") go("err=link"); });
   }
 })();

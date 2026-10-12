@@ -1,7 +1,8 @@
 <?php
 /* POST {password, new_email}, signed in: 202 {ok:true}; then a confirmation link valid 24 hours goes to the new
-   address and a notice to the old one. Nothing changes until the link is used (confirm.php, purpose
-   email_change). A new address that already has an account gets no link, and the answer is the same. */
+   address and a notice to the old one. Nothing changes until the link is used (/compte/confirmer/, whose
+   button POSTs to confirm.php, purpose email_change). A new address that already has an account gets no link,
+   and the answer is the same. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';
@@ -22,6 +23,6 @@ if (q('SELECT 1 FROM accounts WHERE email = ?', [$new])->fetch()) {
     $sent = 'taken';
 } else {
     $token = atomic(function () use ($id, $new) { return new_token($id, 'email_change', CONFIRM_LIFE, $new, true); });
-    $sent = send_mail('change_new', $new, $lang, site_origin() . '/api/auth/confirm.php?t=' . $token);
+    $sent = send_mail('change_new', $new, $lang, site_origin() . '/compte/confirmer/?t=' . $token);
 }
 log_api('requested new:' . $sent . ' old:' . send_mail('change_old', $old, $lang, site_origin() . '/compte/mot-de-passe/'), $id);

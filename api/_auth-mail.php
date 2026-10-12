@@ -124,7 +124,7 @@ const MAIL_TEXT = [
 ];
 
 /* An English account's links carry lang=en, so the page opens in the language of the mail it came from
-   (site.js reads it; confirm.php passes it on to its redirect). */
+   (site.js reads it; a GET on confirm.php passes it on to /compte/confirmer/). */
 function with_lang(string $url, string $lang): string {
     if ($lang !== 'en') return $url;
     $hash = strpos($url, '#');
