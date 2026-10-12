@@ -46,8 +46,8 @@ CREATE TABLE rate_events (
 ) ENGINE=InnoDB;
 
 -- One row per address tried, with an account or not, keyed on the address's HMAC (as rate_events), so the
--- attempt limits answer the same either way. locked_until is the end of the current wait, or 2147483647 for
--- "until a password reset".
+-- attempt limits answer the same either way. locked_until is the end of the current wait (no failure count
+-- locks an address for longer).
 CREATE TABLE login_failures (
   k            CHAR(32) CHARACTER SET ascii NOT NULL PRIMARY KEY,
   count        INT NOT NULL,
@@ -61,5 +61,4 @@ CREATE TABLE login_failures (
 --   DELETE FROM sessions WHERE account_id = <id>;
 --   DELETE FROM tokens WHERE account_id = <id>;
 --   DELETE FROM accounts WHERE id = <id>;
--- Rate-limit fingerprints and failure counters hold no address; they go by themselves within 24 hours, except a
--- counter locked until a reset, which stays so that a deleted account answers like an address that never had one.
+-- Rate-limit fingerprints and failure counters hold no address; they go by themselves within 24 hours.

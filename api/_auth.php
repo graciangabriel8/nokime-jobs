@@ -14,9 +14,7 @@ const CONFIRM_LIFE = 86400;          // confirmation and email-change links: 24 
 const RESET_LIFE = 3600;             // reset links: 1 hour
 const MAX_BODY = 8192;               // a POST body is under 8 KB
 const FREE_FAILURES = 5;             // consecutive failures before the growing delay
-const LOCK_FAILURES = 25;            // failures in 24 h that lock the account until a reset
-const MAX_WAIT = 3600;               // the growing delay stops at 60 min, so 25 failures fit in about 15 h (ASSUMED)
-const LOCKED_FOR_GOOD = 2147483647;  // locked_until for "until a password reset"
+const MAX_WAIT = 3600;               // the growing delay stops at 60 min (ASSUMED)
 const MAIL_SITE_CAP = 150;           // mails an hour for the whole site, under the mailbox's SMTP quota (ASSUMED)
 const MAIL_RESERVE = 50;             // of those, kept for mails no sign-up can trigger: reset, link again, changes (ASSUMED)
 
@@ -224,12 +222,14 @@ function hash_password(string $p): string {
    the row is keyed on the address's HMAC, survives the account's deletion, and is cleared only by the right
    password or a reset. Every attempt is counted before the password is checked, in one statement that also
    refuses it while the address waits, so parallel guesses cannot all slip through on one stale count.
-   After five failures each further attempt waits 1, 2, 4… minutes, at most MAX_WAIT; 25 in a streak lock the
-   address until a reset. A streak whose first failure is over 24 h old starts again. */
+   After five failures each further attempt waits 1, 2, 4… minutes, at most MAX_WAIT, and no number of failures
+   locks the address: passwords follow the CNIL's password-only option (12+ characters, 4 classes), which needs
+   no access restriction, and a lock would let anyone keep the owner out. A streak whose first failure is over
+   24 h old starts again. */
 function fail_key(string $addr): string { return rk('lf:' . $addr); }
 
-/* Counts this attempt and answers null, or refuses it: [423, 'locked', 0] or [429, 'wait', seconds]. */
-function claim_attempt(string $k): ?array {
+/* Counts this attempt and answers null, or refuses it with the seconds left to wait. */
+function claim_attempt(string $k): ?int {
     for ($try = 0; $try < 3; $try++) {
         $claimed = atomic(function () use ($k) {
             $n = now();
@@ -240,8 +240,7 @@ function claim_attempt(string $k): ?array {
                    WHERE k = ? AND (locked_until IS NULL OR locked_until <= ?)',
                   [$n - 86400, $n - 86400, $n, $n, $k, $n])->rowCount() !== 1) return false;
             $c = (int)q('SELECT count FROM login_failures WHERE k = ?', [$k])->fetchColumn();
-            $until = $c >= LOCK_FAILURES ? LOCKED_FOR_GOOD
-                   : ($c >= FREE_FAILURES ? $n + min(MAX_WAIT, 60 * 2 ** ($c - FREE_FAILURES)) : null);
+            $until = $c >= FREE_FAILURES ? $n + min(MAX_WAIT, 60 * 2 ** ($c - FREE_FAILURES)) : null;
             q('UPDATE login_failures SET locked_until = ? WHERE k = ?', [$until, $k]);
             return true;
         });
@@ -249,8 +248,7 @@ function claim_attempt(string $k): ?array {
         $f = q('SELECT locked_until FROM login_failures WHERE k = ?', [$k])->fetch();
         if ($f) {
             $until = (int)$f['locked_until'];
-            if ($until === LOCKED_FOR_GOOD) return [423, 'locked', 0];
-            if ($until > now()) return [429, 'wait', $until - now()];
+            if ($until > now()) return $until - now();
             continue;   // the wait ended in between: claim again
         }
         try {
@@ -264,7 +262,7 @@ function claim_attempt(string $k): ?array {
 
 function gate_or_fail(string $k): void {
     $g = claim_attempt($k);
-    if ($g) fail($g[0], $g[1], null, $g[1] === 'wait' ? ['retry_after' => $g[2]] : []);
+    if ($g) fail(429, 'wait', null, ['retry_after' => $g]);
 }
 
 function clear_failures(string $k): void { q('DELETE FROM login_failures WHERE k = ?', [$k]); }
@@ -429,7 +427,7 @@ function prune_logs(): void {
 /* ---------- clean-up ---------- */
 
 /* Everything an account owns, at once. Its address's failure counter stays (it belongs to the address, holds
-   no address, and goes by itself 24 h after its last failure unless locked): removing it would let a deleted
+   no address, and goes by itself 24 h after its last failure): removing it would let a deleted
    account answer unlike an address that never had one. */
 function delete_account(int $id): void {
     atomic(function () use ($id) {
@@ -440,7 +438,7 @@ function delete_account(int $id): void {
 }
 
 /* The deletions: rate events after 24 h, which the limits count; failure counters 24 h after their last
-   failure, unless locked (a streak that old starts again anyway, so nothing answers differently); used or
+   failure (a streak that old starts again anyway, so nothing answers differently); used or
    expired links 23 h after (so with an hourly run none is kept past 24 h); expired sessions; accounts left
    unconfirmed for 7 days; accounts unused for 24 months once their warning went out 28 days before
    (_purge-auth.php sends it at 23), or unused for 24 months and 30 days whether or not it could go. Run
@@ -449,7 +447,7 @@ function purge(): bool {
     try {
         $n = now();
         q('DELETE FROM rate_events WHERE at < ?', [$n - 86400]);
-        q('DELETE FROM login_failures WHERE last_at < ? AND (locked_until IS NULL OR locked_until < ?)', [$n - 86400, LOCKED_FOR_GOOD]);
+        q('DELETE FROM login_failures WHERE last_at < ?', [$n - 86400]);
         q('DELETE FROM tokens WHERE (used_at IS NOT NULL AND used_at < ?) OR expires_at < ?', [$n - 23 * 3600, $n - 23 * 3600]);
         q('DELETE FROM sessions WHERE expires_at < ?', [$n]);
         $gone = q('SELECT id FROM accounts WHERE email_verified_at IS NULL AND created_at < ?', [$n - 7 * 86400])->fetchAll(PDO::FETCH_COLUMN);

@@ -2,7 +2,9 @@
 /* POST {email, password, kind, lang, age15, terms}: the same 202 {ok:true}, with the same work before it,
    whether the address is new or not. Once the answer has left, a new address gets its account (unconfirmed)
    and a confirmation link valid 24 hours; an existing one gets a mail saying someone tried, with links to sign
-   in and to reset. A malformed field answers 400 naming it, which says nothing about any account. */
+   in and to reset. Over the new address's mail limit the account is made without a link, so a refused mail does
+   not hold back the fresh link login sends within the hour. A malformed field answers 400 naming it, which says
+   nothing about any account. */
 declare(strict_types=1);
 require dirname(__DIR__) . '/_auth.php';
 require dirname(__DIR__) . '/_auth-mail.php';
@@ -30,20 +32,18 @@ register_shutdown_function('purge_soon');
 $a = q('SELECT id, lang FROM accounts WHERE email = ?', [$addr])->fetch();
 if (!$a) {
     try {
-        $made = atomic(function () use ($addr, $kind, $lang, $hash) {
-            q('INSERT INTO accounts (email, kind, lang, password_hash, email_verified_at, created_at, last_seen_at, inactive_warned_at)
-               VALUES (?, ?, ?, ?, NULL, ?, ?, NULL)', [$addr, $kind, $lang, $hash, now(), now()]);
-            $id = (int)db()->lastInsertId();
-            return [$id, new_token($id, 'confirm', CONFIRM_LIFE)];
-        });
+        q('INSERT INTO accounts (email, kind, lang, password_hash, email_verified_at, created_at, last_seen_at, inactive_warned_at)
+           VALUES (?, ?, ?, ?, NULL, ?, ?, NULL)', [$addr, $kind, $lang, $hash, now(), now()]);
+        $account = (int)db()->lastInsertId();
     } catch (PDOException $e) {
         if ($e->getCode() !== '23000') throw $e;   // two sign-ups of one address at once: the second is "existing"
-        $made = null;
+        $account = null;
         $a = q('SELECT id, lang FROM accounts WHERE email = ?', [$addr])->fetch();
     }
-    if ($made !== null) {
-        [$account, $token] = $made;
-        log_api('created ' . send_mail('confirm', $addr, $lang, site_origin() . '/compte/confirmer/?t=' . $token, null, false), $account);
+    if ($account !== null) {
+        if (!mail_allowed($addr, false)) { log_api('created mail_limit', $account); exit; }
+        $token = new_token($account, 'confirm', CONFIRM_LIFE);
+        log_api('created ' . deliver_mail('confirm', $addr, $lang, site_origin() . '/compte/confirmer/?t=' . $token), $account);
         exit;
     }
 }
