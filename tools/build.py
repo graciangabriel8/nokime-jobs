@@ -131,7 +131,7 @@ for o in live:
 </main>
 
 ''' % ('<span data-t="kind_%s">%s</span>' % (o["kind"], e(KIND[o["kind"]])), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), t_("oRole"), e(o["role"]), t_("oRest"), e(o["restaurant"]),
-       ('<a class="hd" href="/#hirondelle" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></a>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
+       ('<a class="hd" href="/hirondelle/" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></a>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
        ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(o["id"]), e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(re.sub(r"\s", "", o["contact"]["phone"])), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     own = '<script>Object.assign(NOKIME_I18N.en,%s);</script>\n' % json.dumps(en, ensure_ascii=False).replace("<", "\\u003c")

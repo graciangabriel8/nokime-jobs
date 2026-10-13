@@ -87,7 +87,7 @@
   var SWALLOW = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path fill="currentColor" d="M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z"/></svg>';
   function hirondelle(o) {
     if (o.demo || !/^\d{4}$/.test(String(o.hirondelle == null ? "" : o.hirondelle))) return "";
-    return '<a class="hd" href="/#hirondelle" title="' + esc(t("hdTitle")) + '">' + SWALLOW + '<span class="hd-since">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></a>";
+    return '<a class="hd" href="/hirondelle/" title="' + esc(t("hdTitle")) + '">' + SWALLOW + '<span class="hd-since">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></a>";
   }
   /* the facts a candidate decides on: a small label above each value */
   function fact(cls, label, value, note) { return '<div class="fact ' + cls + (note ? " noted" : "") + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd>" + (note ? '<dd class="fact-note">' + esc(note) + "</dd>" : "") + "</div>"; }
