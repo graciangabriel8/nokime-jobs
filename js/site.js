@@ -113,27 +113,35 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) { nav.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); } });
   }
 
-  /* the door (home only) goes once it has been scrolled past: when its bottom has left the top of the screen and the
-     scrolling has stopped (moving the page mid-way would cut short a flick's momentum or the smooth scroll to #offres),
-     it is removed and the page is put back where it was, so nothing moves on screen and scrolling up ends at the header.
-     Until the next page load. */
+  /* the door (home only) goes as soon as it has been scrolled out of sight, while the scrolling goes on: the browser keeps
+     the view where it is (scroll anchoring), or, where it does not, the page is put back by the door's height, so nothing
+     moves on screen and scrolling up ends at the header. Waiting for the scrolling to stop failed on a trackpad, whose
+     momentum keeps scrolling for seconds (13 Oct). Until the next page load. */
   var door = $("#door"), doorMain = $("main");
   if (door && doorMain) {
-    var doorTimer = 0;
-    var dropDoor = function () {
-      if (door.hidden || door.getBoundingClientRect().bottom > 0) return;
+    var dropDoor = function (keepView) {
+      if (door.hidden) return;
+      window.removeEventListener("scroll", onDoorScroll);
       var before = doorMain.getBoundingClientRect().top;
       door.hidden = true;
-      var shift = doorMain.getBoundingClientRect().top - before;   // 0 where the browser keeps the view in place itself
+      var shift = keepView ? doorMain.getBoundingClientRect().top - before : 0;   // 0 where the browser kept the view itself
       if (shift) {   // instant even where "instant" is unknown and the page's smooth scrolling would apply (older Safari)
         var root = document.documentElement, was = root.style.scrollBehavior;
         root.style.scrollBehavior = "auto"; window.scrollTo(0, window.pageYOffset + shift); root.style.scrollBehavior = was;
       }
-      window.removeEventListener("scroll", onDoorScroll);
     };
-    var onDoorScroll = function () { clearTimeout(doorTimer); doorTimer = setTimeout(dropDoor, 150); };
+    var onDoorScroll = function () { if (door.getBoundingClientRect().bottom <= 0) dropDoor(true); };
     window.addEventListener("scroll", onDoorScroll, { passive: true });
-    onDoorScroll();   // a reload or a link to #offres that lands past it
+    onDoorScroll();   // a reload that lands past it
+    /* a jump to a part of this page (opened at #offres, « Voir les offres », « Les offres » in the menu): the door goes
+       first, because the browser's smooth scroll keeps the target it took at the start and would land a door's height
+       too far if the door went on the way (13 Oct) */
+    var outside = function (hash) { var t = hash.length > 1 && document.getElementById(hash.slice(1)); return t && !door.contains(t); };
+    if (outside(location.hash)) dropDoor(false);
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest ? e.target.closest("a[href*='#']") : null;
+      if (a && a.pathname === location.pathname && outside(a.hash)) dropDoor(false);
+    });
   }
 })();
 
