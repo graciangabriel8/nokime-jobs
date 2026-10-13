@@ -358,6 +358,26 @@ a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text
 .hd-for .hd-mini{width:26px;height:26px}
 .charter .hd-for h2{margin:0}
 .dist .lead{margin-top:18px}
+/* the link from a page's hirondelle section to the hirondelle's own page */
+.hd-all{margin:14px 0 0}
+
+/* ---------- the hirondelle's own page: the swallow beside the title, then plain lists ---------- */
+.hp-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 clamp(28px,4vw,56px);align-items:start}
+.hp-mark-wrap{padding-top:4px}
+.hp-mark{display:block;width:clamp(72px,9vw,120px);height:auto;color:var(--bleu)}
+.hp-hero .display + .lead{margin-top:24px}
+.hp-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 56px}
+.hp-two h3{margin:30px 0 0}
+.hp-two .facts{margin-top:14px}
+.hp-note{margin:16px 0 0;max-width:62ch}
+.hp-p{margin:18px 0 0;color:var(--ink-2);font-size:17px;line-height:1.5;max-width:56ch}
+.hp-faq{margin-top:26px}
+@media (max-width:720px){
+  .hp-hero{grid-template-columns:minmax(0,1fr);gap:18px 0}
+  .hp-mark{width:64px}
+  .hp-two{grid-template-columns:minmax(0,1fr)}
+  .hp-two > div + div{margin-top:44px}
+}
 
 /* ---------- in practice ---------- */
 .more summary.kicker-sum{font-size:clamp(28px,3.2vw,42px);line-height:1.02;font-weight:700;font-stretch:88%;letter-spacing:-.02em;gap:16px}
