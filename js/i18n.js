@@ -26,7 +26,7 @@ window.NOKIME_I18N = {
     hdSince: "{y}", hdLabel: "Hirondelle depuis {y}", hdTitle: "L’hirondelle de Nokime Jobs : une maison où l’on a envie de revenir",
     qEndBeforeStart: "La fin est avant le début.",
     qMailSubject: "Nokime Jobs — questionnaire : {etab}", qMailCodes: "Pour Nokime (codes)", qMailSchool: "École ou CFA",
-    qMailProof: "À joindre avant d’envoyer : la première page de ma convention, mon contrat, ou un bulletin de paie où tout est noirci sauf mon nom, l’établissement et les dates.",
+    qMailProof: "À joindre avant d’envoyer : la première page de ma convention, mon contrat, ou un bulletin de paie où tout peut être noirci à ma convenance sauf mon nom, l’établissement et les dates.",
   },
   en: {
     jobsTitle1: "Internships and seasons in hotels and restaurants ", jobsTitle2: "worth working in.",
@@ -155,7 +155,7 @@ window.NOKIME_I18N = {
     qForT: "What it is for", qForP: "Preparing the hirondelle, the Nokime Jobs distinction, and counting the posts found through Nokime Jobs. Your answers are never published, neither on their own nor added up for an establishment; only a total for all of Nokime Jobs may be published, if it counts at least five answers.",
     qForM: "The hirondelle goes to a place when nearly everyone it took on says the rules were kept and they would come back. One hirondelle, no levels, and places are never ranked against each other. Nothing is published about the others. The questions will change before the first hirondelles.", qHowT: "How",
     qHowP: "You answer the questions, with no free text. Your mail program opens with your answers: attach a proof that you worked there.",
-    qHowM: "The proof: the first page of the internship agreement, the contract, or a payslip with everything blacked out except your name, the establishment and the dates. We look at it by hand, then delete it, with the email that carried it, within thirty days.",
+    qHowM: "The proof: the first page of the internship agreement, the contract, or a payslip where you may black out whatever you like except your name, the establishment and the dates. We look at it by hand, then delete it, with the email that carried it, within thirty days.",
     qSchool: "School or apprentice centre (optional)", qC2: "I agree that my answers are used to prepare the distinction and to count the posts found through Nokime Jobs, for a total across the whole site, without being published themselves.",
     qData: "What we keep: your answers, the establishment and the period, and separately, your name and email address, only so we can delete your answers if you ask. None of it is published. Your proof is deleted within thirty days, with the email that carried it. Your answers, your name and your email address are deleted three years after the end of your internship, apprenticeship or season. You can withdraw everything before that, whenever you want: write to us, it is done without discussion. Your proof is seen only by the site’s publisher, named in the legal notice. Under fifteen, a parent must also agree.",
     qSend: "Send my answers", qSendNote: "The button opens your mail client with your answers ready to go. Attach your proof to it.", qSent: "Your mail app opens with your answers: send the email with the proof attached.",
