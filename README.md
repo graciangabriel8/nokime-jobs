@@ -4,7 +4,7 @@ Stages, alternances et saisons en hôtellerie-restauration, en cuisine, en salle
 
 - French is the source language and lives in the HTML; `js/site.js` reads it out of every `data-t` element at load. English lives in `js/i18n.js`.
 - Offers live in `js/offers.js` (`NOKIME_JOBS`, French, one object per offer; `expires` drops them). Each offer names its department in `metier` (`cuisine`, `salle`, `hebergement` or `spa`: Cuisine, Salle, Hébergement, Spa; Kitchen, Dining room, Rooms division, Spa in English; `spa` is a hotel's spa, never a beauty salon or a day spa outside a hotel), shown in the card's pill beside the kind, as the first fact of its own page, and filtered by the métier select beside the région select; an offer without one shows no department and drops out only when a department is chosen. `NOKIME_JOBS_DEMO` shows only with `?demo=1`.
-- `python3 tools/build.py` writes one page per live offer under `o/<id>/` (with schema.org JobPosting data) and the sitemap. Run it after every change to the offers.
+- `python3 tools/build.py` writes one page per live offer under `o/<id>/` (with schema.org JobPosting data), the sitemap (each page dated by its last commit), and the structured data of `hirondelle/` from that page's own title, description and questions. Run it after every change to the offers or to `hirondelle/`.
 - `js/site.js` (language switch, mail links, menu) is shared with the group site; the look is this site's own, see Identity.
 
 Serve locally: `python3 -m http.server 8648` (or `preview_start` name `nokime-jobs`).

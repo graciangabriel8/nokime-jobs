@@ -14,6 +14,7 @@ Prints one line per failure and exits 1 on any.
    catches a planted fake of each kind), and no credential file (*.pem, *.key, .env, config.php) tracked
 6. offers: tools/build.py runs clean on a copy of the repo (js/offers.js well formed, every offer complete), and
    what it writes matches what is committed: a live offer without its page, or a questionnaire not rebuilt, fails;
+   the hirondelle's structured data not rebuilt fails too;
    a page or sitemap line left by an offer that expired since the last build is only noted
 7. PHP: php -l on every tracked .php under api/, api/auth/ included (required on GitHub; skipped with a note where
    php is missing)
@@ -132,7 +133,7 @@ with tempfile.TemporaryDirectory() as tmp:
     r = subprocess.run([sys.executable, str(copy / "tools/build.py")], capture_output=True, text=True, cwd=str(copy))
     if r.returncode != 0: fail("offers: tools/build.py stopped: " + (r.stderr or r.stdout).strip().splitlines()[-1])
     else:
-        for rel in ("questionnaire/index.html", "js/i18n.js"):
+        for rel in ("questionnaire/index.html", "js/i18n.js", "hirondelle/index.html"):
             if (copy / rel).read_bytes() != (root / rel).read_bytes(): fail("build: %s differs from what tools/build.py writes: run it and commit" % rel)
         built = {p.relative_to(copy) for p in (copy / "o").rglob("index.html")} if (copy / "o").is_dir() else set()
         kept = {p.relative_to(root) for p in (root / "o").rglob("index.html")} if (root / "o").is_dir() else set()

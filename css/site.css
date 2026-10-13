@@ -362,7 +362,7 @@ a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text
 .charter .hd-for h2{margin:0}
 .dist .lead{margin-top:18px}
 /* the link from a page's hirondelle section to the hirondelle's own page */
-.hd-all{margin:14px 0 0}
+.hd-all,.charter .hd-all{margin:14px 0 0}
 
 /* ---------- the hirondelle's own page: the swallow beside the title, then plain lists ---------- */
 .hp-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 clamp(28px,4vw,56px);align-items:start}

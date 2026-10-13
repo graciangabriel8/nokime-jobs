@@ -26,8 +26,8 @@ if unused: print("en keys no page uses:", ", ".join(unused))
 # The English legal block, scripts and styles are skipped. A plain ASCII space there is a defect (exit 1).
 def french_text(s):
     s = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", " ", s, flags=re.S)
-    s = re.sub(r'<div data-lang="en">.*?\n      </div>\n', " ", s, flags=re.S)
-    s = re.sub(r'<span data-lang="en">.*?</span>', " ", s, flags=re.S)
+    s = re.sub(r'<div data-lang="en"[^>]*>.*?\n      </div>\n', " ", s, flags=re.S)
+    s = re.sub(r'<span data-lang="en"[^>]*>.*?</span>', " ", s, flags=re.S)
     return re.sub(r"<[^>]+>", " ", s)
 typo = {}
 for p in pages:

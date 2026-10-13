@@ -4,7 +4,11 @@
 Each real offer becomes o/<id>/index.html: a page a student can share and a search
 engine can read, with schema.org JobPosting data so job search features can list it.
 Demo offers never get a page. Expired offers get none either, and their old page is
-removed. The sitemap lists the site's pages and the live offers.
+removed. The sitemap lists the site's pages and the live offers, each with the date of the
+last commit of its page (today while the page has uncommitted changes).
+
+It writes the structured data of hirondelle/index.html (WebPage, BreadcrumbList, FAQPage)
+from that page's own title, description and questions, between its ld markers.
 
 It also writes the questionnaire from tools/questionnaire_questions.py: the period selects and
 the question fieldsets of questionnaire/index.html, and the English question strings in
@@ -12,7 +16,7 @@ js/i18n.js, each between its start/end markers. Nothing about any answer is read
 
     python3 tools/build.py
 """
-import json, re, sys, pathlib, datetime, shutil, html, urllib.parse
+import json, re, sys, pathlib, datetime, shutil, html, subprocess, urllib.parse
 root = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://jobs.nokime.fr/"
 today = datetime.date.today().isoformat()
@@ -31,6 +35,18 @@ for o in live:
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
     if "hirondelle" in o and o["hirondelle"] is not None and not (type(o["hirondelle"]) is int and 2026 <= o["hirondelle"] <= datetime.date.today().year):
         sys.exit("js/offers.js : l’offre « %s » : hirondelle doit être l’année de la décision (2026 au plus tôt, jamais une année à venir), ou absent." % o.get("id", "?"))
+    # job search needs the date the offer first went online: without one, every rebuild would re-date it
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(o.get("published") or "")): sys.exit("js/offers.js : l’offre « %s » doit dire published: \"AAAA-MM-JJ\", le jour où elle a été mise en ligne." % o.get("id", "?"))
+    if "postalCode" in o and not (re.fullmatch(r"\d{5}", str(o["postalCode"])) and str(o["postalCode"]).startswith("20" if str(o.get("dept")) in ("2A", "2B") else str(o.get("dept")))):
+        sys.exit("js/offers.js : l’offre « %s » : postalCode doit être un code postal à cinq chiffres de son département (dept)." % o.get("id", "?"))
+    if "website" in o and not re.fullmatch(r"https?://\S+", str(o["website"])): sys.exit("js/offers.js : l’offre « %s » : website doit être une adresse en http(s)://." % o.get("id", "?"))
+    if "salary" in o:   # the structured pay: only numbers the offer's visible pay text already gives
+        s, pay = o["salary"], ("" if o.get("payHidden") else re.sub(r"[\s  .]", "", str(o.get("pay") or "")))
+        nums = [s.get(k) for k in ("value", "min", "max") if isinstance(s, dict) and k in s]
+        if not (isinstance(s, dict) and s.get("unit") in ("HOUR", "DAY", "WEEK", "MONTH", "YEAR") and nums and all(type(n) in (int, float) and n > 0 for n in nums)
+                and (("value" in s) != ("min" in s or "max" in s)) and s.get("min", 0) <= s.get("max", float("inf"))):
+            sys.exit("js/offers.js : l’offre « %s » : salary doit être {\"value\": n, \"unit\": …} ou {\"min\": n, \"max\": n, \"unit\": …}, unit parmi HOUR, DAY, WEEK, MONTH, YEAR." % o.get("id", "?"))
+        if not all(str(int(n)) in pay for n in nums): sys.exit("js/offers.js : l’offre « %s » : salary donne un montant que son texte pay (affiché) ne dit pas ; mettez le même chiffre dans les deux, ou retirez salary." % o.get("id", "?"))
 seen_hd = {}   # l’hirondelle belongs to the establishment, not to one offer: every live offer of one establishment carries the same value
 for o in live:
     k = re.sub(r"\s+", " ", str(o.get("restaurant", ""))).strip().lower() + " | " + str(o.get("city", "")).strip().lower()
@@ -67,14 +83,14 @@ def pay_fact(o):   # the pay is always a fact: the restaurant's words, or "Non c
     nk = ("payNote_stage" if allowance_due(o) else "") if o["kind"] == "stage" else "payNote_" + o["kind"]
     note = fr_str(nk) if nk else ""
     return '<div class="fact%s"><dt data-t="colPay">Rémunération</dt><dd data-t="payUndisclosed">%s</dd>%s</div>' % (" noted" if note else "", html.escape(fr_str("payUndisclosed")), '<dd class="fact-note" data-t="%s">%s</dd>' % (nk, html.escape(note)) if note else "")
-def rel(s): return s.replace('href="css/', 'href="../../css/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"').replace('href="charte/"', 'href="../../charte/"').replace('href="hirondelle/"', 'href="../../hirondelle/"')
+def rel(s): return s.replace('href="css/', 'href="../../css/').replace('href="fonts/', 'href="../../fonts/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"').replace('href="charte/"', 'href="../../charte/"').replace('href="hirondelle/"', 'href="../../hirondelle/"')
 
 odir = root / "o"
 for old in odir.glob("*/"):
     if old.name not in {o["id"] for o in live}: shutil.rmtree(old)
 for o in live:
     e = html.escape
-    title = "%s — %s, %s · Nokime Jobs" % (o["role"], o["restaurant"], o["city"])
+    title = "%s — %s, %s · Nokime Jobs" % (o["role"] if o["role"].lower().startswith(KIND[o["kind"]].lower()) else KIND[o["kind"]] + "\u202f: " + o["role"], o["restaurant"], o["city"])   # the kind first (« stage », « saison » are what people search), once
     desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdLabel").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
     shown = {"role": True, "restaurant": True, "pay": bool(pay_of(o)), "text": bool(o.get("text"))}   # as js/jobs.js: a field's English counts only where its French is shown
     tr = {k: v for k, v in (o.get("en") or {}).items() if k in shown and v and shown[k]}   # Nokime's translation: the English view reads it, the French stays the original
@@ -84,20 +100,33 @@ for o in live:
     en.update({"o" + k[0].upper() + k[1:]: tr[k] for k in ("role", "restaurant", "pay", "text") if tr.get(k)})
     en = {("oRest" if k == "oRestaurant" else k): v for k, v in en.items()}
     t_ = lambda k: ' data-t="%s"' % k if k in en else ""
+    place = ", ".join(x for x in (str(o.get("street") or "").strip(), (str(o.get("postalCode") or "") + " " + o["city"]).strip() if o.get("postalCode") else "") if x)
     facts = (('<div class="fact"><dt data-t="colMetier">Métier</dt><dd data-t="metier_%s">%s</dd></div>' % (o["metier"], METIER[o["metier"]]) if o.get("metier") in METIER else "") +   # absent or unknown: not shown
              '<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
              ('<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) if o.get("hours") else "") +
              pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
                             '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else "") +
              ('<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsOk">Acceptés</dd></div>' if o["kind"] == "stage" and o.get("minors") is True else
-              '<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsNo">18 ans et plus</dd></div>' if o["kind"] == "stage" and o.get("minors") is False else ""))   # as js/jobs.js: absent, not shown
+              '<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsNo">18 ans et plus</dd></div>' if o["kind"] == "stage" and o.get("minors") is False else "") +   # as js/jobs.js: absent, not shown
+             ('<div class="fact"><dt data-t="colAddress">Adresse</dt><dd>%s</dd></div>' % html.escape(place) if place else ""))   # street and postcode, when given: the address job search reads is the one on the page
     orig = ('<div class="job-orig only-en" lang="fr"><p class="job-orig-label" lang="en" data-t="jobsOriginal">Original offer, in French</p><p><b>%s</b> · %s%s</p>%s</div>' %
             (html.escape(o["role"]), html.escape(o["restaurant"]), " · " + html.escape(pay_of(o)) if pay_of(o) else "", '<p>%s</p>' % html.escape(o["text"]) if tr.get("text") else "")) if tr else ""   # an untranslated text is already shown, in French
-    ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": (o.get("text") or desc), "datePosted": o.get("published", today),
-          "validThrough": (o.get("expires") or o["end"]) + "T23:59:59", "employmentType": EMP[o["kind"]],
-          "hiringOrganization": {"@type": "Organization", "name": o["restaurant"]},
-          "jobLocation": {"@type": "Place", "address": {"@type": "PostalAddress", "addressLocality": o["city"], "addressRegion": DEPT.get(str(o["dept"]), ""), "addressCountry": "FR"}},
+    # the job description job search reads: the offer's own text, then every fact of the page, word for word
+    items = ["<li>%s\u202f: %s</li>" % (dt, ". ".join(dd)) for dt, dd in ((m.group(1), re.findall(r"<dd[^>]*>(.*?)</dd>", m.group(2))) for m in re.finditer(r'<div class="fact[^"]*"><dt[^>]*>(.*?)</dt>(.*?)</div>', facts))]
+    jdesc = ("<p>%s</p>" % e(o["text"]) if o.get("text") else "") + "<ul>%s</ul>" % "".join(items)
+    hours = int(o.get("hours") or 0)
+    emp = [EMP[o["kind"]]] if not hours else ["FULL_TIME" if hours >= 35 else "PART_TIME"] if o["kind"] == "alternance" else [EMP[o["kind"]], "FULL_TIME" if hours >= 35 else "PART_TIME"]
+    addr = {"@type": "PostalAddress", "streetAddress": str(o.get("street") or "").strip(), "addressLocality": o["city"], "postalCode": str(o.get("postalCode") or ""), "addressRegion": DEPT.get(str(o["dept"]), ""), "addressCountry": "FR"}
+    org = {"@type": "Organization", "name": o["restaurant"]}   # never an award here: the hirondelle's markup waits for the lawyer's answer (see js/offers.js)
+    if o.get("website"): org["sameAs"] = o["website"]
+    ld = {"@context": "https://schema.org", "@type": "JobPosting", "title": o["role"], "description": jdesc, "datePosted": o["published"],
+          "validThrough": (o.get("expires") or o["end"]) + "T23:59:59", "employmentType": emp if len(emp) > 1 else emp[0],
+          "hiringOrganization": org,
+          "jobLocation": {"@type": "Place", "address": {k: v for k, v in addr.items() if v}},
+          "identifier": {"@type": "PropertyValue", "name": "Nokime Jobs", "value": o["id"]},
           "jobStartDate": o["start"], "directApply": True}
+    if o.get("salary") and pay_of(o):   # only the numbers the visible pay gives (checked above)
+        sal = o["salary"]; ld["baseSalary"] = {"@type": "MonetaryAmount", "currency": "EUR", "value": dict({"@type": "QuantitativeValue", "unitText": sal["unit"]}, **{k + ("Value" if k != "value" else ""): sal[k] for k in ("value", "min", "max") if k in sal})}
     h = head
     h = re.sub(r"<title>[^<]*</title>", "<title>%s</title>" % e(title), h)
     h = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="%s">' % e(desc), h)
@@ -186,6 +215,39 @@ i_new = between(i18n.read_text(encoding="utf-8"), "questions", "\n".join(en_line
 page.write_text(p_new, encoding="utf-8"); i18n.write_text(i_new, encoding="utf-8")
 print("questionnaire: %d questions written" % len(QUESTIONS))
 
+# ---------------------------------------------------------------- the hirondelle's structured data
+# Built from the page itself, so what search engines read is word for word what the page shows: its title, its
+# description, and each question of its « Questions » with the text paragraphs of its answer. Never an award.
+hp = root / "hirondelle" / "index.html"; hs = hp.read_text(encoding="utf-8")
+plain = lambda x: html.unescape(re.sub(r"<[^>]+>", "", x)).strip()
+faq = re.search(r'<div class="facts-grid hp-faq">(.*?)\n      </div>', hs, re.S)
+qa = [(plain(q), " ".join(plain(a) for a in re.findall(r'<p data-t="[^"]+">(.*?)</p>', body)))
+      for q, body in re.findall(r'<details class="more"><summary data-t="[^"]+">(.*?)</summary>(.*?)</details>', faq.group(1) if faq else "")]
+if not qa or not all(q and a for q, a in qa): sys.exit("hirondelle/index.html : questions introuvables (div.hp-faq) ; rien n’a été écrit pour elle")
+hurl = BASE + "hirondelle/"
+hld = {"@context": "https://schema.org", "@graph": [
+    {"@type": ["WebPage", "FAQPage"], "@id": hurl + "#page", "url": hurl, "name": plain(re.search(r"<title>(.*?)</title>", hs).group(1)),
+     "description": html.unescape(re.search(r'<meta name="description" content="([^"]*)">', hs).group(1)), "inLanguage": "fr",
+     "isPartOf": {"@type": "WebSite", "@id": BASE + "#site", "name": "Nokime Jobs", "url": BASE},
+     "primaryImageOfPage": {"@type": "ImageObject", "url": BASE + "og-hirondelle.png", "width": 1200, "height": 630},
+     "breadcrumb": {"@id": hurl + "#breadcrumb"},
+     "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qa]},
+    {"@type": "BreadcrumbList", "@id": hurl + "#breadcrumb", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Nokime Jobs", "item": BASE},
+        {"@type": "ListItem", "position": 2, "name": plain(re.search(r'data-t="navHirondelle">(.*?)</a>', hs).group(1)), "item": hurl}]}]}
+hp.write_text(between(hs, "ld", '<script type="application/ld+json">%s</script>\n' % json.dumps(hld, ensure_ascii=False).replace("<", "\\u003c")), encoding="utf-8")
+print("hirondelle: structured data with %d questions" % len(qa))
+
+# ---------------------------------------------------------------- the sitemap
 urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/", BASE + "charte/", BASE + "hirondelle/"] + [BASE + "o/%s/" % o["id"] for o in live]
-(root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join("  <url><loc>%s</loc></url>\n" % u for u in urls) + "</urlset>\n", encoding="utf-8")
+def git(*a):
+    r = subprocess.run(["git", "-C", str(root), *a], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else None
+in_git = git("rev-parse", "--show-toplevel") == str(root)   # tools/check.py builds on a copy without .git: there, keep the dates already written
+before = dict(re.findall(r"<loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>", (root / "sitemap.xml").read_text(encoding="utf-8"))) if (root / "sitemap.xml").is_file() else {}
+def lastmod(u):   # the last commit of the page's file, or today while it has uncommitted changes
+    if not in_git: return before.get(u, "")
+    f = u[len(BASE):] + "index.html"
+    return today if git("status", "--porcelain", "--", f) else (git("log", "-1", "--format=%cs", "--", f) or today)
+(root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join("  <url><loc>%s</loc>%s</url>\n" % (u, "<lastmod>%s</lastmod>" % d if d else "") for u, d in ((u, lastmod(u)) for u in urls)) + "</urlset>\n", encoding="utf-8")
 print("offers: %d live, %d pages written, sitemap %d urls" % (len(live), len(live), len(urls)))

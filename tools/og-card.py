@@ -6,6 +6,7 @@ static TTFs once from the fonts API (the site itself serves variable woff2 files
 TTF), writes SVGs with the fonts embedded, and rasterises them with macOS QuickLook:
 
     python3 tools/og-card.py            # writes ./og.png and ./apple-touch-icon.png
+    python3 tools/og-card.py hirondelle # writes ./og-hirondelle.png, the card of hirondelle/: the swallow and the page's name
 """
 import base64, pathlib, re, subprocess, sys, tempfile, urllib.request
 root = pathlib.Path(__file__).resolve().parent.parent
@@ -55,6 +56,33 @@ icon = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" vi
 </svg>'''
 
 tmp = pathlib.Path(tempfile.mkdtemp())
+if sys.argv[1:] == ["hirondelle"]:
+    # the swallow as hirondelle/index.html draws it (the same path as the brand file hirondelle-bleu.svg), in the blue
+    hpage = (root / "hirondelle" / "index.html").read_text(encoding="utf-8")
+    swallow = re.search(r'<svg class="hp-mark" viewBox="0 0 100 100"[^>]*>(.*?)</svg>', hpage, re.S).group(1).replace("currentColor", BLEU)
+    hcard = f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs><style>
+@font-face{{font-family:"Bricolage Grotesque";src:url(data:font/ttf;base64,{sans}) format("truetype")}}
+@font-face{{font-family:"DM Mono";src:url(data:font/ttf;base64,{mono}) format("truetype")}}
+@font-face{{font-family:"Nokime Wordmark";font-weight:700;font-stretch:112%;src:url(data:font/woff2;base64,{wordmark}) format("woff2")}}
+</style></defs>
+<rect width="1200" height="1200" fill="{PAPER}"/>
+<g transform="translate(0,285)">
+<rect x="780" y="0" width="420" height="630" fill="{STEEL}"/>
+<g transform="translate(815,130) scale(3.4)">{swallow}</g>
+<g transform="translate(66,58) scale(1.5)">{mark}</g>
+<text x="122" y="92" font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="32" fill="{INK}"><tspan font-family="Nokime Wordmark, Helvetica, sans-serif" font-weight="700" font-stretch="112%" letter-spacing="-0.48">nokime</tspan> Jobs</text>
+<text font-family="Bricolage Grotesque, Helvetica, sans-serif" font-size="84" letter-spacing="-1.5" fill="{INK}">
+<tspan x="68" y="290" fill="{BLEU}">L’hirondelle</tspan><tspan x="68" y="372">de Nokime Jobs.</tspan></text>
+<text x="72" y="530" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK}">STAGES · ALTERNANCES · SAISONS</text>
+<text x="72" y="562" font-family="DM Mono, Menlo, monospace" font-size="17" letter-spacing="1.7" fill="{INK2}">EN PRÉPARATION</text>
+</g>
+</svg>'''
+    src = tmp / "hd.svg"; src.write_text(hcard, encoding="utf-8")
+    subprocess.run(["qlmanage", "-t", "-s", "1200", "-o", str(tmp), str(src)], check=True, capture_output=True)
+    if not (tmp / "hd.svg.png").exists(): sys.exit("QuickLook produced no PNG for the hirondelle card")
+    subprocess.run(["sips", "--cropToHeightWidth", "630", "1200", str(tmp / "hd.svg.png"), "--out", str(root / "og-hirondelle.png")], check=True, capture_output=True)
+    sys.exit(print("og-hirondelle.png:", (root / "og-hirondelle.png").stat().st_size // 1024, "KB"))
 for name, svg, size in (("og", card, 1200), ("icon", icon, 180)):
     src = tmp / (name + ".svg"); src.write_text(svg, encoding="utf-8")
     subprocess.run(["qlmanage", "-t", "-s", str(size), "-o", str(tmp), str(src)], check=True, capture_output=True)
