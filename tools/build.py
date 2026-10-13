@@ -9,6 +9,7 @@ last commit of its page (today while the page has uncommitted changes).
 
 It writes the structured data of hirondelle/index.html (WebPage, BreadcrumbList, FAQPage)
 from that page's own title, description and questions, between its ld markers.
+It does the same for each advice article, conseils/<slug>/index.html (Article, BreadcrumbList), and lists them in the sitemap.
 
 It also writes the questionnaire from tools/questionnaire_questions.py: the period selects and
 the question fieldsets of questionnaire/index.html, and the English question strings in
@@ -238,8 +239,27 @@ hld = {"@context": "https://schema.org", "@graph": [
 hp.write_text(between(hs, "ld", '<script type="application/ld+json">%s</script>\n' % json.dumps(hld, ensure_ascii=False).replace("<", "\\u003c")), encoding="utf-8")
 print("hirondelle: structured data with %d questions" % len(qa))
 
+# ---------------------------------------------------------------- the advice articles' structured data
+# Each conseils/<slug>/index.html gets an Article and its BreadcrumbList, from the page's own title, description and heading.
+articles = sorted(p.parent.name for p in (root / "conseils").glob("*/index.html"))
+for slug in articles:
+    ap = root / "conseils" / slug / "index.html"; s = ap.read_text(encoding="utf-8"); aurl = BASE + "conseils/%s/" % slug
+    head1 = plain(re.search(r"<h1[^>]*>(.*?)</h1>", s, re.S).group(1))
+    nokime = {"@type": "Organization", "name": "Nokime Jobs", "url": BASE}
+    ald = {"@context": "https://schema.org", "@graph": [
+        {"@type": "Article", "@id": aurl + "#article", "url": aurl, "headline": head1, "name": plain(re.search(r"<title>(.*?)</title>", s).group(1)),
+         "description": html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1)), "inLanguage": "fr",
+         "image": BASE + "og.png", "author": nokime, "publisher": nokime,
+         "isPartOf": {"@type": "WebSite", "@id": BASE + "#site", "name": "Nokime Jobs", "url": BASE},
+         "mainEntityOfPage": {"@type": "WebPage", "@id": aurl, "breadcrumb": {"@id": aurl + "#breadcrumb"}}},
+        {"@type": "BreadcrumbList", "@id": aurl + "#breadcrumb", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Nokime Jobs", "item": BASE},
+            {"@type": "ListItem", "position": 2, "name": head1, "item": aurl}]}]}
+    ap.write_text(between(s, "ld", '<script type="application/ld+json">%s</script>\n' % json.dumps(ald, ensure_ascii=False).replace("<", "\\u003c")), encoding="utf-8")
+print("articles: structured data on %d" % len(articles))
+
 # ---------------------------------------------------------------- the sitemap
-urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/", BASE + "charte/", BASE + "hirondelle/"] + [BASE + "o/%s/" % o["id"] for o in live]
+urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/", BASE + "charte/", BASE + "hirondelle/"] + [BASE + "conseils/%s/" % a for a in articles] + [BASE + "o/%s/" % o["id"] for o in live]
 def git(*a):
     r = subprocess.run(["git", "-C", str(root), *a], capture_output=True, text=True)
     return r.stdout.strip() if r.returncode == 0 else None

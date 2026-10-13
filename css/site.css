@@ -468,6 +468,20 @@ a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text
 .prose p{font-size:17px;line-height:1.6}
 .page-hero + .section.tight{padding-top:0}
 
+/* ---------- an advice article (conseils/): the same prose, with sub-titles, lists, then its sources in small ---------- */
+.art-title{font-size:clamp(36px,4.8vw,64px);max-width:20ch}
+.art > h2:first-child{margin-top:0}
+.prose h3{font-size:18px;margin:26px 0 0}
+.prose h3 + p{margin-top:8px}
+.art .facts{margin-top:12px}
+.art .facts + p{margin-top:18px}
+.art-cta{margin-top:48px}
+.art-sources{margin-top:24px}
+.art-src{list-style:none;padding:0;margin:0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.art-src li{padding:5px 0}
+.art-src .link{color:var(--ink)}
+.art-more{margin-top:32px}
+
 /* ---------- an offer's own page (tools/build.py): the same card, the facts as on the board ---------- */
 .offer-page{padding-bottom:56px}
 .offer-page .lead{max-width:none}
