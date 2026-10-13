@@ -666,3 +666,64 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .rank:nth-child(n+5){display:none}
 }
 .dist .dist-facts{margin-top:18px}   /* the hirondelle in concrete terms, right under the short story */
+
+/* ---------- the home after the door: the offers lead, everything else is a quiet band (all under .home, so no other page moves) ---------- */
+.home .board{padding:48px 0 72px}
+.home .board .pass-head{align-items:flex-end}
+.home .board .jobs-search{max-width:760px;margin-top:28px}
+.home .board .jobs-search-input{height:58px;font-size:18px;padding-left:50px;background-position:left 18px center;background-size:18px}
+.home .board .jobs-filters{margin-top:14px}
+.home .board .jobs-list{margin-top:28px}
+/* the three examples live inside the empty state: one card, the message and the button on top, the examples under a hairline.
+   Shown only while the board has no offer at all (the count beside the title stays empty then); dashed so no one takes them for offers */
+.home .board-examples{display:none;background:var(--paper);border:1px solid var(--line);border-radius:12px;margin-top:16px;padding:20px 28px 28px}
+.home .board:has(#jobsCount:empty) .board-examples{display:block}
+.home .jobs-list:has(.jobs-empty) + .board-examples{margin-top:0;border-top:1px solid var(--line);border-radius:0 0 12px 12px}
+.home .jobs-list:has(.jobs-empty) .jobs-empty{border-bottom:0;border-radius:12px 12px 0 0}
+.home .board-examples .hero-sample{gap:14px}
+.home .board-examples .hero-sample-cap{order:-1;font-size:15px;margin-bottom:2px}
+.home .board-examples .sample{background:var(--paper);border:1.5px dashed var(--ink-3);padding:18px 20px}
+.home .board-examples .sample-role{font-size:20px}
+/* a band: a small heading, short content, air; the offers above stay the one big thing */
+.home .band{padding:56px 0 60px}
+.band-title{font-size:clamp(22px,2.2vw,28px);line-height:1.1;font-weight:700;font-stretch:90%;letter-spacing:-.015em;margin:0 0 24px;text-wrap:balance}
+.home .steps .step{padding-top:34px}
+.home .steps .step h3{font-size:19px}
+.home .steps .step p{font-size:15px;max-width:36ch}
+.home .how-more{max-width:none;margin-top:28px}
+.home .how-more > .how-more-body{margin-top:26px}
+.home .how-more-body > h3{margin:0 0 18px;font-size:22px}
+.home .how-more-body > h3 ~ h3{margin-top:44px}
+.home .how-more-body > .lead{margin:-8px 0 18px;max-width:none;font-size:17px}
+.home .how-more-body .care{margin-bottom:0}
+/* « Vous recrutez ? »: one short band, the button on the right */
+.home .recruit{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 40px;padding:28px 32px;border:1.5px solid var(--ink);border-radius:12px}
+.home .recruit-text{flex:1 1 440px;min-width:0}
+.home .recruit .band-title{margin-bottom:10px}
+.home .recruit-line{margin:0;max-width:60ch;font-size:18px;line-height:1.45;font-weight:500;letter-spacing:-.008em}
+.home .recruit .same-note{margin-top:14px;font-size:15px}
+.home .recruit .vat-note{margin-top:4px}
+.home .recruit > .btn{flex:none}
+/* the hirondelle: a small swallow, a short story, the points folded */
+.home .hd-band{padding:44px 0 48px}
+.home .hd-band .hir-swallow{width:44px;height:auto;fill:var(--bleu)}
+.home .hd-band .lead{margin-top:0;font-size:18px;max-width:52ch}
+.home .hd-band .more{margin-top:12px}
+.home .hd-band .dist-facts{margin-top:14px}
+.home .hd-band .cta-row{margin-top:18px}
+.home .hd-band .btn{min-height:44px;padding:10px 20px;font-size:15px}
+.home .more summary.kicker-sum{font-size:19px;font-stretch:90%;letter-spacing:-.012em;gap:12px;line-height:1.2}
+.home .more summary.kicker-sum::before{width:20px;height:20px;font-size:12px}
+.home .band:last-of-type{padding:36px 0 44px}
+@media (max-width:720px){
+  .home .board{padding:32px 0 52px}
+  .home .board .jobs-search-input{height:54px}
+  .home .board .jobs-select{width:calc(50% - 4px);flex:1 1 0;min-width:0;padding:0 26px 0 12px;font-size:13px;text-overflow:ellipsis;background-position:right 11px center}
+  .home .board .jobs-select + .jobs-select{margin-left:0}
+  .home .board-examples{padding:16px 16px 20px}
+  .home .band{padding:40px 0 44px}
+  .home .recruit{padding:22px 20px;gap:18px}
+  .home .recruit > .btn{width:100%}
+  .home .hd-band{padding:36px 0 40px}
+  .home .band:last-of-type{padding:28px 0 36px}
+}

@@ -414,5 +414,8 @@ window.NOKIME_I18N = {
     artSourcesT: "Sources",
     artMoreHp: "Worth a read:",
     artMoreSch: "To hand to your students:",
+    howKicker: "How it works.",
+    recruitKicker: "Hiring?",
+    recruitLine: "One offer online at a time is free for each establishment, always. More positions to fill? Brigade and Maison, from €195 a season to €790 a year.",
   }
 };
