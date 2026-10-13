@@ -113,3 +113,40 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) { nav.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); } });
   }
 })();
+
+/* l'hirondelle de Nokime Jobs: behind the card of an establishment that has it (.has-hd, js/jobs.js and tools/build.py), a field of
+   large, very light swallows scattered at random, but seeded by the establishment (data-hd-key) so it is the same on every visit.
+   Drawn as an SVG background at the card's own size; redrawn when the card changes size. */
+(function () {
+  var P = "M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z";
+  function seed(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(a) { return function () { a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function field(key, w, h) {
+    var r = rng(seed(key)), birds = [], tries = 0, want = Math.max(2, Math.round(w * h / 95000));
+    while (birds.length < want && tries++ < 400) {   // bounded: at most 400 tries a card
+      var s = 150 + r() * 40, x = -s * 0.25 + r() * (w - s * 0.5), y = -s * 0.25 + r() * (h - s * 0.5), ok = true;
+      for (var i = 0; i < birds.length; i++) { var dx = birds[i].x - x, dy = birds[i].y - y; if (dx * dx + dy * dy < Math.pow((birds[i].s + s) * 0.55, 2)) { ok = false; break; } }
+      if (ok) birds.push({ x: x, y: y, s: s, rot: -25 + r() * 50, flip: r() < 0.35 });
+    }
+    var g = birds.map(function (b) {
+      var c = b.s / 2;
+      return "<g transform='translate(" + b.x.toFixed(1) + " " + b.y.toFixed(1) + ") rotate(" + b.rot.toFixed(1) + " " + c + " " + c + ")" +
+        (b.flip ? " translate(" + b.s.toFixed(1) + " 0) scale(-1 1)" : "") + " scale(" + (b.s / 100).toFixed(3) + ")'><path d='" + P + "'/></g>";
+    }).join("");
+    return "url(\"data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='" + w + "' height='" + h + "' viewBox='0 0 " + w + " " + h + "'><g fill='#DCE2FA'>" + g + "</g></svg>").replace(/'/g, "%27") + "\")";
+  }
+  var watch = window.ResizeObserver ? new ResizeObserver(function () { paint(); }) : null;   // a card that grows (a fold opened, the fonts, the language) is redrawn
+  function paint() {
+    Array.prototype.forEach.call(document.querySelectorAll(".has-hd[data-hd-key]"), function (el) {
+      if (watch && !el.hasAttribute("data-hd-watched")) { el.setAttribute("data-hd-watched", ""); watch.observe(el); }
+      var w = Math.ceil(el.offsetWidth), h = Math.ceil(el.offsetHeight);
+      if (!w || !h || el.getAttribute("data-hd-size") === w + "x" + h) return;
+      el.setAttribute("data-hd-size", w + "x" + h);
+      el.style.backgroundImage = field(el.getAttribute("data-hd-key"), w, h);
+      el.style.backgroundSize = w + "px " + h + "px";
+    });
+  }
+  window.nokimeHdPaint = paint;
+  var timer; window.addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(paint, 150); });
+  paint();
+})();

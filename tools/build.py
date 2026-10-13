@@ -75,12 +75,12 @@ for old in odir.glob("*/"):
 for o in live:
     e = html.escape
     title = "%s — %s, %s · Nokime Jobs" % (o["role"], o["restaurant"], o["city"])
-    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdSince").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
+    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdLabel").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
     shown = {"role": True, "restaurant": True, "pay": bool(pay_of(o)), "text": bool(o.get("text"))}   # as js/jobs.js: a field's English counts only where its French is shown
     tr = {k: v for k, v in (o.get("en") or {}).items() if k in shown and v and shown[k]}   # Nokime's translation: the English view reads it, the French stays the original
     en = {"oDates": "%s to %s" % (en_date(o["start"]), en_date(o["end"]))}
     if o.get("hours"): en["oHours"] = "%s h a week" % o["hours"]
-    if o.get("hirondelle"): en["oHd"] = "Hirondelle since %d" % o["hirondelle"]
+    if o.get("hirondelle"): en["oHd"] = "%d" % o["hirondelle"]; en["oHdLabel"] = "Hirondelle since %d" % o["hirondelle"]
     en.update({"o" + k[0].upper() + k[1:]: tr[k] for k in ("role", "restaurant", "pay", "text") if tr.get(k)})
     en = {("oRest" if k == "oRestaurant" else k): v for k, v in en.items()}
     t_ = lambda k: ' data-t="%s"' % k if k in en else ""
@@ -117,7 +117,7 @@ for o in live:
 
   <section class="pass">
     <div class="wrap">
-      <div class="offer-card">
+      <div class="offer-card%s">
         <dl class="job-facts">%s</dl>
         %s%s
         <div class="cta-row">
@@ -131,7 +131,7 @@ for o in live:
 </main>
 
 ''' % ('<span data-t="kind_%s">%s</span>' % (o["kind"], e(KIND[o["kind"]])), e(o["city"]) + (" · " + e(DEPT[str(o["dept"])]) if str(o["dept"]) in DEPT else ""), t_("oRole"), e(o["role"]), t_("oRest"), e(o["restaurant"]),
-       ('<a class="hd" href="/hirondelle/" title="%s" data-t-attr="title:hdTitle">%s<span class="hd-since" data-t="oHd">%s</span></a>' % (e(fr_str("hdTitle")), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", facts,
+       ('<a class="hd" href="/hirondelle/" title="%s" aria-label="%s" data-t-attr="title:hdTitle,aria-label:oHdLabel">%s<span class="hd-since" data-t="oHd" aria-hidden="true">%s</span></a>' % (e(fr_str("hdTitle")), e(fr_str("hdLabel").replace("{y}", str(o["hirondelle"]))), SWALLOW, e(fr_str("hdSince").replace("{y}", str(o["hirondelle"]))))) if o.get("hirondelle") else "", (' has-hd" data-hd-key="%s' % e(o["restaurant"] + "|" + o["city"])) if o.get("hirondelle") else "", facts,
        ('<p class="offer-text"%s>%s</p>' % (t_("oText"), e(o["text"]))) if o.get("text") else "", orig, e(o["id"]), e(mail),
        ('<a class="btn" href="tel:%s">%s</a>' % (e(re.sub(r"\s", "", o["contact"]["phone"])), e(o["contact"]["phone"]))) if o["contact"].get("phone") else "")
     own = '<script>Object.assign(NOKIME_I18N.en,%s);</script>\n' % json.dumps(en, ensure_ascii=False).replace("<", "\\u003c")

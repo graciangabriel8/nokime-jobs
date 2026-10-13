@@ -85,9 +85,10 @@
      drawing as tools/build.py and kairos/distinction/marque). `hirondelle` is the year of the decision; a demo offer never
      shows it, and where it is not earned nothing is drawn, not even an empty place */
   var SWALLOW = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path fill="currentColor" d="M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z"/></svg>';
+  function hasHd(o) { return !o.demo && /^\d{4}$/.test(String(o.hirondelle == null ? "" : o.hirondelle)); }
   function hirondelle(o) {
-    if (o.demo || !/^\d{4}$/.test(String(o.hirondelle == null ? "" : o.hirondelle))) return "";
-    return '<a class="hd" href="/hirondelle/" title="' + esc(t("hdTitle")) + '">' + SWALLOW + '<span class="hd-since">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></a>";
+    if (!hasHd(o)) return "";
+    return '<a class="hd" href="/hirondelle/" title="' + esc(t("hdTitle")) + '" aria-label="' + esc(t("hdLabel", { y: o.hirondelle })) + '">' + SWALLOW + '<span class="hd-since" aria-hidden="true">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></a>";
   }
   /* the facts a candidate decides on: a small label above each value */
   function fact(cls, label, value, note) { return '<div class="fact ' + cls + (note ? " noted" : "") + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd>" + (note ? '<dd class="fact-note">' + esc(note) + "</dd>" : "") + "</div>"; }
@@ -133,7 +134,7 @@
     /* one card per offer, read top to bottom: the top line (kind and department, place, date), the role, the restaurant,
        the facts, the folded text, and the one action; from 960px the CSS sets them in three columns */
     list.innerHTML = rows.map(function (o) {
-      return '<article class="job' + (o.demo ? " demo" : "") + '" id="' + esc(o.id) + '"><div class="job-head">' +
+      return '<article class="job' + (o.demo ? " demo" : "") + (hasHd(o) ? ' has-hd" data-hd-key="' + esc(o.restaurant + "|" + o.city) : "") + '" id="' + esc(o.id) + '"><div class="job-head">' +
         '<div class="job-top"><span class="tag ' + esc(o.kind) + '">' + esc(t("kind_" + o.kind)) + (metierOf(o) ? " · " + esc(t("metier_" + o.metier)) : "") + (o.demo ? " · " + esc(t("jobsDemoTag")) : "") + "</span>" +
           (ordered.top.indexOf(o) >= 0 ? boostLabel : "") +
           '<p class="job-where">' + esc(o.city) + (regionOf(o) ? '<span class="muted"> · ' + esc(regionOf(o)) + "</span>" : "") + "</p>" +
@@ -145,6 +146,7 @@
         '<div class="job-act"><a class="btn primary"' + (o.demo ? "" : ' data-offer="' + esc(o.id) + '"') + ' href="' + applyMail(o) + '"><span>' + esc(t("jobsApply")) + '</span><span class="arrow" aria-hidden="true">→</span></a>' +
           ((o.contact && o.contact.phone) ? '<a class="link" href="tel:' + esc(o.contact.phone.replace(/\s/g, "")) + '">' + esc(o.contact.phone) + "</a>" : "") + "</div></article>";
     }).join("");
+    if (window.nokimeHdPaint) window.nokimeHdPaint();   // the light swallows behind the cards that have the hirondelle (js/site.js)
   }
 
   function renderFilters() {
