@@ -73,7 +73,7 @@ window.NOKIME_I18N = {
     w2s: "Apprenticeship", w2p: "An apprenticeship or professionalisation contract: a salary, a school-and-work rhythm, six months to three years.",
     w3s: "Season", w3p: "A seasonal contract, with dates, hours and, often, lodging. Winter offers go up from September, summer ones from March.",
     w4s: "What we check", w4p: "That the establishment exists, that the offer states its kind and its dates, and that it carries no discriminatory wording. Offers are written in French.",
-    distKicker: "In preparation: a distinction.", distLead: "A mark for the establishments interns come back to. Awarded on their answers, never a ranking.",
+    distKicker: "In preparation: the Nokime Jobs hirondelle.", distLead: "A mark for the establishments interns come back to. Awarded on their answers, never a ranking.",
     distMore: "At the end of an internship, a short questionnaire with no free text: hours actually worked, rest, allowance paid on time, what was learned, how one was treated, whether one would return. An establishment earns the distinction from several concordant answers. Nothing is published about the others.",
     titlePost: "Post an offer — Nokime Jobs",
     descPost: "Post an internship, apprenticeship or seasonal offer on Nokime Jobs: one offer at a time is free. A form, a review within forty-eight hours, online until its end date.",

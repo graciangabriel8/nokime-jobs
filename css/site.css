@@ -625,3 +625,4 @@ main:has(> .pass:last-child) + .site-foot{border-top:0}
   .wall{--fs:clamp(28px,11vh,48px)}
   .rank:nth-child(n+5){display:none}
 }
+.dist .dist-note{margin:12px 0 0;max-width:52ch}   /* the hirondelle mention: who it will go to, right under what it is */
