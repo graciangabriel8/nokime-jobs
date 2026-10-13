@@ -112,6 +112,29 @@
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) { nav.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); } });
   }
+
+  /* the door (home only) goes once it has been scrolled past: when its bottom has left the top of the screen and the
+     scrolling has stopped (moving the page mid-way would cut short a flick's momentum or the smooth scroll to #offres),
+     it is removed and the page is put back where it was, so nothing moves on screen and scrolling up ends at the header.
+     Until the next page load. */
+  var door = $("#door"), doorMain = $("main");
+  if (door && doorMain) {
+    var doorTimer = 0;
+    var dropDoor = function () {
+      if (door.hidden || door.getBoundingClientRect().bottom > 0) return;
+      var before = doorMain.getBoundingClientRect().top;
+      door.hidden = true;
+      var shift = doorMain.getBoundingClientRect().top - before;   // 0 where the browser keeps the view in place itself
+      if (shift) {   // instant even where "instant" is unknown and the page's smooth scrolling would apply (older Safari)
+        var root = document.documentElement, was = root.style.scrollBehavior;
+        root.style.scrollBehavior = "auto"; window.scrollTo(0, window.pageYOffset + shift); root.style.scrollBehavior = was;
+      }
+      window.removeEventListener("scroll", onDoorScroll);
+    };
+    var onDoorScroll = function () { clearTimeout(doorTimer); doorTimer = setTimeout(dropDoor, 150); };
+    window.addEventListener("scroll", onDoorScroll, { passive: true });
+    onDoorScroll();   // a reload or a link to #offres that lands past it
+  }
 })();
 
 /* l'hirondelle de Nokime Jobs: behind the card of an establishment that has it (.has-hd, js/jobs.js and tools/build.py), a field of

@@ -99,6 +99,7 @@ p,li{text-wrap:pretty}   /* no last word left alone on its line */
 /* A wall of rows fills the screen and drifts sideways; a white clearing holds the door: the mark, the line, one button.
    The wall is the page's only motion. Take its structure from the rail: one department a row, a ball between two names. */
 .door{position:relative;display:flex;flex-direction:column;min-height:100vh;min-height:100svh;overflow:hidden;background:var(--paper)}
+.door[hidden]{display:none}   /* once scrolled past (js/site.js) */
 .door-bar{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;justify-content:flex-end;
   padding:14px max(clamp(16px,3vw,32px),env(safe-area-inset-right)) 0 max(clamp(16px,3vw,32px),env(safe-area-inset-left))}
 .door-body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
