@@ -366,8 +366,9 @@ a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text
 
 /* ---------- the hirondelle's own page: the swallow beside the title, then plain lists ---------- */
 .hp-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 clamp(28px,4vw,56px);align-items:start}
-.hp-mark-wrap{padding-top:4px}
+.hp-mark-wrap{display:flex;flex-direction:column;align-items:center;width:max-content;gap:6px;padding-top:4px;color:var(--bleu)}   /* the swallow with its year below, like the mark under a house's name */
 .hp-mark{display:block;width:clamp(72px,9vw,120px);height:auto;color:var(--bleu)}
+.hp-year{font-family:var(--mono);font-weight:500;font-size:clamp(18px,2.3vw,30px);letter-spacing:.04em;line-height:1}
 .hp-hero .display + .lead{margin-top:24px}
 .hp-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 56px}
 .hp-two h3{margin:30px 0 0}
@@ -378,6 +379,7 @@ a.hd:hover .hd-since,a.hd:focus-visible .hd-since{text-decoration:underline;text
 @media (max-width:720px){
   .hp-hero{grid-template-columns:minmax(0,1fr);gap:18px 0}
   .hp-mark{width:64px}
+  .hp-year{font-size:18px}
   .hp-two{grid-template-columns:minmax(0,1fr)}
   .hp-two > div + div{margin-top:44px}
 }
