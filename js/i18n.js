@@ -75,7 +75,7 @@ window.NOKIME_I18N = {
     w4s: "What we check", w4p: "That the establishment exists, that the offer states its kind and its dates, and that it carries no discriminatory wording. Offers are written in French.",
     distKicker: "In preparation: the Nokime Jobs hirondelle.",
     hStory: "A swallow comes back to the same nest every spring. Here, it goes to the places people want to come back to.",
-    hC1: "Those who worked there give it, privately, at the end of the internship, apprenticeship or season.",
+    hC1: "At the end of their internship, apprenticeship or season, everyone gives us their feedback, privately.",
     hC2: "They say whether it was kept: days off, pay on the planned date, respect, really learning the trade, decent housing.",
     hC3: "And above all: whether they would go back.",
     hC4: "It can’t be bought, and it isn’t a ranking. Nobody has it yet.", distLead: "A mark for the establishments interns come back to. Awarded on their answers, never a ranking.",
@@ -273,7 +273,7 @@ window.NOKIME_I18N = {
     hir3t: "Nobody has it yet",
     hir3p: "It starts with interns’ answers. The first hirondelles will go to the places they point to.",
     jf4: "When a place holds the Nokime Jobs hirondelle, it shows under its name.",
-    hirMore: "At the end of an internship, an apprenticeship or a season, a short private questionnaire: the hours, the days off, pay on the agreed date, what was learned, how one was treated, and whether one would go back. A place gets the hirondelle when nearly all the answers say the rules were kept and that they would go back, with at least two answers. It can also be lost, if a breach is confirmed. The rule is the same for everyone, small or big place, free or paid. Nothing is published about the others.",
+    hirMore: "At the end of an internship, an apprenticeship or a season, a short private questionnaire: the hours, the days off, pay on the agreed date, what was learned, how one was treated, and whether one would go back. A place gets the hirondelle when nearly all the answers say the rules were kept and that they would go back, with at least three answers. It can also be lost, if a breach is confirmed. The rule is the same for everyone, small or big place, free or paid. Nothing is published about the others.",
     descHome: "Nokime Jobs: internships, apprenticeships and seasons in the kitchen, the dining room, the rooms division and the spa. Free for candidates; hotels and restaurants post one offer at a time for free and answer direct. Staff wellbeing matters.",
     /* l’hirondelle de Nokime Jobs */
     /* the hirondelle's own page, its menu tab and the links to it */
@@ -284,7 +284,7 @@ window.NOKIME_I18N = {
     hpN5: "Insults, humiliation or threats that keep coming back.", hpN6: "For under-18s: working later at night than the law allows, extra time with nothing given back, too little rest or no break.", hpNeverNote: "One answer alone is not enough: it takes a second person saying the same thing.",
     hpNormT: "What must be normal", hpM1: "Two days off a week. In a season, one, if the rest is given back later.", hpM2: "The schedule known a week ahead.",
     hpM3: "Extra time rare, or given back.", hpM4: "A staff meal, or an allowance.", hpM5: "Mostly doing your own trade, not just washing up or cleaning.",  hpM7: "A named tutor who trains you, being shown how not to get hurt, respect.", hpM8: "What was promised is kept: decent housing, a way home after a late finish.",
-    hpSizeT: "Small place or big place.", hpSizeP: "The same rule for all: at least two answers, from two different people, and nearly all of them good. In a big hotel, every department with enough answers counts on its own: a fine dining room does not hide a hard kitchen.", hpKeepT: "Keeping it, losing it.",
+    hpSizeT: "Small place or big place.", hpSizeP: "The same rule for all: at least three answers, from three different people, and nearly all of them good. In a big hotel, every department with enough answers counts on its own: a fine dining room does not hide a hard kitchen.", hpKeepT: "Keeping it, losing it.",
     hpKeepP: "Under the place’s name: “Hirondelle since” and the year it got it. It keeps it as long as the answers hold, with nothing to ask again and nothing to pay. It loses it after a decision: a confirmed breach, answers that stay too low or a confirmed report. It also goes when nobody has answered for a long time. A loss is never announced: the hirondelle is simply no longer there.", hpPubT: "What we publish, what we don’t.", hpPubYes: "Published: the hirondelle and its year, under the place’s name.",
     hpPubNo: "Never published: the answers, neither one by one nor added up for a place. Nor who answered, nor a score, nor a ranking. The place does not see the answers either.", hpFaqT: "Questions.", hpQ1: "How much does it cost?",
     hpA1: "Nothing. The hirondelle cannot be bought and depends on no plan: a place that posts for free has the same chance as any other.", hpQ2: "Who answers?", hpA2: "Those who did an internship, an apprenticeship or a season at the place, once it is over. Each one attaches proof they were there, checked by hand.",
