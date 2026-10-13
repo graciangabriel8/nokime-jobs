@@ -4,13 +4,13 @@ Stages, alternances et saisons en hôtellerie-restauration, en cuisine, en salle
 
 - French is the source language and lives in the HTML; `js/site.js` reads it out of every `data-t` element at load. English lives in `js/i18n.js`.
 - Offers live in `js/offers.js` (`NOKIME_JOBS`, French, one object per offer; `expires` drops them). Each offer names its department in `metier` (`cuisine`, `salle`, `hebergement` or `spa`: Cuisine, Salle, Hébergement, Spa; Kitchen, Dining room, Rooms division, Spa in English; `spa` is a hotel's spa, never a beauty salon or a day spa outside a hotel), shown in the card's pill beside the kind, as the first fact of its own page, and filtered by the métier select beside the région select; an offer without one shows no department and drops out only when a department is chosen. `NOKIME_JOBS_DEMO` shows only with `?demo=1`.
-- `python3 tools/build.py` writes one page per live offer under `o/<id>/` (with schema.org JobPosting data), the sitemap (each page dated by its last commit), and the structured data of `hirondelle/` from that page's own title, description and questions. Run it after every change to the offers or to `hirondelle/`.
+- `python3 tools/build.py` writes one page per live offer under `o/<id>/` (with schema.org JobPosting data), the sitemap (each page dated by its last commit that changed more than a `?v=`), and the structured data of `hirondelle/` from that page's own title, description and questions. Run it after every change to the offers or to `hirondelle/`.
 - `js/site.js` (language switch, mail links, menu) is shared with the group site; the look is this site's own, see Identity.
 
 Serve locally: `python3 -m http.server 8648` (or `preview_start` name `nokime-jobs`).
 Ship: `python3 tools/bump.py` (assets touched), `python3 tools/check-i18n.py`, `python3 tools/build.py`, commit, push.
 
-Hosting: Apache on OVH serves the site at https://jobs.nokime.fr/; a push to `main` deploys through OVH's Git webhook within seconds. `.htaccess` forces HTTPS and serves `404.html` for any missing path, so every URL in that page is root-absolute. The old github.io address only serves redirect stubs from the `gh-pages` branch. `bump.py` still matters: browsers keep the CSS and JS they cached, and a new `?v=` makes them fetch the new files.
+Hosting: Apache on OVH serves the site at https://jobs.nokime.fr/; a push to `main` deploys through OVH's Git webhook within seconds. `.htaccess` forces HTTPS and serves `404.html` for any missing path, so every URL in that page is root-absolute. After a deploy that changes `.htaccess`, `curl -sI https://jobs.nokime.fr/` must answer 200: a directive the host refuses (`Options -Indexes` is the untested one) answers 500 on every request until it is reverted. The old github.io address only serves redirect stubs from the `gh-pages` branch. `bump.py` still matters: browsers keep the CSS and JS they cached, and a new `?v=` makes them fetch the new files.
 
 ## Prices, search, « Mise en avant » and the charter
 

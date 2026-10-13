@@ -31,7 +31,8 @@
    an « Adresse » fact on the offer's page and given to job search. website: optional, the establishment's own site (https://…),
    given to job search only. salary: optional, the pay as numbers for job search, only when the pay text gives them:
    { "value": 1950, "unit": "MONTH" } or { "min": 1900, "max": 2100, "unit": "MONTH" }, unit HOUR, DAY, WEEK, MONTH or YEAR,
-   amounts gross in euros; tools/build.py stops when a number is not in the shown pay text, so never with payHidden.
+   amounts gross in euros; tools/build.py stops when a number is not one of the shown pay text's own amounts (180 is not
+   in « 1 800 € ») or its unit is not written there (« par mois », « de l’heure » or « €/h »…), so never with payHidden.
    en: optional, Nokime's English translation for the English view: { "role", "restaurant", "pay", "text" }, any of them.
    The French stays the original and is shown under it (the same article lets a medium that uses English carry offers in it).
    This file is public: with payHidden, keep neither pay nor en.pay in it.

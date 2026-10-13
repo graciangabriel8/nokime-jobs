@@ -31,6 +31,8 @@ except json.JSONDecodeError as err:   # an offer copied from the demo list keeps
     sys.exit("js/offers.js, ligne %d, colonne %d : NOKIME_JOBS doit être du JSON strict (clés entre guillemets doubles)." % (at, col))
 live = [o for o in offers if not o.get("demo") and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(o.get("expires") or o.get("end") or "")) and (o.get("expires") or o["end"]) >= today]   # as js/jobs.js: undated or past its end, no page
 
+SAL_WORD = {"HOUR": "heure", "DAY": "jour", "WEEK": "semaine", "MONTH": "mois", "YEAR": "an"}   # salary's unit must be in the pay text too
+SAL_UNIT = {"HOUR": r"\bheures?\b|/\s*h\b", "DAY": r"\bjours?\b|/\s*j\b", "WEEK": r"\bsemaines?\b", "MONTH": r"\bmois\b|\bmensuel", "YEAR": r"\bans?\b|\bannuel"}
 for o in live:
     if not re.fullmatch(r"[a-z0-9-]{1,64}", str(o.get("id", ""))): sys.exit("js/offers.js : l’identifiant « %s » ne doit contenir que des minuscules sans accent, des chiffres et des tirets (64 au plus), sinon ses clics sur « Postuler » ne sont pas comptés." % o.get("id", "?"))
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
@@ -42,12 +44,14 @@ for o in live:
         sys.exit("js/offers.js : l’offre « %s » : postalCode doit être un code postal à cinq chiffres de son département (dept)." % o.get("id", "?"))
     if "website" in o and not re.fullmatch(r"https?://\S+", str(o["website"])): sys.exit("js/offers.js : l’offre « %s » : website doit être une adresse en http(s)://." % o.get("id", "?"))
     if "salary" in o:   # the structured pay: only numbers the offer's visible pay text already gives
-        s, pay = o["salary"], ("" if o.get("payHidden") else re.sub(r"[\s  .]", "", str(o.get("pay") or "")))
+        s, pay = o["salary"], ("" if o.get("payHidden") else str(o.get("pay") or ""))
+        said = {float(re.sub(r"[\s\u00a0\u202f.]", "", n).replace(",", ".")) for n in re.findall(r"(?<!\d)(?<!\d,)(?:\d{1,3}(?:[\s  .]\d{3})+|\d+)(?:,\d+)?(?!\d|,\d)", pay)}   # each amount the pay text gives, whole: « 1 800 », « 11,88 »
         nums = [s.get(k) for k in ("value", "min", "max") if isinstance(s, dict) and k in s]
         if not (isinstance(s, dict) and s.get("unit") in ("HOUR", "DAY", "WEEK", "MONTH", "YEAR") and nums and all(type(n) in (int, float) and n > 0 for n in nums)
                 and (("value" in s) != ("min" in s or "max" in s)) and s.get("min", 0) <= s.get("max", float("inf"))):
             sys.exit("js/offers.js : l’offre « %s » : salary doit être {\"value\": n, \"unit\": …} ou {\"min\": n, \"max\": n, \"unit\": …}, unit parmi HOUR, DAY, WEEK, MONTH, YEAR." % o.get("id", "?"))
-        if not all(str(int(n)) in pay for n in nums): sys.exit("js/offers.js : l’offre « %s » : salary donne un montant que son texte pay (affiché) ne dit pas ; mettez le même chiffre dans les deux, ou retirez salary." % o.get("id", "?"))
+        if not all(float(n) in said for n in nums): sys.exit("js/offers.js : l’offre « %s » : salary donne un montant que son texte pay (affiché) ne dit pas ; mettez le même chiffre dans les deux, ou retirez salary." % o.get("id", "?"))
+        if not re.search(SAL_UNIT[s["unit"]], pay, re.I): sys.exit("js/offers.js : l’offre « %s » : salary est par %s, mais son texte pay (affiché) ne le dit pas ; écrivez-le (« par %s »), ou retirez salary." % (o.get("id", "?"), SAL_WORD[s["unit"]], SAL_WORD[s["unit"]]))
 seen_hd = {}   # l’hirondelle belongs to the establishment, not to one offer: every live offer of one establishment carries the same value
 for o in live:
     k = re.sub(r"\s+", " ", str(o.get("restaurant", ""))).strip().lower() + " | " + str(o.get("city", "")).strip().lower()
@@ -265,9 +269,21 @@ def git(*a):
     return r.stdout.strip() if r.returncode == 0 else None
 in_git = git("rev-parse", "--show-toplevel") == str(root)   # tools/check.py builds on a copy without .git: there, keep the dates already written
 before = dict(re.findall(r"<loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>", (root / "sitemap.xml").read_text(encoding="utf-8"))) if (root / "sitemap.xml").is_file() else {}
-def lastmod(u):   # the last commit of the page's file, or today while it has uncommitted changes
+VQ = re.compile(r"\?v=\d+")   # tools/bump.py rewrites every page's ?v=N: a change of that alone is no change of the page
+def lastmod(u):   # the last commit that changed the page's file beyond ?v=N, or today while it has such a change uncommitted
     if not in_git: return before.get(u, "")
     f = u[len(BASE):] + "index.html"
-    return today if git("status", "--porcelain", "--", f) else (git("log", "-1", "--format=%cs", "--", f) or today)
+    if git("status", "--porcelain", "--", f):
+        committed = git("show", "HEAD:" + f)
+        if committed is None or VQ.sub("", committed) != VQ.sub("", (root / f).read_text(encoding="utf-8").strip()): return today
+    day, gone, came = None, [], []
+    for line in ((git("log", "--format=%x01%cs", "-p", "--unified=0", "--no-ext-diff", "--", f) or "") + "\n\x01").split("\n"):
+        if line.startswith("\x01"):   # a commit's date line: settle the commit before it (log runs newest first)
+            if day and sorted(gone) != sorted(came): return day
+            day, gone, came = line[1:], [], []
+        elif line.startswith(("--- a/", "--- /dev/null", "+++ b/", "+++ /dev/null")): pass
+        elif line[:1] == "-": gone.append(VQ.sub("", line[1:]))
+        elif line[:1] == "+": came.append(VQ.sub("", line[1:]))
+    return today
 (root / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join("  <url><loc>%s</loc>%s</url>\n" % (u, "<lastmod>%s</lastmod>" % d if d else "") for u, d in ((u, lastmod(u)) for u in urls)) + "</urlset>\n", encoding="utf-8")
 print("offers: %d live, %d pages written, sitemap %d urls" % (len(live), len(live), len(urls)))
