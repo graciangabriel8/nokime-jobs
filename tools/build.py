@@ -38,6 +38,7 @@ for o in live:
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
     if not (type(o.get("hours")) is int and 1 <= o["hours"] <= 48): sys.exit("js/offers.js : l’offre « %s » doit dire hours: les heures par semaine, un nombre de 1 à 48." % o.get("id", "?"))
     if not str(o.get("pay") or "").strip(): sys.exit("js/offers.js : l’offre « %s » doit dire pay: la rémunération, avec les mots de l’établissement." % o.get("id", "?"))
+    if "payHidden" in o: sys.exit("js/offers.js : l’offre « %s » dit payHidden, qui n’existe plus : sa rémunération serait publiée. Retirez la clé, avec l’accord de l’établissement." % o.get("id", "?"))
     if "hirondelle" in o and o["hirondelle"] is not None and not (type(o["hirondelle"]) is int and 2026 <= o["hirondelle"] <= datetime.date.today().year):
         sys.exit("js/offers.js : l’offre « %s » : hirondelle doit être l’année de la décision (2026 au plus tôt, jamais une année à venir), ou absent." % o.get("id", "?"))
     # job search needs the date the offer first went online: without one, every rebuild would re-date it

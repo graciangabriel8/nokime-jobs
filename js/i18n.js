@@ -58,7 +58,7 @@ window.NOKIME_I18N = {
     applySubject: "Application via Nokime Jobs — {role} — {restaurant}",
     applyBody: "Hello,\n\nI am writing about your offer “{role}” from {start}, seen on Nokime Jobs.\n\nMy school, my class:\nMy availability:\nWhat I can do:\n\nThank you for your time,\n",
     payLegal: "Statutory internship allowance",
-    j1t: "You read the offer", j1p: "The position, the dates, the hours, the pay, the lodging: all written before you write.",
+    j1t: "You read the offer",
     j2t: "You write to the establishment", j2p: "By email or by phone, directly. Nokime keeps no CV and no application.",
     j3t: "The school does the agreement", j3p: "For an internship, the agreement goes through your school. For a season, it is a contract with the employer.",
     jobsWhatKicker: "What an offer says.", jobsWhatLead: "Three kinds of offers, each with its rules.",

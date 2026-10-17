@@ -10,7 +10,7 @@
    when a department is selected.
    dept: the département number as a string ("74"); the région is derived.
    housing: mandatory on every offer, true when lodging is provided (the offer reads "Logé"), false when not ("Non logé"); tools/build.py stops on a live offer without it; pay: free text ("gratification légale", "1 900 € brut",
-   "non rémunéré"), and hours, the hours a week as a whole number from 1 to 48: both mandatory on every offer, as the posting form asks
+   "non rémunéré" for a stage of two months or less only, as beyond them the allowance is owed), and hours, the hours a week as a whole number from 1 to 48: both mandatory on every offer, as the posting form asks
    them; tools/build.py stops on a live offer without either.
    minors: stage offers only; true when applications from minors (under 18) are accepted (the offer reads "Mineurs : Acceptés"), false when 18 and over only,
    absent and nothing is shown. It changes nothing else: not the featured offers, the order, the filters, the search or the counts.
