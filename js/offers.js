@@ -9,8 +9,9 @@
    shown beside the kind and filtered by the board's métier select; absent, no department is shown and the offer drops out only
    when a department is selected.
    dept: the département number as a string ("74"); the région is derived.
-   housing: mandatory on every offer, true when lodging is provided (the offer reads "Logé"), false when not ("Non logé"); tools/build.py stops on a live offer without it; pay: free text ("gratification légale", "1 900 € brut"), optional:
-   empty, missing or with payHidden: true, the offer reads "Non communiquée" and, where the law sets one, the floor for its kind.
+   housing: mandatory on every offer, true when lodging is provided (the offer reads "Logé"), false when not ("Non logé"); tools/build.py stops on a live offer without it; pay: free text ("gratification légale", "1 900 € brut",
+   "non rémunéré"), and hours, the hours a week as a whole number from 1 to 48: both mandatory on every offer, as the posting form asks
+   them; tools/build.py stops on a live offer without either.
    minors: stage offers only; true when applications from minors (under 18) are accepted (the offer reads "Mineurs : Acceptés"), false when 18 and over only,
    absent and nothing is shown. It changes nothing else: not the featured offers, the order, the filters, the search or the counts.
    hirondelle: optional, the year l’hirondelle de Nokime Jobs was awarded to the establishment (2027): the offer then shows the swallow and
@@ -21,7 +22,7 @@
    It belongs to the establishment: every live offer with the same restaurant and city carries the same value (tools/build.py stops otherwise).
    It changes nothing else: not the order, the featured offers, the filters, the search or the counts. tools/build.py stops on a value
    that is not a year from 2026 to the current one.
-   boost: true when the restaurant paid for "Mise en avant"; honoured only when the offer states its pay (not payHidden), its hours
+   boost: true when the restaurant paid for "Mise en avant"; honoured only when the offer states its pay, its hours
    and housing (true or false), and only with charter: true (the establishment signed the charte d’accueil, charte/) and without
    boostPaused: true (set while a serious report about the establishment is checked). Up to three such offers come first on the
    board, the most recently published, with a label.
@@ -32,10 +33,9 @@
    given to job search only. salary: optional, the pay as numbers for job search, only when the pay text gives them:
    { "value": 1950, "unit": "MONTH" } or { "min": 1900, "max": 2100, "unit": "MONTH" }, unit HOUR, DAY, WEEK, MONTH or YEAR,
    amounts gross in euros; tools/build.py stops when a number is not one of the shown pay text's own amounts (180 is not
-   in « 1 800 € ») or its unit is not written there (« par mois », « de l’heure » or « €/h »…), so never with payHidden.
+   in « 1 800 € ») or its unit is not written there (« par mois », « de l’heure » or « €/h »…).
    en: optional, Nokime's English translation for the English view: { "role", "restaurant", "pay", "text" }, any of them.
    The French stays the original and is shown under it (the same article lets a medium that uses English carry offers in it).
-   This file is public: with payHidden, keep neither pay nor en.pay in it.
 */
 window.NOKIME_JOBS = [];
 
@@ -56,10 +56,10 @@ window.NOKIME_JOBS_DEMO = [
           text: "Eight weeks on every station, from the larder to the hot line. An internship agreement with the school." },
     published: "2026-09-22", expires: "2027-01-05", demo: true },
   { id: "demo-3", metier: "cuisine", kind: "alternance", restaurant: "Exemple — maison étoilée", city: "Annecy", dept: "74", role: "Apprenti pâtisserie",
-    start: "2027-01-04", end: "2028-12-22", hours: 35, housing: false,
+    start: "2027-01-04", end: "2028-12-22", hours: 35, pay: "Salaire d’apprenti, selon l’âge et l’année", housing: false,
     contact: { name: "Le chef pâtissier", email: "exemple@exemple.invalid", phone: "" },
     text: "Deux ans en pâtisserie de restaurant, un mentor, un rythme école-entreprise 1-3.",
-    en: { role: "Pastry apprentice", restaurant: "Example — starred restaurant",
+    en: { role: "Pastry apprentice", restaurant: "Example — starred restaurant", pay: "Apprentice wage, by age and year",
           text: "Two years in a restaurant pastry kitchen, a mentor, a 1-3 school/work rhythm." },
     published: "2026-09-22", expires: "2026-10-30", demo: true },
   { id: "demo-4", metier: "cuisine", kind: "saison", restaurant: "Exemple — hôtel-restaurant de station", city: "Megève", dept: "74", role: "Chef de partie",
@@ -77,10 +77,10 @@ window.NOKIME_JOBS_DEMO = [
           text: "Ten weeks on plated desserts and the Sunday afternoon tea. A room in the flat above the restaurant." },
     published: "2026-09-19", expires: "2027-01-10", demo: true },
   { id: "demo-6", metier: "cuisine", kind: "alternance", restaurant: "Exemple — auberge de village", city: "Montbrison", dept: "42", role: "Apprenti cuisinier",
-    start: "2027-01-04", end: "2028-08-31", hours: 35, payHidden: true, housing: false, boost: true, charter: true,
+    start: "2027-01-04", end: "2028-08-31", hours: 35, pay: "Salaire d’apprenti, selon l’âge et l’année", housing: false, boost: true, charter: true,
     contact: { name: "Le chef", email: "exemple@exemple.invalid", phone: "" },
     text: "CAP cuisine en deux ans, une brigade de trois, les légumes du Forez.",
-    en: { role: "Apprentice cook", restaurant: "Example — village inn",
+    en: { role: "Apprentice cook", restaurant: "Example — village inn", pay: "Apprentice wage, by age and year",
           text: "A two-year cookery CAP, a brigade of three, vegetables from the Forez." },
     published: "2026-09-21", expires: "2026-12-15", demo: true },
   /* boosted and transparent, but the charter is not signed: its normal place, no label */
@@ -108,10 +108,10 @@ window.NOKIME_JOBS_DEMO = [
           text: "Sixty covers, lunch and dinner service, a terrace on the lake. Fluent English appreciated. Two days off a week, a room of your own in the staff residence." },
     published: "2026-09-23", expires: "2027-03-31", demo: true },
   { id: "demo-10", metier: "hebergement", kind: "alternance", restaurant: "Exemple — hôtel de centre-ville", city: "Lyon", dept: "69", role: "Réceptionniste",
-    start: "2027-01-04", end: "2028-06-30", hours: 35, housing: false,
+    start: "2027-01-04", end: "2028-06-30", hours: 35, pay: "Salaire d’apprenti, selon l’âge et l’année", housing: false,
     contact: { name: "La cheffe de réception", email: "exemple@exemple.invalid", phone: "" },
     text: "BTS MHR option hébergement en alternance : l’accueil, les arrivées et les départs, les réservations, puis l’audit de nuit en deuxième année. Quatre-vingts chambres, une tutrice à la réception.",
-    en: { role: "Receptionist", restaurant: "Example — city-centre hotel",
+    en: { role: "Receptionist", restaurant: "Example — city-centre hotel", pay: "Apprentice wage, by age and year",
           text: "A BTS MHR (rooms division option) as an apprenticeship: welcoming guests, arrivals and departures, reservations, then the night audit in the second year. Eighty rooms, a tutor at the front desk." },
     published: "2026-09-23", expires: "2026-12-15", demo: true },
   { id: "demo-11", metier: "spa", kind: "saison", restaurant: "Exemple — spa d’un hôtel de montagne", city: "Courchevel", dept: "73", role: "Praticien·ne spa",

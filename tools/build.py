@@ -36,6 +36,8 @@ SAL_UNIT = {"HOUR": r"\bheures?\b|/\s*h\b", "DAY": r"\bjours?\b|/\s*j\b", "WEEK"
 for o in live:
     if not re.fullmatch(r"[a-z0-9-]{1,64}", str(o.get("id", ""))): sys.exit("js/offers.js : l’identifiant « %s » ne doit contenir que des minuscules sans accent, des chiffres et des tirets (64 au plus), sinon ses clics sur « Postuler » ne sont pas comptés." % o.get("id", "?"))
     if not isinstance(o.get("housing"), bool): sys.exit("js/offers.js : l’offre « %s » doit dire housing: true ou false." % o.get("id", "?"))
+    if not (type(o.get("hours")) is int and 1 <= o["hours"] <= 48): sys.exit("js/offers.js : l’offre « %s » doit dire hours: les heures par semaine, un nombre de 1 à 48." % o.get("id", "?"))
+    if not str(o.get("pay") or "").strip(): sys.exit("js/offers.js : l’offre « %s » doit dire pay: la rémunération, avec les mots de l’établissement." % o.get("id", "?"))
     if "hirondelle" in o and o["hirondelle"] is not None and not (type(o["hirondelle"]) is int and 2026 <= o["hirondelle"] <= datetime.date.today().year):
         sys.exit("js/offers.js : l’offre « %s » : hirondelle doit être l’année de la décision (2026 au plus tôt, jamais une année à venir), ou absent." % o.get("id", "?"))
     # job search needs the date the offer first went online: without one, every rebuild would re-date it
@@ -44,7 +46,7 @@ for o in live:
         sys.exit("js/offers.js : l’offre « %s » : postalCode doit être un code postal à cinq chiffres de son département (dept)." % o.get("id", "?"))
     if "website" in o and not re.fullmatch(r"https?://\S+", str(o["website"])): sys.exit("js/offers.js : l’offre « %s » : website doit être une adresse en http(s)://." % o.get("id", "?"))
     if "salary" in o:   # the structured pay: only numbers the offer's visible pay text already gives
-        s, pay = o["salary"], ("" if o.get("payHidden") else str(o.get("pay") or ""))
+        s, pay = o["salary"], str(o["pay"])
         said = {float(re.sub(r"[\s\u00a0\u202f.]", "", n).replace(",", ".")) for n in re.findall(r"(?<!\d)(?<!\d,)(?:\d{1,3}(?:[\s  .]\d{3})+|\d+)(?:,\d+)?(?!\d|,\d)", pay)}   # each amount the pay text gives, whole: « 1 800 », « 11,88 »
         nums = [s.get(k) for k in ("value", "min", "max") if isinstance(s, dict) and k in s]
         if not (isinstance(s, dict) and s.get("unit") in ("HOUR", "DAY", "WEEK", "MONTH", "YEAR") and nums and all(type(n) in (int, float) and n > 0 for n in nums)
@@ -74,20 +76,8 @@ def en_date(iso):
     d = datetime.date.fromisoformat(iso); return "%d %s %d" % (d.day, ["January","February","March","April","May","June","July","August","September","October","November","December"][d.month - 1], d.year)
 SWALLOW = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path fill="currentColor" d="M99 22 L88 28 C87 21 80 18 75 23 C73 26 70 30 66 32 C56 20 34 10 8 12 C26 22 38 34 48 50 C38 54 20 62 4 74 C14 72 24 70 32 70 C30 80 28 90 26 98 C36 88 46 78 52 66 C58 80 64 90 74 98 C70 84 68 70 68 58 C80 52 92 40 99 22 Z"/></svg>'   # l’hirondelle de Nokime Jobs, as js/jobs.js draws it
 I18N_FR = (root / "js/i18n.js").read_text(encoding="utf-8").split("\n  en: {")[0]
-def fr_str(k): return re.search(r'\b%s: "([^"]*)"' % k, I18N_FR).group(1)   # the pay wording has one home, the fr block of js/i18n.js
-def past_two_months(a, b):   # as js/jobs.js: two calendar months, the day after the same date two months on
-    d = datetime.date.fromisoformat(a); y, mo = divmod(d.month - 1 + 2, 12); y += d.year; mo += 1
-    last = (datetime.date(y + mo // 12, mo % 12 + 1, 1) - datetime.timedelta(days=1)).day
-    return datetime.date.fromisoformat(b) >= datetime.date(y, mo, min(d.day, last))
-def allowance_due(o):   # as js/jobs.js: past two months, or 309 hours reachable (hours a week, else the form's maximum 48, per week begun)
-    days = (datetime.date.fromisoformat(o["end"]) - datetime.date.fromisoformat(o["start"])).days + 1
-    return days > 0 and (past_two_months(o["start"], o["end"]) or (int(o.get("hours") or 0) or 48) * -(-days // 7) > 308)
-def pay_of(o): return "" if o.get("payHidden") else str(o.get("pay") or "").strip()
-def pay_fact(o):   # the pay is always a fact: the restaurant's words, or "Non communiquée" and the legal floor where there is one
-    if pay_of(o): return '<div class="fact"><dt data-t="colPay">Rémunération</dt><dd%s>%s</dd></div>' % (' data-t="oPay"' if (o.get("en") or {}).get("pay") else "", html.escape(pay_of(o)))
-    nk = ("payNote_stage" if allowance_due(o) else "") if o["kind"] == "stage" else "payNote_" + o["kind"]
-    note = fr_str(nk) if nk else ""
-    return '<div class="fact%s"><dt data-t="colPay">Rémunération</dt><dd data-t="payUndisclosed">%s</dd>%s</div>' % (" noted" if note else "", html.escape(fr_str("payUndisclosed")), '<dd class="fact-note" data-t="%s">%s</dd>' % (nk, html.escape(note)) if note else "")
+def fr_str(k): return re.search(r'\b%s: "([^"]*)"' % k, I18N_FR).group(1)   # a wording with one home, the fr block of js/i18n.js
+def pay_of(o): return str(o["pay"]).strip()
 def rel(s): return s.replace('href="css/', 'href="../../css/').replace('href="fonts/', 'href="../../fonts/').replace('src="js/', 'src="../../js/').replace('href="apple-touch-icon.png"', 'href="../../apple-touch-icon.png"').replace('href="./"', 'href="../../"').replace('href="publier/"', 'href="../../publier/"').replace('href="ecoles/"', 'href="../../ecoles/"').replace('href="contact/"', 'href="../../contact/"').replace('href="mentions-legales/"', 'href="../../mentions-legales/"').replace('href="./#offres"', 'href="../../#offres"').replace('href="questionnaire/"', 'href="../../questionnaire/"').replace('href="charte/"', 'href="../../charte/"').replace('href="hirondelle/"', 'href="../../hirondelle/"')
 
 odir = root / "o"
@@ -96,11 +86,10 @@ for old in odir.glob("*/"):
 for o in live:
     e = html.escape
     title = "%s — %s, %s · Nokime Jobs" % (o["role"] if o["role"].lower().startswith(KIND[o["kind"]].lower()) else KIND[o["kind"]] + "\u202f: " + o["role"], o["restaurant"], o["city"])   # the kind first (« stage », « saison » are what people search), once
-    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o) or "Rémunération non communiquée", ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdLabel").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
+    desc = "%s : %s à %s, du %s au %s. %s%s" % (KIND[o["kind"]], o["role"], o["city"], fr_date(o["start"]), fr_date(o["end"]), pay_of(o), ", logé" if o.get("housing") and "logé" not in pay_of(o) else "") + ((". " + fr_str("hdLabel").replace("{y}", str(o["hirondelle"]))) if o.get("hirondelle") else "")
     shown = {"role": True, "restaurant": True, "pay": bool(pay_of(o)), "text": bool(o.get("text"))}   # as js/jobs.js: a field's English counts only where its French is shown
     tr = {k: v for k, v in (o.get("en") or {}).items() if k in shown and v and shown[k]}   # Nokime's translation: the English view reads it, the French stays the original
-    en = {"oDates": "%s to %s" % (en_date(o["start"]), en_date(o["end"]))}
-    if o.get("hours"): en["oHours"] = "%s h a week" % o["hours"]
+    en = {"oDates": "%s to %s" % (en_date(o["start"]), en_date(o["end"])), "oHours": "%s h a week" % o["hours"]}
     if o.get("hirondelle"): en["oHd"] = "%d" % o["hirondelle"]; en["oHdLabel"] = "Hirondelle since %d" % o["hirondelle"]
     en.update({"o" + k[0].upper() + k[1:]: tr[k] for k in ("role", "restaurant", "pay", "text") if tr.get(k)})
     en = {("oRest" if k == "oRestaurant" else k): v for k, v in en.items()}
@@ -108,8 +97,8 @@ for o in live:
     place = ", ".join(x for x in (str(o.get("street") or "").strip(), (str(o.get("postalCode") or "") + " " + o["city"]).strip() if o.get("postalCode") else "") if x)
     facts = (('<div class="fact"><dt data-t="colMetier">Métier</dt><dd data-t="metier_%s">%s</dd></div>' % (o["metier"], METIER[o["metier"]]) if o.get("metier") in METIER else "") +   # absent or unknown: not shown
              '<div class="fact"><dt data-t="colDates">Dates</dt><dd data-t="oDates">%s</dd></div>' % html.escape("du %s au %s" % (fr_date(o["start"]), fr_date(o["end"]))) +
-             ('<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) if o.get("hours") else "") +
-             pay_fact(o) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
+             '<div class="fact"><dt data-t="colHours">Heures</dt><dd data-t="oHours">%s</dd></div>' % html.escape("%s h par semaine" % o["hours"]) +
+             '<div class="fact"><dt data-t="colPay">Rémunération</dt><dd%s>%s</dd></div>' % (' data-t="oPay"' if (o.get("en") or {}).get("pay") else "", html.escape(pay_of(o))) + ('<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsHoused">Logé</dd></div>' if o.get("housing") is True else
                             '<div class="fact"><dt data-t="colHousing">Logement</dt><dd data-t="jobsNotHoused">Non logé</dd></div>' if o.get("housing") is False else "") +
              ('<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsOk">Acceptés</dd></div>' if o["kind"] == "stage" and o.get("minors") is True else
               '<div class="fact"><dt data-t="colMinors">Mineurs</dt><dd data-t="jobsMinorsNo">18 ans et plus</dd></div>' if o["kind"] == "stage" and o.get("minors") is False else "") +   # as js/jobs.js: absent, not shown
@@ -119,8 +108,8 @@ for o in live:
     # the job description job search reads: the offer's own text, then every fact of the page, word for word
     items = ["<li>%s\u202f: %s</li>" % (dt, ". ".join(dd)) for dt, dd in ((m.group(1), re.findall(r"<dd[^>]*>(.*?)</dd>", m.group(2))) for m in re.finditer(r'<div class="fact[^"]*"><dt[^>]*>(.*?)</dt>(.*?)</div>', facts))]
     jdesc = ("<p>%s</p>" % e(o["text"]) if o.get("text") else "") + "<ul>%s</ul>" % "".join(items)
-    hours = int(o.get("hours") or 0)
-    emp = [EMP[o["kind"]]] if not hours else ["FULL_TIME" if hours >= 35 else "PART_TIME"] if o["kind"] == "alternance" else [EMP[o["kind"]], "FULL_TIME" if hours >= 35 else "PART_TIME"]
+    hours = o["hours"]
+    emp = ["FULL_TIME" if hours >= 35 else "PART_TIME"] if o["kind"] == "alternance" else [EMP[o["kind"]], "FULL_TIME" if hours >= 35 else "PART_TIME"]
     addr = {"@type": "PostalAddress", "streetAddress": str(o.get("street") or "").strip(), "addressLocality": o["city"], "postalCode": str(o.get("postalCode") or ""), "addressRegion": DEPT.get(str(o["dept"]), ""), "addressCountry": "FR"}
     org = {"@type": "Organization", "name": o["restaurant"]}   # never an award here: the hirondelle's markup waits for the lawyer's answer (see js/offers.js)
     if o.get("website"): org["sameAs"] = o["website"]

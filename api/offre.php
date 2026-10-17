@@ -78,10 +78,9 @@ if ($start < (clone $now)->setTime(0, 0)->modify('-31 days') || $start > (clone 
 if ($end < $start || $end > (clone $start)->modify('+3 years')) { fail(400, 'invalid', 'end'); }
 $o['start'] = $start->format('Y-m-d');
 $o['end'] = $end->format('Y-m-d');
-$o['hours'] = field('hours', 2, false);
-if ($o['hours'] !== '' && (!preg_match('/^\d{1,2}$/D', $o['hours']) || (int) $o['hours'] < 1 || (int) $o['hours'] > 48)) { fail(400, 'invalid', 'hours'); }   // the form's 1 to 48, the legal weekly maximum
-$o['pay'] = field('pay', 120, false);
-$o['payHidden'] = ($_POST['payHidden'] ?? '') === 'on';
+$o['hours'] = field('hours', 2, true);
+if (!preg_match('/^\d{1,2}$/D', $o['hours']) || (int) $o['hours'] < 1 || (int) $o['hours'] > 48) { fail(400, 'invalid', 'hours'); }   // the form's 1 to 48, the legal weekly maximum
+$o['pay'] = field('pay', 120, true);
 $o['housing'] = choice('housing', array('oui', 'non'), true);
 $o['contactName'] = field('contactName', 80, true);
 $o['email'] = field('email', 120, true);
@@ -149,7 +148,7 @@ $metiers = array('cuisine' => 'Cuisine', 'salle' => 'Salle', 'hebergement' => 'H
 $lines = array(
     'Type' => $kinds[$o['kind']], 'Métier' => $metiers[$o['metier']], 'Établissement' => $o['restaurant'], 'Ville' => $o['city'],
     'Département' => $o['dept'], 'Poste' => $o['role'], 'Début' => $o['start'], 'Fin' => $o['end'], 'Heures par semaine' => $o['hours'],
-    'Rémunération' => $o['payHidden'] || $o['pay'] === '' ? 'non communiquée' . ($o['pay'] !== '' ? ' (indiquée : ' . $o['pay'] . ')' : '') : $o['pay'],
+    'Rémunération' => $o['pay'],
     'Logement' => $o['housing'] === 'oui' ? 'logé' : 'non logé',
 );
 if ($o['kind'] === 'stage') { $lines['Mineurs'] = $o['minors'] === 'oui' ? 'acceptés' : 'non acceptés'; }

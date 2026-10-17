@@ -14,15 +14,15 @@
   function t(k, vars) { var L = lang(), s = (I18N[L] && I18N[L][k]) != null ? I18N[L][k] : (I18N.fr[k] != null ? I18N.fr[k] : k); return vars ? String(s).replace(/\{(\w+)\}/g, function (_, v) { return vars[v] != null ? vars[v] : ""; }) : s; }
 
   /* an offer's own words: Nokime's English translation in the English view when there is one, else the French original */
-  /* a field's English counts only where its French is shown: a hidden pay stays hidden, a text needs its French */
+  /* a field's English counts only where its French is shown: a pay or a text needs its French */
   var TR_KEYS = ["role", "restaurant", "pay", "text"];
-  function shown(o, k) { return k === "pay" ? !o.payHidden && !!String(o.pay || "").trim() : k === "text" ? !!o.text : true; }
+  function shown(o, k) { return k === "pay" ? !!String(o.pay || "").trim() : k === "text" ? !!o.text : true; }
   function tr(o) { return lang() === "en" && o.en && TR_KEYS.some(function (k) { return o.en[k] && shown(o, k); }) ? o.en : null; }
   function tx(o, k) { var e = tr(o); return e && e[k] && shown(o, k) ? e[k] : o[k]; }
   /* under a translation, the offer as the restaurant wrote it: the French is the original */
   function original(o) {
     if (!tr(o)) return "";
-    var pay = o.payHidden ? "" : String(o.pay || "").trim();
+    var pay = String(o.pay || "").trim();
     return '<div class="job-orig" lang="fr"><p class="job-orig-label" lang="en">' + esc(t("jobsOriginal")) + "</p><p><b>" + esc(o.role) + "</b> · " + esc(o.restaurant) +
       (pay ? " · " + esc(pay) : "") + "</p>" + (tr(o).text && o.text ? "<p>" + esc(o.text) + "</p>" : "") + "</div>";   /* an untranslated text is already shown, in French */
   }
@@ -57,7 +57,7 @@
   var MAX_BOOST = 3;
   function boostable(o) {
     return o.boost === true && o.charter === true && o.boostPaused !== true &&
-      !o.payHidden && !!String(o.pay || "").trim() && Number(o.hours) > 0 && typeof o.housing === "boolean";
+      !!String(o.pay || "").trim() && Number(o.hours) > 0 && typeof o.housing === "boolean";
   }
   function boostOrder(rows) {
     var top = rows.filter(boostable).slice(0, MAX_BOOST);
@@ -91,22 +91,13 @@
     return '<a class="hd" href="/hirondelle/" title="' + esc(t("hdTitle")) + '" aria-label="' + esc(t("hdLabel", { y: o.hirondelle })) + '">' + SWALLOW + '<span class="hd-since" aria-hidden="true">' + esc(t("hdSince", { y: o.hirondelle })) + "</span></a>";
   }
   /* the facts a candidate decides on: a small label above each value */
-  function fact(cls, label, value, note) { return '<div class="fact ' + cls + (note ? " noted" : "") + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd>" + (note ? '<dd class="fact-note">' + esc(note) + "</dd>" : "") + "</div>"; }
-  /* the pay is always a fact: the restaurant's words, or "not disclosed" and, where the law sets a floor, one line saying so
-     (a stage owes the statutory allowance beyond two consecutive months or from its 309th hour, so its line shows only when
-     the dates run past two months or the hours can reach 309: hours a week, or the form's maximum of 48 when not given, per week begun) */
-  function pastTwoMonths(a, b) { var d = new Date(a + "T12:00:00"), day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + 2); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); return new Date(b + "T12:00:00") >= d; }
-  function allowanceDue(o) { var days = Math.round((new Date(o.end + "T12:00:00") - new Date(o.start + "T12:00:00")) / 864e5) + 1; return days > 0 && (pastTwoMonths(o.start, o.end) || (Number(o.hours) || 48) * Math.ceil(days / 7) > 308); }
-  function payFact(o) {
-    var pay = o.payHidden ? "" : String(o.pay || "").trim();
-    if (pay) return fact("pay", t("colPay"), esc(String(tx(o, "pay") || pay).trim()));   /* disclosed or not is the French original's call */
-    var note = o.kind === "stage" ? (o.start && o.end && allowanceDue(o) ? t("payNote_stage") : "") : (o.kind === "alternance" || o.kind === "saison") ? t("payNote_" + o.kind) : "";
-    return fact("pay", t("colPay"), esc(t("payUndisclosed")), note);
-  }
+  function fact(cls, label, value) { return '<div class="fact ' + cls + '"><dt>' + esc(label) + "</dt><dd>" + value + "</dd></div>"; }
+  /* hours and pay are asked of every offer (the posting form, tools/build.py), so a live offer always shows both */
   function facts(o) {
+    var pay = String(o.pay || "").trim();
     return '<dl class="job-facts">' + fact("dates", t("colDates"), esc(t("jobsDates", { a: fmtDate(o.start), b: fmtDate(o.end) }))) +
       (o.hours ? fact("hours", t("colHours"), esc(t("jobsHours", { h: o.hours }))) : "") +
-      payFact(o) +
+      (pay ? fact("pay", t("colPay"), esc(String(tx(o, "pay") || pay).trim())) : "") +
       (o.housing === true ? fact("housing", t("colHousing"), esc(t("jobsHoused"))) : o.housing === false ? fact("housing", t("colHousing"), esc(t("jobsNotHoused"))) : "") +
       (o.kind === "stage" && o.minors === true ? fact("minors", t("colMinors"), esc(t("jobsMinorsOk"))) : o.kind === "stage" && o.minors === false ? fact("minors", t("colMinors"), esc(t("jobsMinorsNo"))) : "") + "</dl>";   /* absent, or not a stage: not shown */
   }
@@ -181,7 +172,7 @@
       var metier = (form.querySelector("[name=metier]:checked") || {}).value || "";
       var lines = [
         ["Type", { stage: "Stage", alternance: "Alternance", saison: "Saison" }[kind] || kind], ["Métier", I18N.fr["metier_" + metier] || metier], ["Établissement", f("restaurant")], ["Ville", f("city")], ["Département", f("dept")],
-        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", (form.elements.payHidden && form.elements.payHidden.checked) || !f("pay") ? "non communiquée" : f("pay")], ["Logement", (form.querySelector("[name=housing]:checked") || {}).value === "oui" ? "logé" : "non logé"],
+        ["Poste", f("role")], ["Début", f("start")], ["Fin", f("end")], ["Heures par semaine", f("hours")], ["Rémunération", f("pay")], ["Logement", (form.querySelector("[name=housing]:checked") || {}).value === "oui" ? "logé" : "non logé"],
         ["Contact", f("contactName")], ["Email", f("email")], ["Téléphone", f("phone")], ["", ""], ["Description", f("text")]
       ];
       if (kind === "stage") { var mn = (form.querySelector("[name=minors]:checked") || {}).value; lines.splice(11, 0, ["Mineurs", mn === "oui" ? "acceptés" : "non acceptés"]); }   /* after "Logement" */
@@ -206,7 +197,7 @@
         .then(function (r) { return r.json().then(function (j) { return r.status === 201 && !!(j && j.ok); }, function () { return false; }); })
         .then(function (sent) { clearTimeout(timer); done(sent); }, function () { clearTimeout(timer); done(false); });
     });
-    var kindInputs = $$("[name=kind]", form), pay = form.elements.pay, payHidden = form.elements.payHidden, payKept = "";
+    var kindInputs = $$("[name=kind]", form), pay = form.elements.pay;
     /* "minors": asked for a stage only; shown and required then, hidden, disabled and cleared otherwise */
     var minorsSec = $("#minorsSec"), minorsInputs = $$("[name=minors]", form);
     var syncMinors = function () {
@@ -216,12 +207,7 @@
     };
     kindInputs.forEach(function (r) { r.addEventListener("change", syncMinors); });
     syncMinors();   /* a kind the browser restored */
-    kindInputs.forEach(function (r) { r.addEventListener("change", function () { if (pay && !pay.disabled && !pay.value.trim() && r.value === "stage") pay.value = I18N.fr.payLegal; /* offers are French, whatever the reader's language */ }); });
-    /* "do not show the pay": the field empties and locks; unticked, it comes back with what was typed */
-    if (pay && payHidden) payHidden.addEventListener("change", function () {
-      if (payHidden.checked) { payKept = pay.value; pay.value = ""; pay.disabled = true; } else { pay.disabled = false; pay.value = payKept; }
-    });
-    if (pay && payHidden && payHidden.checked) { payKept = pay.value; pay.value = ""; pay.disabled = true; }   /* a box the browser restored ticked */
+    kindInputs.forEach(function (r) { r.addEventListener("change", function () { if (pay && !pay.value.trim() && r.value === "stage") pay.value = I18N.fr.payLegal; /* offers are French, whatever the reader's language */ }); });
     var txt = form.elements.text, cnt = $("#textCount");
     if (txt && cnt) { var upd = function () { cnt.textContent = txt.value.length + " / 300"; }; txt.addEventListener("input", upd); upd(); }
   }
