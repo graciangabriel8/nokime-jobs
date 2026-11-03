@@ -62,7 +62,8 @@ for o in live:
         sys.exit("js/offers.js : les offres « %s » et « %s » viennent du même établissement mais ne disent pas la même hirondelle : mettez la même année sur toutes ses offres, ou retirez-la de toutes." % (seen_hd[k][0], o.get("id", "?")))
     seen_hd.setdefault(k, (o.get("id", "?"), o.get("hirondelle")))
 
-home = (root / "index.html").read_text(encoding="utf-8")
+home = (root / "_home-ouvert.html").read_text(encoding="utf-8")   # the open home, kept aside while Nokime Jobs is closed (3 Nov 2026): index.html is the « bientôt » page
+home = re.sub(r"\?v=\d+", re.search(r"\?v=\d+", (root / "index.html").read_text(encoding="utf-8")).group(0), home)   # it keeps the ?v=N it was closed with; an offer page takes the current one (tools/bump.py)
 body_end = re.search(r"<body[^>]*>", home).end()   # the home page's door sits between <body> and the masthead: an offer page gets neither the door nor its wall
 head = home[:body_end] + "\n\n"; header = home[home.index('<header class="site-head">'):home.index("</header>") + len("</header>")] + "\n\n"
 footer = home[home.index("<footer"):home.index('<script src="js/i18n.js')]; scripts = home[home.index('<script src="js/i18n.js'):home.index('<script src="js/offers.js')]
@@ -253,7 +254,7 @@ for slug in articles:
 print("articles: structured data on %d" % len(articles))
 
 # ---------------------------------------------------------------- the sitemap
-urls = [BASE, BASE + "publier/", BASE + "ecoles/", BASE + "questionnaire/", BASE + "contact/", BASE + "charte/", BASE + "hirondelle/"] + [BASE + "conseils/%s/" % a for a in articles] + [BASE + "o/%s/" % o["id"] for o in live]
+urls = [BASE + "mentions-legales/"]   # while Nokime Jobs is closed (3 Nov 2026) every other page goes to the home (.htaccess), which is noindex
 def git(*a):
     r = subprocess.run(["git", "-C", str(root), *a], capture_output=True, text=True)
     return r.stdout.strip() if r.returncode == 0 else None

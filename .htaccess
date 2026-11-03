@@ -3,6 +3,13 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Nokime Jobs is closed for now (3 Nov 2026): the home (index.html) says it comes back soon, and every other page goes
+# there for a while (302, not 301: the pages come back). The legal notice stays. The forms' scripts answer 503, so nothing
+# can be posted, counted or signed up to; the private page (api/compte.php) and the daily tasks stay. The open home waits
+# in _home-ouvert.html. Reopening = reverting the commit that closed the site.
+RewriteRule ^(_home-ouvert\.html|publier|ecoles|questionnaire|contact|charte|hirondelle|conseils|o|compte|conditions-comptes)(/.*)?$ / [R=302,L,QSD]
+RewriteRule ^api/(offre\.php|postuler\.php|auth/) - [R=503,L]
+
 # A Git deploy may leave its folder in the web root: never serve it.
 RedirectMatch 404 ^/\.git(/|$)
 # api/_*.php are helpers and the daily task: never run from the web.

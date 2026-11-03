@@ -106,6 +106,9 @@ window.NOKIME_I18N = {
     titleHome: "Nokime Jobs — internships, apprenticeships and seasons in hotels and restaurants",
     navOffers: "The offers", navPost: "Post", navSchools: "Schools", navCta: "Post an offer",
     footTag: "Internships, apprenticeships and seasons in hotels and restaurants. A Nokime tool.", footNokime: "Nokime, the group",
+    /* the home while Nokime Jobs is closed (since 3 Nov 2026) */
+    titleSoon: "Nokime Jobs is coming back soon", descSoon: "Internships, apprenticeships and seasons in hotels and restaurants, with a welcome charter. Meanwhile, see you on Instagram.",
+    soonTitle1: "Nokime Jobs ", soonTitle2: "is coming back soon.", soonLead: "Internships, apprenticeships and seasons in hotels and restaurants, with a welcome charter. Meanwhile, see you on Instagram.", soonInsta: "Follow @nokime.jobs",
     titleSchools: "For schools — Nokime Jobs", descSchools: "For hospitality schools: readable internship and seasonal offers in the kitchen, dining room, rooms division and spa, and a direct application.",
     schTitle: "For schools.", schLead: "A page to hand to your students: the offers say everything, they write to the establishment, the agreement stays with you.", schCta: "Write to Nokime",
     schKicker: "What it changes for you.",

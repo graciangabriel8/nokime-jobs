@@ -1,5 +1,7 @@
 # Nokime Jobs — le site
 
+**Closed for now (since 3 Nov 2026).** `index.html` is a « bientôt » page (noindex); `.htaccess` sends every other page to it (302) and answers 503 for `api/offre.php`, `api/postuler.php` and `api/auth/`; the legal notice, `api/compte.php` and the daily tasks stay. The open home waits in `_home-ouvert.html`. Reopening = reverting the commit that closed the site. What follows describes the open site.
+
 Stages, alternances et saisons en hôtellerie-restauration, en cuisine, en salle, à l’hébergement et au spa. Gratuit pour les candidats ; les établissements publient et répondent directement. Static, no build step for the pages; one small script renders the offer pages.
 
 - French is the source language and lives in the HTML; `js/site.js` reads it out of every `data-t` element at load. English lives in `js/i18n.js`.
